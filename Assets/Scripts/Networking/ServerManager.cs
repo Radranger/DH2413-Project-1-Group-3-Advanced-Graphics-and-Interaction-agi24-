@@ -193,20 +193,22 @@ public class ServerManager : Singleton<ServerManager>
 
         // find the NetworkPlayer object
         GameObject networkPlayer = NetworkManager.Singleton.ConnectedClients[clientID].PlayerObject.gameObject;
-
-        // Instantiate the Player object
-        //Transform spawnPoint = SpawnPointManager.Instance.GetSpawnPoint();
-        //GameObject player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
-
-        // Keep track of the player
+        
         networkPlayers.Add(networkPlayer);
-        //playerMap.Add(player, networkPlayer);
-        //players.Add(player);
-        //playerIdMap.Add(clientID, player);
 
-        // Link the accelerometer to the player controller
-        //PhysicsSkierController skierController = player.GetComponent<PhysicsSkierController>();
-        //skierController.SetNetworkPlayer(networkPlayer.GetComponent<NetworkPlayer>());
+        //Instantiate the Player object
+        Transform spawnPoint = SpawnPointManager.Instance.GetSpawnPoint();
+        GameObject player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
+        //player.GetComponent<NetworkObject>().Spawn();
+        
+        //Link the accelerometer to the player controller
+        SpaceShipMovement SpaceShipController = player.GetComponent<SpaceShipMovement>();
+        SpaceShipController.SetNetworkPlayer(networkPlayer.GetComponent<NetworkPlayer>());
+        
+        // Keep track of the player
+        playerMap.Add(player, networkPlayer);
+        players.Add(player);
+        playerIdMap.Add(clientID, player);
 
         //if (skinPresets != null)
         //{
@@ -260,17 +262,17 @@ public class ServerManager : Singleton<ServerManager>
         {
             Debug.Log("Game started!");
 
-            //foreach (GameObject player in players)
-            //{
-            //    PhysicsSkierController skierController = player.GetComponent<PhysicsSkierController>();
-            //    skierController.Unfreeze();
-            //}
+            foreach (GameObject player in players)
+            {
+                SpaceShipMovement spaceShipController = player.GetComponent<SpaceShipMovement>();
+                //skierController.Unfreeze();
+            }
 
             // set all players to active
-            //foreach (GameObject player in players)
-            //{
-            //    activePlayers.Add(player, true);
-            //}
+            foreach (GameObject player in players)
+            {
+                activePlayers.Add(player, true);
+            }
 
             foreach (GameObject networkPlayer in networkPlayers)
             {

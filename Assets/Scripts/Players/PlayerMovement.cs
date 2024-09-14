@@ -6,8 +6,8 @@ using System;
 public class PlayerMovement : MonoBehaviour
 {
     private InputManager _inputManager;
-    private Vector2 _frameVelocity;
-    private Vector2 _velocity;
+    public Vector2 _frameVelocity;
+    public Vector2 _velocity;
     private Rigidbody _rb;
     private BoxCollider _col;
     

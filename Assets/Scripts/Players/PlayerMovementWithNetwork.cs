@@ -17,20 +17,18 @@ public class PlayerMovementWithNetwork : NetworkBehaviour
     private NetworkVariable<Vector3> networkPositionDirection = new NetworkVariable<Vector3>();
     
     public Vector2 movementBoundaryX = new Vector2(-3f, 9f); // X-axis boundaries
-    public Vector2 movementBoundaryZ = new Vector2(-6f, 6f); // Z-axis boundaries
+    public Vector2 movementBoundaryY = new Vector2(-6f, 6f); // Y-axis boundaries
     
     private Vector3 oldInputPosition = Vector3.zero;
     private Vector2 InitialAccelerometerValue;
    
-    public Vector2 _frameVelocity;
-    public Vector2 _velocity;
+    private Vector2 _frameVelocity;
+    private Vector2 _velocity;
     private Rigidbody _rb;
     private BoxCollider _col;
-    private Rigidbody spaceShipRigidbody;
+    private Transform spaceShipTransform;
 
     private float threshold = 0.25f;
-
-    public Vector2 visualInput;
     
     void Start()
     {
@@ -41,7 +39,7 @@ public class PlayerMovementWithNetwork : NetworkBehaviour
               
 
         }
-        Transform spaceShipTransform = transform.GetChild(0); // 获取第一个子对象
+        spaceShipTransform = transform.GetChild(0); // 获取第一个子对象
         _rb = spaceShipTransform.GetComponent<Rigidbody>();
         _col = spaceShipTransform.GetComponent<BoxCollider>();
         
@@ -62,8 +60,6 @@ public class PlayerMovementWithNetwork : NetworkBehaviour
         HandleDirection();
         HandleRotation();
         ApplyMovement();
-        visualInput = CalculateMovementVector(InitialAccelerometerValue.x, InitialAccelerometerValue.y,
-            m_networkPlayer.GetX(), m_networkPlayer.GetY(), threshold);
     }
     
     void FrameReset(){
@@ -96,26 +92,31 @@ public class PlayerMovementWithNetwork : NetworkBehaviour
         _frameVelocity = _velocity * Time.deltaTime;
     }
     void HandleRotation(){
-        Vector3 currentRotation = transform.eulerAngles;
+        Vector3 currentRotation = spaceShipTransform.eulerAngles;
         currentRotation.z = (_velocity.x / GlobalSettings.MAX_SPEED) * -30.0f;
-        transform.eulerAngles = currentRotation;
+        spaceShipTransform.eulerAngles = currentRotation;
     }
     
     // Calculates movement direction based on accelerometer input.
     // Returns -1, 0, or 1 for X and Y directions depending on whether the input exceeds the threshold.
     private Vector2 CalculateMovementVector(float iniX, float iniY, float inputX, float inputY, float threshold)
     {
-        float x = Mathf.Abs(inputX - iniX) > threshold ? (inputX > iniX ? -1 : 1) : 0; 
-        float y = Mathf.Abs(inputY - iniY) > threshold ? (inputY > iniY ? 1 : -1) : 0;
+        float x = Mathf.Abs(inputX - iniX) > threshold ? (inputX > iniX ? 1 : -1) : 0; 
+        float y = Mathf.Abs(inputY - iniY) > threshold ? (inputY > iniY ? -1 : 1) : 0;
 
         return new Vector2(x, y);
     }
 
+    //with boundary
     private void ApplyMovement()
     {
         _rb.velocity = _frameVelocity;
-
+        Vector3 currentPosition = _rb.position;
+        
+        currentPosition.x = Mathf.Clamp(currentPosition.x, movementBoundaryX.x, movementBoundaryX.y);
+        currentPosition.y = Mathf.Clamp(currentPosition.y, movementBoundaryY.x, movementBoundaryY.y);
+        
+        _rb.position = currentPosition;
     }
-
 
 }
