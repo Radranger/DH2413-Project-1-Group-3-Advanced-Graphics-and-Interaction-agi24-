@@ -22,7 +22,8 @@ public class PlayerMovement : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody>();
         _col = GetComponent<BoxCollider>();
-        //_rb.freezeRotation = true;
+        _rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
+
     }
 
     // Update is called once per frame
