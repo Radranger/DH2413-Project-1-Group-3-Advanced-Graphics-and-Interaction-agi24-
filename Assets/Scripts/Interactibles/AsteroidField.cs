@@ -13,15 +13,17 @@ public class AsteroidField : MonoBehaviour
 
     // Variables for movement
     private float rotationSpeed;
+    public float movementSpeed = 10f;
+    /*
     public float minRotationSpeed = 1f;
     public float maxRotationSpeed = 5f;
     public float minMovement = 0.1f;
     public float maxMovement = 0.5f;
+    */
 
     void Start()
     {
         populateField();
-        addPhysics();
     }
 
     void populateField()
@@ -45,11 +47,12 @@ public class AsteroidField : MonoBehaviour
 
             // Instantiate asteroid at calculated position with random rotation
             Transform asteroid = Instantiate(randomAsteroid, new Vector3(xPos, yPos, zPos + 50f), Random.rotation);
-            asteroid.localScale = asteroid.localScale * Random.Range(0.5f, 5);
+            asteroid.transform.parent = gameObject.transform;
+            asteroid.transform.localScale = asteroid.localScale * Random.Range(0.5f, 5);
         }
     }
-
-    void addPhysics()
+    /*
+    void addPhysics(Transform asteroid)
     {
             // Set random rotation speed
             rotationSpeed = Random.Range(minRotationSpeed, maxRotationSpeed);
@@ -58,14 +61,14 @@ public class AsteroidField : MonoBehaviour
             float movement = Random.Range(minMovement, maxMovement);
 
             // apply physics to asteroid
-            Rigidbody asteroidRb = GetComponent<Rigidbody>();
-            asteroidRb.AddForce(transform.forward * movement, ForceMode.Impulse);
+            Rigidbody asteroidRb = asteroid.GetComponent<Rigidbody>();
+            asteroidRb.AddForce(transform.backward * movement, ForceMode.Impulse);
     }
+    */
 
-    void Update()
+    void FixedUpdate()
     {
-
-        // Rotate the asteroid field
-        transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
+        // translate the asteroid field towards the player
+        transform.position += Vector3.back * movementSpeed;
     }
 }

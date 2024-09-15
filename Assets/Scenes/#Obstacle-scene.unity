@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1784121334}
-  m_IndirectSpecularColor: {r: 0.024531132, g: 0.07878452, b: 0.13785428, a: 1}
+  m_IndirectSpecularColor: {r: 0.024513926, g: 0.07875968, b: 0.13783011, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -123,58 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &323727522
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 323727524}
-  - component: {fileID: 323727523}
-  m_Layer: 0
-  m_Name: AstroidField
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &323727523
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 323727522}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 83cfa2ab7cab3794188d02c33bcdd9ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  asteroidPrefab: {fileID: 8306953352933246526, guid: 2688375ab69a9644ebb65a4c0270d887, type: 3}
-  fieldRadius: 10
-  fieldHeight: 100
-  asteroidCount: 300
-  minRotationSpeed: 1
-  maxRotationSpeed: 5
-  minMovement: 0.1
-  maxMovement: 0.5
---- !u!4 &323727524
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 323727522}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.1980838, y: 0.14811571, z: -1.2929293}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 340107524}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &340107523
 GameObject:
   m_ObjectHideFlags: 0
@@ -184,6 +132,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 340107524}
+  - component: {fileID: 340107525}
   m_Layer: 0
   m_Name: field
   m_TagString: Untagged
@@ -203,10 +152,24 @@ Transform:
   m_LocalPosition: {x: -1.1980838, y: -0.14811571, z: 1.2929293}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 323727524}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &340107525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 340107523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fafd0142d26a81641ae2a44719bda26c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FieldRespawn: {fileID: 478172271559120434, guid: e0873929d029bd0419bf1b56ba2130f1, type: 3}
+  height: 100
+  speed: 0.1
 --- !u!1 &1092440094
 GameObject:
   m_ObjectHideFlags: 0
