@@ -20,7 +20,7 @@ public class FieldGenerator : MonoBehaviour
     {
         while(true)
         {
-            GameObject asteroidField = Instantiate(FieldRespawn, new Vector3(0, 0, height), Quaternion.identity);
+            GameObject asteroidField = Instantiate(FieldRespawn, new Vector3(0, 0, (3/2) * height), Quaternion.identity);
             AsteroidField field = asteroidField.GetComponent<AsteroidField>();
             field.fieldHeight = height;
             field.movementSpeed = speed;
