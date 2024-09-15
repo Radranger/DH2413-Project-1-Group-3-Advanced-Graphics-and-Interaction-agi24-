@@ -6,10 +6,12 @@ using System;
 public class PlayerMovement : MonoBehaviour
 {
     private InputManager _inputManager;
-    private Vector2 _frameVelocity;
-    private Vector2 _velocity;
+    public Vector2 _frameVelocity;
+    public Vector2 _velocity;
     private Rigidbody _rb;
     private BoxCollider _col;
+    
+    public Vector2 visualInput;
 
 
     public void Initialize(InputManager inputManager)
@@ -32,6 +34,8 @@ public class PlayerMovement : MonoBehaviour
         HandleDirection();
         HandleRotation();
         ApplyMovement();
+        
+        visualInput = _inputManager.GetMovementVector();
     }
     void FrameReset(){
         _frameVelocity = new Vector3(0.0f,0.0f,0.0f);
