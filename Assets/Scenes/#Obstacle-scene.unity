@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1784121334}
-  m_IndirectSpecularColor: {r: 0.024513926, g: 0.07875968, b: 0.13783011, a: 1}
+  m_IndirectSpecularColor: {r: 0.024531132, g: 0.07878452, b: 0.13785428, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -313,9 +313,9 @@ MonoBehaviour:
   _spawnInterval: 5
   _spawnPlane: {fileID: 1468125819}
   astroids:
-  - {fileID: 7264152074240635626, guid: db9dab9a68e6c934e9356b8592b0c29b, type: 3}
-  - {fileID: 4603973125057520570, guid: 242c55c2e3437494791667f544ce1bba, type: 3}
-  - {fileID: 1945954225771131976, guid: 73922e577e0af5e4b8f0f910e89b767d, type: 3}
+  - {fileID: 2187041594964392917, guid: a561122c4bc560146b0e86d0cf746f2c, type: 3}
+  - {fileID: 5825521016079501533, guid: 2bc6368630da8584d8fa05dcef4a503f, type: 3}
+  - {fileID: 8361993126442357810, guid: ed6acb687b7565046b7dda6c321198c3, type: 3}
   splitMagnitude: 1.04
   splitBlastMagnitude: 4
   splitBlastDecelerationRate: 10
@@ -572,6 +572,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f59ed36050114fd3b7e546c60d387b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _frameVelocity: {x: 0, y: 0}
+  _velocity: {x: 0, y: 0}
+  visualInput: {x: 0, y: 0}
 --- !u!114 &1647678490
 MonoBehaviour:
   m_ObjectHideFlags: 0

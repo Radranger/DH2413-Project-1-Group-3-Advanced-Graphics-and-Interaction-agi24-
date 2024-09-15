@@ -11,7 +11,7 @@ public class Obstacle : MonoBehaviour
     private GameObject[] _astroidObjects;
     private Vector3 _frameVelocity;
     private Vector3 _blastVelocity;
-    float CONSTANT_SPEED = -500.0f;
+    float CONSTANT_SPEED = -1000.0f;
     
     // Start is called before the first frame update
     void Start()
@@ -47,6 +47,8 @@ public class Obstacle : MonoBehaviour
         if(_level != 1) Split();
         Kill();
     }
+
+
     void Split(){
         float angleOfSplit = Random.Range(0.0f, 2 * Mathf.PI);
         float xOffset1 = Mathf.Cos(angleOfSplit) * _manager.splitMagnitude;

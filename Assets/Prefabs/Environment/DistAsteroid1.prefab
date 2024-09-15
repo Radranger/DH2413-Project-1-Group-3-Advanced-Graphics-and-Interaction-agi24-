@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4173592035763320236}
   - component: {fileID: -1942315904633271453}
   - component: {fileID: 5490730523236041620}
+  - component: {fileID: -8382655292500676935}
   m_Layer: 0
   m_Name: DistAsteroid1
   m_TagString: Untagged
@@ -30,8 +31,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071067}
   m_LocalPosition: {x: -4.344719, y: 1.9151797, z: 5.6984916}
-  m_LocalScale: {x: 10, y: 10, z: 10}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 80.869995, y: 80.869995, z: 80.869995}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -134,3 +135,15 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -3214521003866156968, guid: f4e5391fbd5b6d2499b62302b5d31ffa, type: 3}
+--- !u!114 &-8382655292500676935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8361993126442357810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0241f7de96c6a54e9587de8da3ee89b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
