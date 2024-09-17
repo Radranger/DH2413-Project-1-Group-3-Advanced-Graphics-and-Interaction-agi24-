@@ -156,4 +156,9 @@ public class NetworkPlayer : NetworkBehaviour
         return playerName.Value.ToString();
     }
 
+    public int RequestShoot()
+    {
+        return 0;
+    }
+
 }
