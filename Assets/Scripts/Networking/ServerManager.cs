@@ -129,7 +129,7 @@ public class ServerManager : Singleton<ServerManager>
         // make sure to destroy the network manager before reload scene
         Destroy(gameObject);
 
-        SceneManager.LoadScene("title-screen");
+        SceneManager.LoadScene("MAIN_SCENE");
     }
 
     // _____________________________________________________
