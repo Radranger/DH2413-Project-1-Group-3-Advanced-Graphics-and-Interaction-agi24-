@@ -308,7 +308,6 @@ GameObject:
   - component: {fileID: 1435812315}
   - component: {fileID: 1435812314}
   - component: {fileID: 1435812316}
-  - component: {fileID: 1435812317}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -367,19 +366,6 @@ MonoBehaviour:
   splitMagnitude: 1.04
   splitBlastMagnitude: 4
   splitBlastDecelerationRate: 10
---- !u!114 &1435812317
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1435812313}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e6532b6756ca5540b53bb9f322b00de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: {fileID: 1647678483}
 --- !u!1 &1468125819
 GameObject:
   m_ObjectHideFlags: 0
@@ -501,6 +487,7 @@ GameObject:
   - component: {fileID: 1647678484}
   - component: {fileID: 1647678490}
   - component: {fileID: 1647678489}
+  - component: {fileID: 1647678491}
   m_Layer: 0
   m_Name: SpaceShip
   m_TagString: Player
@@ -649,6 +636,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f142f3a6ec0054005ad57d62ff3002fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1647678491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1647678483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e6532b6756ca5540b53bb9f322b00de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: []
+  gameOverPanel: {fileID: 0}
 --- !u!1 &1779327811
 GameObject:
   m_ObjectHideFlags: 0

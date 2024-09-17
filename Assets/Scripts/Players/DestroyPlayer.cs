@@ -4,19 +4,23 @@ using UnityEngine;
 
 public class DestroyPlayer : MonoBehaviour
 {
-    public GameObject player; // Assign the player object in the Inspector
-    public GameObject gameOverPanel; // Optional: Assign Game Over UI panel
+    public GameObject gameOverPanel; // Assign Game Over UI panel
 
-    private bool isGameOver = false; // Tracks game-over state
+    private bool isGameOver; // Tracks game-over state
+
+    void Start()
+    {
+        isGameOver = false;
+    }
 
     // Check for trigger collisions
     void OnTriggerEnter(Collider other)
     {
         // Check if the player collided with the asteroid
-        if (other.CompareTag("Player"))
+        if (other.gameObject.tag == "enemy")
         {
             // Destroy the player GameObject
-            Destroy(other.gameObject);
+            Destroy(gameObject);
             CheckAllPlayersDestroyed();
         }
     }
@@ -24,9 +28,7 @@ public class DestroyPlayer : MonoBehaviour
     // Check if all players are destroyed
     void CheckAllPlayersDestroyed()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
-
-        if (player == null && !isGameOver)
+        if (gameObject == null && !isGameOver)
         {
             // Game is over
             Time.timeScale = 0;  // Pause the game
