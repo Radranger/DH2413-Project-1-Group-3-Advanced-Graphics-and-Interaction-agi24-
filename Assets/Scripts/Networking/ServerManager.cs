@@ -61,11 +61,11 @@ public class ServerManager : Singleton<ServerManager>
         // START SERVER
         startGameButton?.onClick.AddListener(() =>
         {
-            if (NetworkManager.Singleton.ConnectedClientsList.Count == 0)
-            {
-                return;
-            }
-
+            // if (NetworkManager.Singleton.ConnectedClientsList.Count == 0)
+            // {
+            //     return;
+            // }
+            Debug.Log("Starting Game");
             StartGame();
         });
 
@@ -258,6 +258,7 @@ public class ServerManager : Singleton<ServerManager>
 
     private void StartGame()
     {
+        Debug.Log("starting");
         // Hide menu UI
         startGameButton.gameObject.SetActive(false);
         menuScreen.SetActive(false);
