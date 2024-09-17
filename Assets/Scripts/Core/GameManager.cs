@@ -12,6 +12,8 @@ namespace GameSpace
     }
 }
 
+
+
 public class GameManager : MonoBehaviour
 {
     // [SerializeField] private InputType _inputType;
@@ -21,6 +23,9 @@ public class GameManager : MonoBehaviour
     // private Player _playerScript;
 
     [SerializeField] private GameObject _playerPrefab;
+    [SerializeField] private GameObject _obstacleSpawner;
+
+
 
     void Start()
     {
@@ -36,5 +41,9 @@ public class GameManager : MonoBehaviour
 
         Player playerScript = playerObject.GetComponent<Player>();
         playerScript.Initialize(_inputManager, _playerPrefab);
+    }
+    public void StartGame(){
+        _obstacleSpawner.SetActive(true);
+
     }
 }
