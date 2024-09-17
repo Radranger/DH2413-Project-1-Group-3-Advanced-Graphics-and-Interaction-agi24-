@@ -9,11 +9,15 @@ public class Player : MonoBehaviour
     private InputManager _inputManager;
     private PlayerMovement _playerMovement;
 
-    public void Initialize(InputManager inputManager){
+    public void Initialize(InputManager inputManager, GameObject playerPrefab){
         _active = true;
         _inputManager = inputManager;
-        _playerMovement = GetComponent<PlayerMovement>();
-        _playerMovement.Initialize(_inputManager);
+        //if(networkPlayer != null) _networkPlayer = networkPlayer;
+
+        if (TryGetComponent(out _playerMovement)){_playerMovement.Initialize(_inputManager);};
+        // _playerMovement = GetComponent<PlayerMovement>();
+        // _playerMovement.Initialize(_inputManager);   
+
     }
 
     void Start()

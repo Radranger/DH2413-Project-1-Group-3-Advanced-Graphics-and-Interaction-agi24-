@@ -32,7 +32,7 @@ public class ObstacleManager : MonoBehaviour
             //int amount = Mathf.Max(0, (int)Random.Range(Mathf.Floor(_spawnRate/60.0f)-2, Mathf.Floor(_spawnRate/60.0f)+2));
 
             for(int i = 0; i < 1; i++){
-                //SpawnInstance();
+                SpawnInstance();
             }
 
         }
@@ -47,10 +47,10 @@ public class ObstacleManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            SpawnInstance();
-        }
+        // if (Input.GetKeyDown(KeyCode.S))
+        // {
+        //     SpawnInstance();
+        // }
         
     }
 }
