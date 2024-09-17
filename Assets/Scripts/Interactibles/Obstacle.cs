@@ -81,6 +81,8 @@ public class Obstacle : MonoBehaviour
         HandleMovement();
         ApplyMovement();
 
+        if(gameObject.transform.position.z < -12){Kill();};
+
         // for debug
         // if (Input.GetKeyDown(KeyCode.Space))
         // {
