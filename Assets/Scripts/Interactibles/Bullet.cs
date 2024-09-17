@@ -8,7 +8,7 @@ public class Bullet : MonoBehaviour
         Obstacle obstacle = collision.gameObject.GetComponent<Obstacle>();
         if (obstacle != null)
         {
-            //obstacle.RegularHit();
+            obstacle.RegularHit();
 
             // Destroy the bullet
             Destroy(gameObject);

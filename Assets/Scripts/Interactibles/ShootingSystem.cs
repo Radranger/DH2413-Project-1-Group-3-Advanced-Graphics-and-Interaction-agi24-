@@ -27,7 +27,7 @@ public class ShootingSystem : MonoBehaviour
         BoxCollider collider = bullet.GetComponent<BoxCollider>();
         collider.isTrigger = false;
 
-        //bullet.AddComponent<Bullet>();
+        bullet.AddComponent<Bullet>();
 
         rb.velocity = spaceship.transform.forward * bulletSpeed;
         Destroy(bullet, 5.0f);

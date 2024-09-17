@@ -43,7 +43,7 @@ public class Obstacle : MonoBehaviour
 
     }
 
-    void RegularHit(){
+    public void RegularHit(){
         if(_level != 1) Split();
         Kill();
     }
