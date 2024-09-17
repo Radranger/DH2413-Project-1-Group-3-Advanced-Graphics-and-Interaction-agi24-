@@ -54,8 +54,14 @@ public class ServerManager : Singleton<ServerManager>
 
     public bool gameStarted = false;
 
+    private GameManager _gameManager;
+    private GameObject _gameManagerObject;
+
     private async void Start()
     {
+        _gameManagerObject = GameObject.FindWithTag("GameManager");
+        _gameManager = _gameManagerObject.GetComponent<GameManager>();
+        
         countdown.ResetCountdown();
 
         // START SERVER
@@ -65,7 +71,7 @@ public class ServerManager : Singleton<ServerManager>
             {
                 return;
             }
-
+            Debug.Log("Starting Game");
             StartGame();
         });
 
@@ -162,6 +168,11 @@ public class ServerManager : Singleton<ServerManager>
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            Debug.Log("Start Game");
+            StartGame();
+        }
         if (gameStarted)
         {
             CullPlayers();
@@ -196,19 +207,22 @@ public class ServerManager : Singleton<ServerManager>
         
         networkPlayers.Add(networkPlayer);
 
+        
+
         //Instantiate the Player object
         Transform spawnPoint = SpawnPointManager.Instance.GetSpawnPoint();
-        GameObject player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
+        _gameManager.AddPlayer(networkPlayer.GetComponent<NetworkPlayer>());
+        //GameObject player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
         //player.GetComponent<NetworkObject>().Spawn();
         
         //Link the accelerometer to the player controller
-        SpaceShipMovement SpaceShipController = player.GetComponent<SpaceShipMovement>();
-        SpaceShipController.SetNetworkPlayer(networkPlayer.GetComponent<NetworkPlayer>());
+        //SpaceShipMovement SpaceShipController = player.GetComponent<SpaceShipMovement>();
+        //SpaceShipController.SetNetworkPlayer(networkPlayer.GetComponent<NetworkPlayer>());
         
-        // Keep track of the player
-        playerMap.Add(player, networkPlayer);
-        players.Add(player);
-        playerIdMap.Add(clientID, player);
+        //Keep track of the player
+        // playerMap.Add(player, networkPlayer);
+        // players.Add(player);
+        // playerIdMap.Add(clientID, player);
 
         //if (skinPresets != null)
         //{
@@ -221,7 +235,6 @@ public class ServerManager : Singleton<ServerManager>
 
         // debug
         StartCoroutine(UpdatePlayerInfo());
-
     }
 
 
@@ -253,34 +266,37 @@ public class ServerManager : Singleton<ServerManager>
 
     private void StartGame()
     {
+        Debug.Log("starting");
         // Hide menu UI
         startGameButton.gameObject.SetActive(false);
         menuScreen.SetActive(false);
 
+        _gameManager.StartGame();
+
         // Start countdown
-        countdown.NewCountDown(countdownTime, () =>
-        {
-            Debug.Log("Game started!");
+        // countdown.NewCountDown(countdownTime, () =>
+        // {
+        //     Debug.Log("Game started!");
 
-            foreach (GameObject player in players)
-            {
-                SpaceShipMovement spaceShipController = player.GetComponent<SpaceShipMovement>();
-                //skierController.Unfreeze();
-            }
+        //     foreach (GameObject player in players)
+        //     {
+        //         SpaceShipMovement spaceShipController = player.GetComponent<SpaceShipMovement>();
+        //         //skierController.Unfreeze();
+        //     }
 
-            // set all players to active
-            foreach (GameObject player in players)
-            {
-                activePlayers.Add(player, true);
-            }
+        //     // set all players to active
+        //     foreach (GameObject player in players)
+        //     {
+        //         activePlayers.Add(player, true);
+        //     }
 
-            foreach (GameObject networkPlayer in networkPlayers)
-            {
-                activeNetworkPlayers.Add(networkPlayer, true);
-            }
+        //     foreach (GameObject networkPlayer in networkPlayers)
+        //     {
+        //         activeNetworkPlayers.Add(networkPlayer, true);
+        //     }
             
-            gameStarted = true;
-        });
+        //     gameStarted = true;
+        // });
     }
 
     // Every second, set the player names

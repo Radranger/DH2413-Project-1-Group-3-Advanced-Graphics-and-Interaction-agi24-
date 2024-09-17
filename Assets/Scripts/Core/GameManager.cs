@@ -12,19 +12,38 @@ namespace GameSpace
     }
 }
 
+
+
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private InputType _inputType;
-    private InputManager _inputManager;
+    // [SerializeField] private InputType _inputType;
+    // private InputManager _inputManager;
 
-    [SerializeField] private GameObject _player;
-    private Player _playerScript;
+    // [SerializeField] private GameObject _player;
+    // private Player _playerScript;
+
+    [SerializeField] private GameObject _playerPrefab;
+    [SerializeField] private GameObject _obstacleSpawner;
+
+
 
     void Start()
     {
-        _inputManager = new InputManager();
-        _inputManager.Initialize(_inputType);
-        _playerScript = _player.GetComponent<Player>();
-        _playerScript.Initialize(_inputManager);
+        
+    }
+
+    public void AddPlayer(NetworkPlayer networkPlayer){
+        InputManager _inputManager = new InputManager();
+        _inputManager.Initialize(InputType.PHONE, networkPlayer);
+
+        Vector3 spawnPos = new Vector3(0.0f, 0.0f, 0.0f);
+        GameObject playerObject = Instantiate(_playerPrefab, spawnPos, Quaternion.identity);
+
+        Player playerScript = playerObject.GetComponent<Player>();
+        playerScript.Initialize(_inputManager, _playerPrefab);
+    }
+    public void StartGame(){
+        _obstacleSpawner.SetActive(true);
+
     }
 }

@@ -81,11 +81,11 @@ public class Obstacle : MonoBehaviour
         HandleMovement();
         ApplyMovement();
 
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            RegularHit();
-        }
+        // for debug
+        // if (Input.GetKeyDown(KeyCode.Space))
+        // {
+        //     RegularHit();
+        // }
     }
     void FrameReset(){
         _frameVelocity = new Vector3(0.0f,0.0f,0.0f);
