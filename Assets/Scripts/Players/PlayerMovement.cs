@@ -6,16 +6,14 @@ using System;
 public class PlayerMovement : MonoBehaviour
 {
     private InputManager _inputManager;
-    public Vector2 _frameVelocity;
-    public Vector2 _velocity;
+    private Vector2 _frameVelocity;
+    private Vector2 _velocity;
     private Rigidbody _rb;
     private BoxCollider _col;
-    
-    public Vector2 visualInput;
-
 
     public void Initialize(InputManager inputManager)
     {
+        Debug.Log("running");
         _inputManager = inputManager;
     }
 
@@ -25,7 +23,6 @@ public class PlayerMovement : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         _col = GetComponent<BoxCollider>();
         _rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
-
     }
 
     // Update is called once per frame
@@ -36,7 +33,7 @@ public class PlayerMovement : MonoBehaviour
         HandleRotation();
         ApplyMovement();
         
-        visualInput = _inputManager.GetMovementVector();
+        //visualInput = _inputManager.GetMovementVector();
     }
     void FrameReset(){
         _frameVelocity = new Vector3(0.0f,0.0f,0.0f);

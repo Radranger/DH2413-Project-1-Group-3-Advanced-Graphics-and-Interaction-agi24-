@@ -185,6 +185,7 @@ public class ServerManager : Singleton<ServerManager>
     {
         NetworkManager.Singleton.Shutdown();
     }
+    public GameManager _gameManager;
 
     private void OnClientConnected(ulong clientID)
     {
@@ -196,19 +197,24 @@ public class ServerManager : Singleton<ServerManager>
         
         networkPlayers.Add(networkPlayer);
 
+        GameManager gameManager;
+        GameObject gameManagerObject = GameObject.FindWithTag("GameManager");
+        gameManager = gameManagerObject.GetComponent<GameManager>();
+
         //Instantiate the Player object
         Transform spawnPoint = SpawnPointManager.Instance.GetSpawnPoint();
-        GameObject player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
+        gameManager.AddPlayer(networkPlayer.GetComponent<NetworkPlayer>());
+        //GameObject player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
         //player.GetComponent<NetworkObject>().Spawn();
         
         //Link the accelerometer to the player controller
-        SpaceShipMovement SpaceShipController = player.GetComponent<SpaceShipMovement>();
-        SpaceShipController.SetNetworkPlayer(networkPlayer.GetComponent<NetworkPlayer>());
+        //SpaceShipMovement SpaceShipController = player.GetComponent<SpaceShipMovement>();
+        //SpaceShipController.SetNetworkPlayer(networkPlayer.GetComponent<NetworkPlayer>());
         
-        // Keep track of the player
-        playerMap.Add(player, networkPlayer);
-        players.Add(player);
-        playerIdMap.Add(clientID, player);
+        //Keep track of the player
+        // playerMap.Add(player, networkPlayer);
+        // players.Add(player);
+        // playerIdMap.Add(clientID, player);
 
         //if (skinPresets != null)
         //{
@@ -221,7 +227,6 @@ public class ServerManager : Singleton<ServerManager>
 
         // debug
         StartCoroutine(UpdatePlayerInfo());
-
     }
 
 
