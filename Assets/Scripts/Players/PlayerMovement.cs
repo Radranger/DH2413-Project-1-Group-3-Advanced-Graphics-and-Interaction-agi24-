@@ -68,5 +68,15 @@ public class PlayerMovement : MonoBehaviour
         transform.eulerAngles = currentRotation;
     }
 
-    private void ApplyMovement() => _rb.velocity = _frameVelocity;
+    private void ApplyMovement()
+    {
+        _rb.velocity = _frameVelocity;
+
+        Vector3 currentPosition = transform.position;
+
+        currentPosition.x = Mathf.Clamp(currentPosition.x, -15f, 15f);
+        currentPosition.y = Mathf.Clamp(currentPosition.y, -10f, 10f);
+
+        transform.position = currentPosition;
+    }
 }
