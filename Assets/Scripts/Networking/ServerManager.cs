@@ -54,8 +54,14 @@ public class ServerManager : Singleton<ServerManager>
 
     public bool gameStarted = false;
 
+    private GameManager _gameManager;
+    private GameObject _gameManagerObject;
+
     private async void Start()
     {
+        _gameManagerObject = GameObject.FindWithTag("GameManager");
+        _gameManager = _gameManagerObject.GetComponent<GameManager>();
+        
         countdown.ResetCountdown();
 
         // START SERVER
@@ -65,7 +71,7 @@ public class ServerManager : Singleton<ServerManager>
             {
                 return;
             }
-
+            Debug.Log("Starting Game");
             StartGame();
         });
 
@@ -123,7 +129,7 @@ public class ServerManager : Singleton<ServerManager>
         // make sure to destroy the network manager before reload scene
         Destroy(gameObject);
 
-        SceneManager.LoadScene("title-screen");
+        SceneManager.LoadScene("MAIN_SCENE");
     }
 
     // _____________________________________________________
@@ -162,6 +168,11 @@ public class ServerManager : Singleton<ServerManager>
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            Debug.Log("Start Game");
+            StartGame();
+        }
         if (gameStarted)
         {
             CullPlayers();
@@ -185,7 +196,6 @@ public class ServerManager : Singleton<ServerManager>
     {
         NetworkManager.Singleton.Shutdown();
     }
-    public GameManager _gameManager;
 
     private void OnClientConnected(ulong clientID)
     {
@@ -197,13 +207,11 @@ public class ServerManager : Singleton<ServerManager>
         
         networkPlayers.Add(networkPlayer);
 
-        GameManager gameManager;
-        GameObject gameManagerObject = GameObject.FindWithTag("GameManager");
-        gameManager = gameManagerObject.GetComponent<GameManager>();
+        
 
         //Instantiate the Player object
         Transform spawnPoint = SpawnPointManager.Instance.GetSpawnPoint();
-        gameManager.AddPlayer(networkPlayer.GetComponent<NetworkPlayer>());
+        _gameManager.AddPlayer(networkPlayer.GetComponent<NetworkPlayer>());
         //GameObject player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
         //player.GetComponent<NetworkObject>().Spawn();
         
@@ -258,34 +266,37 @@ public class ServerManager : Singleton<ServerManager>
 
     private void StartGame()
     {
+        Debug.Log("starting");
         // Hide menu UI
         startGameButton.gameObject.SetActive(false);
         menuScreen.SetActive(false);
 
+        _gameManager.StartGame();
+
         // Start countdown
-        countdown.NewCountDown(countdownTime, () =>
-        {
-            Debug.Log("Game started!");
+        // countdown.NewCountDown(countdownTime, () =>
+        // {
+        //     Debug.Log("Game started!");
 
-            foreach (GameObject player in players)
-            {
-                SpaceShipMovement spaceShipController = player.GetComponent<SpaceShipMovement>();
-                //skierController.Unfreeze();
-            }
+        //     foreach (GameObject player in players)
+        //     {
+        //         SpaceShipMovement spaceShipController = player.GetComponent<SpaceShipMovement>();
+        //         //skierController.Unfreeze();
+        //     }
 
-            // set all players to active
-            foreach (GameObject player in players)
-            {
-                activePlayers.Add(player, true);
-            }
+        //     // set all players to active
+        //     foreach (GameObject player in players)
+        //     {
+        //         activePlayers.Add(player, true);
+        //     }
 
-            foreach (GameObject networkPlayer in networkPlayers)
-            {
-                activeNetworkPlayers.Add(networkPlayer, true);
-            }
+        //     foreach (GameObject networkPlayer in networkPlayers)
+        //     {
+        //         activeNetworkPlayers.Add(networkPlayer, true);
+        //     }
             
-            gameStarted = true;
-        });
+        //     gameStarted = true;
+        // });
     }
 
     // Every second, set the player names

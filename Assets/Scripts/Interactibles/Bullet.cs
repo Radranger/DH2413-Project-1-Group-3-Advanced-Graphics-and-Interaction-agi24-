@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    void OnCollisionEnter(Collision collision)
+    void OnTriggerEnter(Collider collision)
     {
         // Check if the colliding object is an Obstacle
         Obstacle obstacle = collision.gameObject.GetComponent<Obstacle>();
-        if (obstacle != null)
+        if (obstacle != null && collision.gameObject.CompareTag("enemy"))
         {
             obstacle.RegularHit();
 

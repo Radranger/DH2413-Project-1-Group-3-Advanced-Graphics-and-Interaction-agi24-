@@ -24,13 +24,28 @@ public class FieldGenerator : MonoBehaviour
             AsteroidField field = asteroidField.GetComponent<AsteroidField>();
             field.fieldHeight = height;
             field.movementSpeed = speed;
+
+            StartCoroutine(DestroyIfOutOfBounds(asteroidField));
+
             yield return new WaitForSeconds(time * 0.02f);
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    IEnumerator DestroyIfOutOfBounds(GameObject asteroidField)
     {
-        
+        // Continuously check the position of the asteroid field
+        while (asteroidField != null)
+        {
+            // Check if the z position of the asteroid field is less than -50f
+            if (asteroidField.transform.position.z < -50f)
+            {
+                // Destroy the asteroid field if it's out of bounds
+                Destroy(asteroidField);
+                yield break;  // Exit the coroutine
+            }
+
+            // Wait for the next frame before checking again
+            yield return null;
+        }
     }
 }

@@ -10,8 +10,11 @@ public class PhoneInput : IInputProvider
         _networkPlayer = networkPlayer;
     }
 
-    public Vector2 GetMovementVector(){
-        return new Vector2(_networkPlayer.GetX(), _networkPlayer.GetY());
+    public Vector2 GetMovementVector()
+    {
+        float inputX = _networkPlayer.GetX();
+        float inputY = -(_networkPlayer.GetY());
+        return new Vector2(inputX, inputY);
     }
 
     public int GetShooting()
