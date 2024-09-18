@@ -13,4 +13,9 @@ public class PhoneInput : IInputProvider
     public Vector2 GetMovementVector(){
         return new Vector2(_networkPlayer.GetX(), _networkPlayer.GetY());
     }
+
+    public int GetShooting()
+    {
+        return _networkPlayer.RequestShoot();
+    }
 }

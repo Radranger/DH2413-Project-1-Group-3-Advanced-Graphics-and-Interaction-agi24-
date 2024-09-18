@@ -29,4 +29,9 @@ public class InputManager
     public Vector2 GetMovementVector(){
         return _inputProvider.GetMovementVector();
     }
+
+    public int GetShooting()
+    {
+        return _inputProvider.GetShooting();
+    }
 }
