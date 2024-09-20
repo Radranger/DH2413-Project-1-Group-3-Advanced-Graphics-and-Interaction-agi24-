@@ -206,12 +206,12 @@ public class ServerManager : Singleton<ServerManager>
         GameObject networkPlayer = NetworkManager.Singleton.ConnectedClients[clientID].PlayerObject.gameObject;
         
         networkPlayers.Add(networkPlayer);
-
         
-
         //Instantiate the Player object
         Transform spawnPoint = SpawnPointManager.Instance.GetSpawnPoint();
         _gameManager.AddPlayer(networkPlayer.GetComponent<NetworkPlayer>());
+        
+        
         //GameObject player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
         //player.GetComponent<NetworkObject>().Spawn();
         

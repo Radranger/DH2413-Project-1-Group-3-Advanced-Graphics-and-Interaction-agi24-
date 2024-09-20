@@ -30,7 +30,7 @@ public class ClientUIManager : Singleton<ClientUIManager>
     private UIMessagePopup messagePopup;
     private UIMessagePopup actionConfirmPopup;
     
-    private NetworkPlayer localNetworkPlayer;
+    public NetworkPlayer localNetworkPlayer;
 
     private void Start()
     {
@@ -188,6 +188,20 @@ public class ClientUIManager : Singleton<ClientUIManager>
 
 
     // }
+    
+    public void OnNetworkShoot()
+    {
+        if (localNetworkPlayer != null)
+        {
+            Debug.Log("ClientUIManager: OnNetworkShoot() - localNetworkPlayer exists");
+            localNetworkPlayer.RequestShoot();
+        }
+        else
+        {
+            Debug.LogWarning("ClientUIManager: OnNetworkShoot() - localNetworkPlayer is null");
+        }
+    }
+    
     private IEnumerator FindLocalNetworkPlayer()
     {
         while (localNetworkPlayer == null)
@@ -203,17 +217,7 @@ public class ClientUIManager : Singleton<ClientUIManager>
             yield return null; 
         }
     }
+    
 
-    public void OnNetworkShoot()
-    {
-        if (localNetworkPlayer != null)
-        {
-            localNetworkPlayer.RequestShoot();
-        }
-        else
-        {
-            Debug.LogWarning("");
-        }
-    }
 
 }
