@@ -1,22 +1,37 @@
 using UnityEngine;
+using System.Collections;
 
 public class ShootingSystem : MonoBehaviour
 {
     public float bulletSpeed = 20.0f;
-    public GameObject spaceship;
+    //public GameObject spaceship;
+
+    void Start(){
+        StartCoroutine(Shooting());
+    }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.J))
-        {
+        // if (Input.GetKeyDown(KeyCode.J))
+        // {
+        //     Shoot();
+        // }
+    }
+
+    IEnumerator Shooting (){
+
+        while(true){
             Shoot();
+            yield return new WaitForSeconds(0.5f);
         }
     }
+
 
     void Shoot()
     {
         GameObject bullet = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        bullet.transform.position = spaceship.transform.position;
+        bullet.transform.localScale = new Vector3(0.5f,0.5f,0.5f);
+        bullet.transform.position = this.transform.position;
         //bullet.transform.rotation = spaceship.transform.rotation;
 
         // Add a rigidbody component so that the bullet is affected by physics
@@ -25,11 +40,11 @@ public class ShootingSystem : MonoBehaviour
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
         BoxCollider collider = bullet.GetComponent<BoxCollider>();
-        collider.isTrigger = false;
+        collider.isTrigger = true;
 
         bullet.AddComponent<Bullet>();
 
-        rb.velocity = spaceship.transform.forward * bulletSpeed;
+        rb.velocity = this.transform.forward * bulletSpeed;
         Destroy(bullet, 5.0f);
     }
 }

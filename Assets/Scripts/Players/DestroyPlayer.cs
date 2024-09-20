@@ -21,25 +21,25 @@ public class DestroyPlayer : MonoBehaviour
         {
             // Destroy the player GameObject
             Destroy(gameObject);
-            CheckAllPlayersDestroyed();
+            //CheckAllPlayersDestroyed();
         }
     }
 
     // Check if all players are destroyed
-    void CheckAllPlayersDestroyed()
-    {
-        if (gameObject == null && !isGameOver)
-        {
-            // Game is over
-            Time.timeScale = 0;  // Pause the game
-            isGameOver = true;    // Mark game as over
-            Debug.Log("Game Over! All players destroyed.");
+    // void CheckAllPlayersDestroyed()
+    // {
+    //     if (gameObject == null && !isGameOver)
+    //     {
+    //         // Game is over
+    //         Time.timeScale = 0;  // Pause the game
+    //         isGameOver = true;    // Mark game as over
+    //         Debug.Log("Game Over! All players destroyed.");
 
-            // Optional: Show Game Over panel
-            if (gameOverPanel != null)
-            {
-                gameOverPanel.SetActive(true);
-            }
-        }
-    }
+    //         // Optional: Show Game Over panel
+    //         if (gameOverPanel != null)
+    //         {
+    //             gameOverPanel.SetActive(true);
+    //         }
+    //     }
+    // }
 }
