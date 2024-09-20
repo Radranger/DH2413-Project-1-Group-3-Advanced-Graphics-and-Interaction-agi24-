@@ -13,6 +13,13 @@ public class NetworkPlayer : NetworkBehaviour
         readPerm: NetworkVariableReadPermission.Everyone,
         writePerm: NetworkVariableWritePermission.Owner
     );
+    
+    [HideInInspector]
+    public NetworkVariable<bool> shootInput = new NetworkVariable<bool>(
+        false,
+        readPerm: NetworkVariableReadPermission.Everyone,
+        writePerm: NetworkVariableWritePermission.Owner
+    );
 
     [HideInInspector]
     public NetworkVariable<FixedString32Bytes> playerName = new NetworkVariable<FixedString32Bytes>(
@@ -81,6 +88,8 @@ public class NetworkPlayer : NetworkBehaviour
             {
                 SetupAccelerometer();
             }
+            
+            ClientUIManager.Instance.localNetworkPlayer = this;
 
         }
 
@@ -154,6 +163,43 @@ public class NetworkPlayer : NetworkBehaviour
     public string GetPlayerName()
     {
         return playerName.Value.ToString();
+    }
+
+    public void RequestShoot()
+    {
+        if (IsOwner)
+        {
+            Debug.Log("NetworkPlayer: RequestShoot() called on client");
+            ShootServerRpc();
+        }
+        else
+        {
+            Debug.LogWarning("NetworkPlayer: RequestShoot() called but not owner");
+        }
+    }
+    
+    [ServerRpc]
+    private void ShootServerRpc(ServerRpcParams rpcParams = default)
+    {
+        //Server Side
+        ShootClientRpc();
+        Debug.Log("NetworkPlayer: ShootServerRpc() called on server");
+    }
+
+    [ClientRpc]
+    private void ShootClientRpc(ClientRpcParams rpcParams = default)
+    {
+        // Client Side
+        Debug.Log("NetworkPlayer: ShootClientRpc() called on client");
+        var shootingSystem = GetComponent<ShootingSystem>();
+        if (shootingSystem != null)
+        {
+            shootingSystem.Shoot();
+        }
+        else
+        {
+            Debug.LogWarning("ShootingSystem component not found on NetworkPlayer");
+        }
     }
 
 }

@@ -4,5 +4,6 @@ using UnityEngine;
 
 public interface IInputProvider
 {
-    Vector2 GetMovementVector();     
+    Vector2 GetMovementVector();
+    int GetShooting();
 }

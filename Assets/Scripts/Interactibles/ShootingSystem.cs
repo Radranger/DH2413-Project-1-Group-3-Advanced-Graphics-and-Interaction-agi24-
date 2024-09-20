@@ -7,27 +7,23 @@ public class ShootingSystem : MonoBehaviour
     //public GameObject spaceship;
 
     void Start(){
-        StartCoroutine(Shooting());
+        /*StartCoroutine(Shooting());*/
     }
+    
 
     void Update()
     {
-        // if (Input.GetKeyDown(KeyCode.J))
-        // {
-        //     Shoot();
-        // }
+
     }
 
-    IEnumerator Shooting (){
+    /*IEnumerator Shooting (){
 
         while(true){
             Shoot();
             yield return new WaitForSeconds(0.5f);
         }
-    }
-
-
-    void Shoot()
+    }*/
+    public void Shoot()
     {
         GameObject bullet = GameObject.CreatePrimitive(PrimitiveType.Cube);
         bullet.transform.localScale = new Vector3(0.5f,0.5f,0.5f);
@@ -46,5 +42,7 @@ public class ShootingSystem : MonoBehaviour
 
         rb.velocity = this.transform.forward * bulletSpeed;
         Destroy(bullet, 5.0f);
+        
+        Debug.Log("ShootingSystem: Shoot() called");
     }
 }

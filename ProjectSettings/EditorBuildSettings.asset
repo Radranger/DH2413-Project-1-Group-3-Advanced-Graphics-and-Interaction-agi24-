@@ -11,13 +11,13 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/PausePage.unity
     guid: ac6b3357afd85234688cac03171296c3
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/TestMain.unity
     guid: ac48d227a5368c54ab8676450d0d43b5
   - enabled: 1
     path: Assets/Scenes/TestClient.unity
     guid: fde649c08ab66294599749a411a68c71
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MAIN_SCENE.unity
     guid: 019ac1eff3fdb4b86b014ecaedcd61a0
   m_configObjects: {}

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -28,6 +29,8 @@ public class ClientUIManager : Singleton<ClientUIManager>
 
     private UIMessagePopup messagePopup;
     private UIMessagePopup actionConfirmPopup;
+    
+    public NetworkPlayer localNetworkPlayer;
 
     private void Start()
     {
@@ -43,6 +46,8 @@ public class ClientUIManager : Singleton<ClientUIManager>
 
         actionConfirmPopup = actionConfirmPopupPrefab.GetComponent<UIMessagePopup>();
         actionConfirmPopupPrefab.SetActive(false);
+        
+        StartCoroutine(FindLocalNetworkPlayer());
     }
 
     /// <summary>
@@ -183,6 +188,36 @@ public class ClientUIManager : Singleton<ClientUIManager>
 
 
     // }
+    
+    public void OnNetworkShoot()
+    {
+        if (localNetworkPlayer != null)
+        {
+            Debug.Log("ClientUIManager: OnNetworkShoot() - localNetworkPlayer exists");
+            localNetworkPlayer.RequestShoot();
+        }
+        else
+        {
+            Debug.LogWarning("ClientUIManager: OnNetworkShoot() - localNetworkPlayer is null");
+        }
+    }
+    
+    private IEnumerator FindLocalNetworkPlayer()
+    {
+        while (localNetworkPlayer == null)
+        {
+            foreach (var networkPlayer in FindObjectsOfType<NetworkPlayer>())
+            {
+                if (networkPlayer.IsOwner)
+                {
+                    localNetworkPlayer = networkPlayer;
+                    break;
+                }
+            }
+            yield return null; 
+        }
+    }
+    
 
 
 }

@@ -7,4 +7,9 @@ public class DebugKeyboardInput : IInputProvider
     public Vector2 GetMovementVector(){
         return new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
     }
+
+    public int GetShooting()
+    {
+        return 1;
+    }
 }

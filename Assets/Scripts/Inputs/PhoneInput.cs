@@ -16,4 +16,9 @@ public class PhoneInput : IInputProvider
         float inputY = -(_networkPlayer.GetY());
         return new Vector2(inputX, inputY);
     }
+
+    public int GetShooting()
+    {
+        return 0;
+    }
 }
