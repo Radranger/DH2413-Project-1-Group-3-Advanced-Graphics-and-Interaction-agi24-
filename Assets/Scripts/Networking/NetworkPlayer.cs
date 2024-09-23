@@ -71,7 +71,9 @@ public class NetworkPlayer : NetworkBehaviour
         if (IsOwner)
         {
             Logger.Instance.LogInfo("I am the owner");
-
+            ClientUIManager.Instance.localNetworkPlayer = this;
+            Debug.Log($"Assigned localNetworkPlayer. OwnerClientId = {OwnerClientId}, IsOwner = {IsOwner}");
+            
             accelerometer.Value = Vector3.zero;
 
             playerName.Value = ClientUIManager.Instance.nameInputField.text;
@@ -89,7 +91,7 @@ public class NetworkPlayer : NetworkBehaviour
                 SetupAccelerometer();
             }
             
-            ClientUIManager.Instance.localNetworkPlayer = this;
+            
 
         }
 
@@ -167,6 +169,7 @@ public class NetworkPlayer : NetworkBehaviour
 
     public void RequestShoot()
     {
+        Debug.Log($"NetworkPlayer: RequestShoot() called. IsOwner = {IsOwner}, OwnerClientId = {OwnerClientId}, LocalClientId = {NetworkManager.Singleton.LocalClientId}");
         if (IsOwner)
         {
             Debug.Log("NetworkPlayer: RequestShoot() called on client");
@@ -181,25 +184,30 @@ public class NetworkPlayer : NetworkBehaviour
     [ServerRpc]
     private void ShootServerRpc(ServerRpcParams rpcParams = default)
     {
-        //Server Side
-        ShootClientRpc();
         Debug.Log("NetworkPlayer: ShootServerRpc() called on server");
+        HandleShoot();
     }
 
-    [ClientRpc]
-    private void ShootClientRpc(ClientRpcParams rpcParams = default)
+    private void HandleShoot()
     {
-        // Client Side
-        Debug.Log("NetworkPlayer: ShootClientRpc() called on client");
-        var shootingSystem = GetComponent<ShootingSystem>();
-        if (shootingSystem != null)
+        // 使用 GameManager 获取对应的 Player 对象
+        Player player = GameManager.Instance.GetPlayerByClientId(OwnerClientId);
+        if (player != null)
         {
-            shootingSystem.Shoot();
+            ShootingSystem shootingSystem = player.GetComponent<ShootingSystem>();
+            if (shootingSystem != null)
+            {
+                shootingSystem.Shoot();
+            }
+            else
+            {
+                Debug.LogWarning("ShootingSystem component not found on Player");
+            }
         }
         else
         {
-            Debug.LogWarning("ShootingSystem component not found on NetworkPlayer");
+            Debug.LogWarning("Player object not found on server for this NetworkPlayer");
         }
     }
-
 }
+

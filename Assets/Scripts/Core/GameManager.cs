@@ -21,11 +21,19 @@ public class GameManager : MonoBehaviour
 
     // [SerializeField] private GameObject _player;
     // private Player _playerScript;
+    
+    public static GameManager Instance { get; private set; }
 
     [SerializeField] private GameObject _playerPrefab;
     [SerializeField] private GameObject _obstacleSpawner;
 
-
+    //mapping player and its NetworkPlayer Object
+    private Dictionary<ulong, Player> _playerDictionary = new Dictionary<ulong, Player>();
+    
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
@@ -41,7 +49,16 @@ public class GameManager : MonoBehaviour
 
         Player playerScript = playerObject.GetComponent<Player>();
         playerScript.Initialize(_inputManager, _playerPrefab);
+        
+        _playerDictionary.Add(networkPlayer.OwnerClientId, playerScript);
     }
+    
+    public Player GetPlayerByClientId(ulong clientId)
+    {
+        _playerDictionary.TryGetValue(clientId, out Player player);
+        return player;
+    }
+    
     public void StartGame(){
         _obstacleSpawner.SetActive(true);
 

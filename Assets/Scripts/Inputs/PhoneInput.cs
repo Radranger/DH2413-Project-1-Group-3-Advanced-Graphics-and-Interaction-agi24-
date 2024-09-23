@@ -19,6 +19,7 @@ public class PhoneInput : IInputProvider
 
     public int GetShooting()
     {
+        //_networkPlayer.RequestShoot();
         return 0;
     }
 }

@@ -31,6 +31,14 @@ public class ClientUIManager : Singleton<ClientUIManager>
     private UIMessagePopup actionConfirmPopup;
     
     public NetworkPlayer localNetworkPlayer;
+    
+    public static ClientUIManager Instance { get; private set; }
+
+    private void Awake()
+    {
+        Instance = this;
+        // Other initialization code...
+    }
 
     private void Start()
     {
@@ -47,7 +55,7 @@ public class ClientUIManager : Singleton<ClientUIManager>
         actionConfirmPopup = actionConfirmPopupPrefab.GetComponent<UIMessagePopup>();
         actionConfirmPopupPrefab.SetActive(false);
         
-        StartCoroutine(FindLocalNetworkPlayer());
+        //StartCoroutine(FindLocalNetworkPlayer());
     }
 
     /// <summary>
@@ -193,7 +201,7 @@ public class ClientUIManager : Singleton<ClientUIManager>
     {
         if (localNetworkPlayer != null)
         {
-            Debug.Log("ClientUIManager: OnNetworkShoot() - localNetworkPlayer exists");
+            Debug.Log("ClientUIManager: localNetworkPlayer.IsOwner = " + localNetworkPlayer.IsOwner);
             localNetworkPlayer.RequestShoot();
         }
         else
@@ -211,6 +219,7 @@ public class ClientUIManager : Singleton<ClientUIManager>
                 if (networkPlayer.IsOwner)
                 {
                     localNetworkPlayer = networkPlayer;
+                    Debug.Log("found local Network Player:"+ localNetworkPlayer.name);
                     break;
                 }
             }
