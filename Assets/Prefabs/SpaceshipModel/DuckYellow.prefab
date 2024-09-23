@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: -7291966461100727890}
   - component: {fileID: 7535991846212085337}
   - component: {fileID: 2451047042287175646}
+  - component: {fileID: 2084438206286288676}
   m_Layer: 0
   m_Name: DuckYellow
   m_TagString: Untagged
@@ -137,6 +138,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameOverPanel: {fileID: 0}
+--- !u!114 &2084438206286288676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1374619643111585439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82af8fde694b56c458d6ab5b9c061471, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3753239570442676736
 PrefabInstance:
   m_ObjectHideFlags: 0

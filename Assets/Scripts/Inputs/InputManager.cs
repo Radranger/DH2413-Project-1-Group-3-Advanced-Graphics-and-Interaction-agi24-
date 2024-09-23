@@ -30,8 +30,8 @@ public class InputManager
         return _inputProvider.GetMovementVector();
     }
 
-    public int GetShooting()
+    /*public int GetShooting()
     {
         return _inputProvider.GetShooting();
-    }
+    }*/
 }

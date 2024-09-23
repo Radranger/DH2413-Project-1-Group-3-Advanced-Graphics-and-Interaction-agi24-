@@ -4,7 +4,14 @@ using System.Collections;
 public class ShootingSystem : MonoBehaviour
 {
     public float bulletSpeed = 20.0f;
+    private InputManager _inputManager;
     //public GameObject spaceship;
+    
+    /*public void Initialize(InputManager inputManager)
+    {
+        Debug.Log("running");
+        _inputManager = inputManager;
+    }*/
 
     void Start(){
         /*StartCoroutine(Shooting());*/
@@ -13,7 +20,7 @@ public class ShootingSystem : MonoBehaviour
 
     void Update()
     {
-
+        //_inputManager.GetShooting();
     }
 
     /*IEnumerator Shooting (){
