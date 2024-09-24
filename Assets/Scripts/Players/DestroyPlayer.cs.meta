@@ -3,7 +3,9 @@ guid: 5e6532b6756ca5540b53bb9f322b00de
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - gameOverPanel: {instanceID: 0}
+  - shipExplodeClip: {fileID: 8300000, guid: fc71ccd2c7636f54894048e397c0f094, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

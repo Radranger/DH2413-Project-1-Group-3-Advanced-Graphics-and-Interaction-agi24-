@@ -5,6 +5,7 @@ public class ShootingSystem : MonoBehaviour
 {
     public float bulletSpeed = 20.0f;
     private InputManager _inputManager;
+    [SerializeField] private AudioClip[] shootClips;
     //public GameObject spaceship;
     
     /*public void Initialize(InputManager inputManager)
@@ -35,6 +36,7 @@ public class ShootingSystem : MonoBehaviour
         GameObject bullet = GameObject.CreatePrimitive(PrimitiveType.Cube);
         bullet.transform.localScale = new Vector3(0.5f,0.5f,0.5f);
         bullet.transform.position = this.transform.position;
+        SoundFXManager.instance.PlayRandomSoundFXClip(shootClips, transform, 0.5f);
         //bullet.transform.rotation = spaceship.transform.rotation;
 
         // Add a rigidbody component so that the bullet is affected by physics

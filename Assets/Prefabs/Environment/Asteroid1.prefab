@@ -147,3 +147,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0241f7de96c6a54e9587de8da3ee89b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  asteroidPassClips:
+  - {fileID: 8300000, guid: 30726d99dd0a85743a498e2bbdd00f9e, type: 3}
+  - {fileID: 8300000, guid: 0dac23727f55c0c4ab456605731a8d66, type: 3}
+  - {fileID: 8300000, guid: bdd227db2a46d2846a4b486ff0df62b0, type: 3}
+  - {fileID: 8300000, guid: fc33e09539969a1449908730a687cd33, type: 3}
+  asteroidExplodeClips:
+  - {fileID: 8300000, guid: 2a84e079f9de7d649bbecc09d1a9229a, type: 3}
+  - {fileID: 8300000, guid: 0396c5463a1886942ba6dd320503cc66, type: 3}
+  - {fileID: 8300000, guid: 588acf965b385e847800af9c36f66ec4, type: 3}
+  - {fileID: 8300000, guid: fed1a5d45b2700d45a3541d17c3e9981, type: 3}
