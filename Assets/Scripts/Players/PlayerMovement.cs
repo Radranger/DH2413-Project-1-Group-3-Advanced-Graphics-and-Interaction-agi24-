@@ -10,6 +10,13 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 _velocity;
     private Rigidbody _rb;
     private BoxCollider _col;
+    private Vector2 InitialAccelerometerValue = Vector2.zero;
+
+    public float threshold = 0.2f;
+    public Vector2 VisualInput;
+    public Vector2 VisualDif;
+    public Vector2 VisualInitialValue;
+    
 
     public void Initialize(InputManager inputManager)
     {
@@ -28,19 +35,36 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //save the initial position
+        if(InitialAccelerometerValue == Vector2.zero) InitialAccelerometerValue = _inputManager.GetMovementVector();
+        
         FrameReset();
         HandleDirection();
         HandleRotation();
         ApplyMovement();
-        
+
+        //Debug
+        VisualValue();
+
         //visualInput = _inputManager.GetMovementVector();
     }
+
+    void VisualValue()
+    {
+        VisualInitialValue = InitialAccelerometerValue;
+        VisualInput = CalculateMovementVector(InitialAccelerometerValue, _inputManager.GetMovementVector(), threshold);
+        VisualDif.x = InitialAccelerometerValue.x - (_inputManager.GetMovementVector().x);
+        VisualDif.y = InitialAccelerometerValue.y - (_inputManager.GetMovementVector().y);
+    }
+    
     void FrameReset(){
         _frameVelocity = new Vector3(0.0f,0.0f,0.0f);
     }
     void HandleDirection()
     {
-        Vector2 input = _inputManager.GetMovementVector();
+        Vector2 movementVector = _inputManager.GetMovementVector();
+
+        Vector2 input = CalculateMovementVector(InitialAccelerometerValue, movementVector, threshold);
 
         input = Vector2.ClampMagnitude(input, 1f);
 
@@ -66,6 +90,14 @@ public class PlayerMovement : MonoBehaviour
         Vector3 currentRotation = transform.eulerAngles;
         currentRotation.z = (_velocity.x / GlobalSettings.MAX_SPEED) * -30.0f;
         transform.eulerAngles = currentRotation;
+    }
+    
+    private Vector2 CalculateMovementVector(Vector2 InitialPosition, Vector2 Input, float threshold)
+    {
+        float x = Mathf.Abs(Input.x - InitialPosition.x) > threshold ? (Input.x > InitialPosition.x ? 1 : -1) : 0;
+        float y = Mathf.Abs(Input.y - InitialPosition.y) > threshold ? (Input.y > InitialPosition.y ? 1 : -1) : 0;
+
+        return new Vector2(x, y);
     }
 
     private void ApplyMovement()
