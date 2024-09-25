@@ -38,19 +38,18 @@ public class ServerManager : Singleton<ServerManager>
     private TMP_Text playerInfoText;
     public List<GameObject> networkPlayers = new List<GameObject>();
 
-    // A map from Player to NetworkPlayer 
+    // A map from Player GameObject to NetworkPlayer GameObject
     private Dictionary<GameObject, GameObject> playerMap = new Dictionary<GameObject, GameObject>();
 
-    // A map from player ID to Player
+    // A map from player ID to Player GameObject
     private Dictionary<ulong, GameObject> playerIdMap = new Dictionary<ulong, GameObject>();
 
-    // List of Players
+    // List of Player GameObjects
     public List<GameObject> players = new List<GameObject>();
 
-    // Map with active players, this list is cleared when the game ends and populated when the game starts
+    // Map with active players
     private Dictionary<GameObject, bool> activePlayers = new Dictionary<GameObject, bool>();
     private Dictionary<GameObject, bool> activeNetworkPlayers = new Dictionary<GameObject, bool>();
-
 
     public bool gameStarted = false;
 
@@ -61,7 +60,7 @@ public class ServerManager : Singleton<ServerManager>
     {
         _gameManagerObject = GameObject.FindWithTag("GameManager");
         _gameManager = _gameManagerObject.GetComponent<GameManager>();
-        
+
         countdown.ResetCountdown();
 
         // START SERVER
@@ -117,9 +116,9 @@ public class ServerManager : Singleton<ServerManager>
             skinPresets.ResetPool();
         }
 
-        //StartCoroutine(SetPlayerNames());
+        // Start updating player names
+        StartCoroutine(SetPlayerNames());
         StartCoroutine(UpdatePlayerInfo());
-
     }
 
     private void OnServerStopped(bool obj)
@@ -149,9 +148,6 @@ public class ServerManager : Singleton<ServerManager>
 
                 // display
                 playerInfo += $"{playerName}: X={accelerometer.x:F2}, Y={accelerometer.y:F2}, Z={accelerometer.z:F2}\n";
-
-                //Debug.Log($"{playerName} Accelerometer: X={accelerometer.x:F2}, Y={accelerometer.y:F2}, Z={accelerometer.z:F2}");
-
             }
 
             // update UI
@@ -189,7 +185,6 @@ public class ServerManager : Singleton<ServerManager>
                 RestartServer();
             }
         }
-
     }
 
     private void RestartServer()
@@ -204,64 +199,34 @@ public class ServerManager : Singleton<ServerManager>
 
         // find the NetworkPlayer object
         GameObject networkPlayer = NetworkManager.Singleton.ConnectedClients[clientID].PlayerObject.gameObject;
-        
+
         networkPlayers.Add(networkPlayer);
-        
-        //Instantiate the Player object
-        Transform spawnPoint = SpawnPointManager.Instance.GetSpawnPoint();
+
+        // Instantiate the Player object through GameManager
         _gameManager.AddPlayer(networkPlayer.GetComponent<NetworkPlayer>());
-        
-        
-        //GameObject player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
-        //player.GetComponent<NetworkObject>().Spawn();
-        
-        //Link the accelerometer to the player controller
-        //SpaceShipMovement SpaceShipController = player.GetComponent<SpaceShipMovement>();
-        //SpaceShipController.SetNetworkPlayer(networkPlayer.GetComponent<NetworkPlayer>());
-        
-        //Keep track of the player
-        // playerMap.Add(player, networkPlayer);
-        // players.Add(player);
-        // playerIdMap.Add(clientID, player);
 
-        //if (skinPresets != null)
-        //{
-            // Update the player skin color
-            //Color skinColor = skinPresets.PullColor();
-            //Renderer playerRenderer = player.GetComponent<Renderer>();
-            //playerRenderer.material.SetColor("_SkinColor", skinColor);
-            //networkPlayer.GetComponent<NetworkPlayer>().skinColor.Value = skinColor;
-        //}
+        // Get the player GameObject from GameManager
+        GameObject playerObject = _gameManager.GetPlayerGameObjectByClientId(clientID);
 
-        // debug
+        if (playerObject != null)
+        {
+            // Keep track of the player
+            players.Add(playerObject);
+            playerMap.Add(playerObject, networkPlayer);
+            playerIdMap.Add(clientID, playerObject);
+        }
+        else
+        {
+            Debug.LogError("Player object not found for client ID: " + clientID);
+        }
+
+        // Start updating player info
         StartCoroutine(UpdatePlayerInfo());
     }
 
-
     private void OnClientDisconnected(ulong clientID)
     {
-        // to be added
-        
-        //Debug.Log("Client disconnected: " + clientID);
-
-        //GameObject temp = playerIdMap[clientID];
-
-        //// removes the player object from scene
-        //Destroy(playerIdMap[clientID]);
-        //playerIdMap.Remove(clientID);
-
-        //// remove the networked player
-        //Destroy(playerMap[temp]);
-        //playerMap.Remove(temp);
-
-        //// remove from player list
-        //players.Remove(temp);
-
-        //// if all players have disconnected and game is going, end the game
-        //if (players.Count == 0 && gameStarted)
-        //{
-        //    resetGameButton.gameObject.SetActive(true);
-        //}
+        // Implement disconnection logic if necessary
     }
 
     private void StartGame()
@@ -273,64 +238,39 @@ public class ServerManager : Singleton<ServerManager>
 
         _gameManager.StartGame();
 
-        // Start countdown
-        // countdown.NewCountDown(countdownTime, () =>
-        // {
-        //     Debug.Log("Game started!");
-
-        //     foreach (GameObject player in players)
-        //     {
-        //         SpaceShipMovement spaceShipController = player.GetComponent<SpaceShipMovement>();
-        //         //skierController.Unfreeze();
-        //     }
-
-        //     // set all players to active
-        //     foreach (GameObject player in players)
-        //     {
-        //         activePlayers.Add(player, true);
-        //     }
-
-        //     foreach (GameObject networkPlayer in networkPlayers)
-        //     {
-        //         activeNetworkPlayers.Add(networkPlayer, true);
-        //     }
-            
-        //     gameStarted = true;
-        // });
+        gameStarted = true;
     }
 
-    // Every second, set the player names
-    //private IEnumerator SetPlayerNames()
-    //{
-        //while (true)
-        //{
-        //    foreach (GameObject player in players)
-        //    {
-        //        GameObject networkPlayer = playerMap[player];
-        //        TMP_Text text = player.GetComponentInChildren<TMP_Text>();
-        //        if (text != null)
-        //            text.text = networkPlayer.GetComponent<NetworkPlayer>().GetPlayerName();
-        //    }
-        //    yield return new WaitForSeconds(1);
-        //}
-    //}
+    // _____________________________________________________
+    // Update player names above their heads
+    private IEnumerator SetPlayerNames()
+    {
+        while (true)
+        {
+            foreach (GameObject player in players)
+            {
+                GameObject networkPlayer = playerMap[player];
+                NetworkPlayer networkPlayerComponent = networkPlayer.GetComponent<NetworkPlayer>();
+                string playerName = networkPlayerComponent.GetPlayerName();
+
+                // Find the TMP_Text component on the player
+                TMP_Text text = player.GetComponentInChildren<TMP_Text>();
+                if (text != null)
+                {
+                    text.text = playerName;
+                }
+                else
+                {
+                    Debug.LogWarning("TMP_Text component not found on player: " + player.name);
+                }
+            }
+            yield return new WaitForSeconds(1);
+        }
+    }
 
     private void CullPlayers()
     {
-        //foreach (GameObject player in players)
-        //{
-        //    Vector3 screenPos = Camera.main.WorldToScreenPoint(player.transform.position);
-        //    if (screenPos.x < 0 || screenPos.x > Screen.width || screenPos.y < 0 || screenPos.y > Screen.height)
-        //    {
-        //        activePlayers[player] = false;
-        //        player.SetActive(false);
-
-        //        if (GetActivePlayers() == 0)
-        //        {
-        //            resetGameButton.gameObject.SetActive(true);
-        //        }
-        //    }
-        //}
+        // Implement culling logic if necessary
     }
 
     /// <summary>
@@ -338,54 +278,22 @@ public class ServerManager : Singleton<ServerManager>
     /// </summary>
     public void EndGame()
     {
-        GameplayGoal.Instance.ResetGoal();
+        // Implement end game logic if necessary
 
         resetGameButton.gameObject.SetActive(false);
 
-        //activePlayers.Clear();
         activeNetworkPlayers.Clear();
 
         gameStarted = false;
 
-        //SpawnPointManager.Instance.ResetSpawnPoints();
-
         // Show menu UI
         startGameButton.gameObject.SetActive(true);
         menuScreen.SetActive(true);
-
-        // Reset players
-        //foreach (GameObject player in players)
-        //{
-        //    player.SetActive(true);
-        //    Transform spawnPoint = SpawnPointManager.Instance.GetSpawnPoint();
-        //    player.transform.position = spawnPoint.position;
-        //    player.transform.rotation = spawnPoint.rotation;
-
-        //    SetPlayerSkiControllerActive(player, true);
-
-        //    PhysicsSkierController skierController = player.GetComponent<PhysicsSkierController>();
-        //    skierController.Freeze();
-
-        //    Debug.Log("Resetting player: " + GetPlayerDisplayName(player));
-        //    Debug.Log("Resetting player: " + GetPlayerDisplayName(player));
-        //}
     }
 
-    /// <summary>
-    /// Returns the current number of players which is playing (not eliminated yet).
-    /// </summary>
-    /// <returns></returns>
     public int GetActivePlayers()
     {
-        // go through active players and count them
         int count = 0;
-        //foreach (KeyValuePair<GameObject, bool> player in activePlayers)
-        //{
-        //    if (player.Value)
-        //    {
-        //        count++;
-        //    }
-        //}
 
         foreach (KeyValuePair<GameObject, bool> player in activeNetworkPlayers)
         {
@@ -394,17 +302,7 @@ public class ServerManager : Singleton<ServerManager>
                 count++;
             }
         }
-        
+
         return count;
     }
-
-    //public string GetPlayerDisplayName(GameObject player)
-    //{
-    //    return playerMap[player].GetComponent<NetworkPlayer>().GetPlayerName();
-    //}
-
-    //public void SetPlayerSkiControllerActive(GameObject gameObject, bool active)
-    //{
-    //    gameObject.GetComponent<PhysicsSkierController>().enabled = active;
-    //}
 }

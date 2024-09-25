@@ -52,7 +52,15 @@ public class GameManager : MonoBehaviour
         
         _playerDictionary.Add(networkPlayer.OwnerClientId, playerScript);
     }
-    
+    public GameObject GetPlayerGameObjectByClientId(ulong clientId)
+    {
+        if (_playerDictionary.TryGetValue(clientId, out Player player))
+        {
+            return player.gameObject; // ¼ÙÉè Player ¼Ì³Ð×Ô MonoBehaviour
+        }
+        return null;
+    }
+
     public Player GetPlayerByClientId(ulong clientId)
     {
         _playerDictionary.TryGetValue(clientId, out Player player);
