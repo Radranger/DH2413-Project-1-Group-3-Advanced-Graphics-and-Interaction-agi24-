@@ -4,6 +4,7 @@ using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System;
 
 public class NetworkPlayer : NetworkBehaviour
 {
@@ -46,6 +47,8 @@ public class NetworkPlayer : NetworkBehaviour
     public float lowPassKernelWidthInSeconds = 1.0f;
 
     private float lowPassFilterFactor;
+
+    public event Action OnPhoneFire1;
 
     public override void OnNetworkDespawn()
     {
@@ -197,7 +200,8 @@ public class NetworkPlayer : NetworkBehaviour
             ShootingSystem shootingSystem = player.GetComponent<ShootingSystem>();
             if (shootingSystem != null)
             {
-                shootingSystem.Shoot();
+                //shootingSystem.Shoot();
+                OnPhoneFire1?.Invoke();
             }
             else
             {

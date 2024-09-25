@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using GameSpace;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -20,7 +21,6 @@ public class PlayerMovement : MonoBehaviour
 
     public void Initialize(InputManager inputManager)
     {
-        Debug.Log("running");
         _inputManager = inputManager;
     }
 
@@ -36,7 +36,9 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         //save the initial position
-        if(InitialAccelerometerValue == Vector2.zero) InitialAccelerometerValue = _inputManager.GetMovementVector();
+        if(_inputManager.playerInputType == InputType.PHONE){
+            if(InitialAccelerometerValue == Vector2.zero){} InitialAccelerometerValue = _inputManager.GetMovementVector();
+        }
         
         FrameReset();
         HandleDirection();
@@ -104,6 +106,8 @@ public class PlayerMovement : MonoBehaviour
     {
         _rb.velocity = _frameVelocity;
 
+
+        // bounds check
         Vector3 currentPosition = transform.position;
 
         currentPosition.x = Mathf.Clamp(currentPosition.x, -15f, 15f);

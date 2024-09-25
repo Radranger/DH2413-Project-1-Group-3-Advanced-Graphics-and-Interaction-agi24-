@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
 
     // [SerializeField] private GameObject _player;
     // private Player _playerScript;
+
+    public bool DebugMode = true;
     
     public static GameManager Instance { get; private set; }
 
@@ -37,10 +39,13 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        if(DebugMode){
+            AddLocalPlayer();
+        }
         
     }
 
-    public void AddPlayer(NetworkPlayer networkPlayer){
+    public void AddNetworkPlayer(NetworkPlayer networkPlayer){
         InputManager _inputManager = new InputManager();
         _inputManager.Initialize(InputType.PHONE, networkPlayer);
 
@@ -51,6 +56,16 @@ public class GameManager : MonoBehaviour
         playerScript.Initialize(_inputManager, _playerPrefab);
         
         _playerDictionary.Add(networkPlayer.OwnerClientId, playerScript);
+    }
+    public void AddLocalPlayer(){
+        InputManager _inputManager = new InputManager();
+        _inputManager.Initialize(InputType.KEYBOARD);
+
+        Vector3 spawnPos = new Vector3(0.0f, 0.0f, 0.0f);
+        GameObject playerObject = Instantiate(_playerPrefab, spawnPos, Quaternion.identity);
+
+        Player playerScript = playerObject.GetComponent<Player>();
+        playerScript.Initialize(_inputManager, _playerPrefab);
     }
     
     public Player GetPlayerByClientId(ulong clientId)
