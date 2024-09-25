@@ -1,13 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class PhoneInput : IInputProvider
 {
     private NetworkPlayer _networkPlayer;
+    public event Action OnShoot;
     public PhoneInput(NetworkPlayer networkPlayer)
     {
         _networkPlayer = networkPlayer;
+
+        _networkPlayer.OnPhoneFire1 += shoot;
     }
 
     public Vector2 GetMovementVector()
@@ -17,9 +21,8 @@ public class PhoneInput : IInputProvider
         return new Vector2(inputX, inputY);
     }
 
-    public int GetShooting()
+    public void shoot()
     {
-        //_networkPlayer.RequestShoot();
-        return 0;
+        OnShoot?.Invoke();
     }
 }

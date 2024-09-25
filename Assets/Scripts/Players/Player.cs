@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
         //if(networkPlayer != null) _networkPlayer = networkPlayer;
 
         if (TryGetComponent(out _playerMovement)){_playerMovement.Initialize(_inputManager);};
-        //if (TryGetComponent(out _shootingSystem)){ _shootingSystem.Initialize(_inputManager); }
+        if (TryGetComponent(out _shootingSystem)){ _shootingSystem.Initialize(_inputManager); }
         // _playerMovement = GetComponent<PlayerMovement>();
         // _playerMovement.Initialize(_inputManager);   
 

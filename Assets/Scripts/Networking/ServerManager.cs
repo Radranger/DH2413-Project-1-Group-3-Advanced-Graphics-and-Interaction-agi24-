@@ -209,7 +209,7 @@ public class ServerManager : Singleton<ServerManager>
         
         //Instantiate the Player object
         Transform spawnPoint = SpawnPointManager.Instance.GetSpawnPoint();
-        _gameManager.AddPlayer(networkPlayer.GetComponent<NetworkPlayer>());
+        _gameManager.AddNetworkPlayer(networkPlayer.GetComponent<NetworkPlayer>());
         
         
         //GameObject player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
