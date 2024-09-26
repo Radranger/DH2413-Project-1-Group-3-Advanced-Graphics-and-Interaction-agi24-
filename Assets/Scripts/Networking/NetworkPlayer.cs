@@ -35,6 +35,8 @@ public class NetworkPlayer : NetworkBehaviour
         writePerm: NetworkVariableWritePermission.Server
     );
 
+    public GameObject playerObject; // Reference to the Player GameObject
+
     private Vector3 prevAccelerometerInput;
 
     [Header("Low Pass filter Settings")]
@@ -102,24 +104,31 @@ public class NetworkPlayer : NetworkBehaviour
     private void ApplyPlayerColor(Color color)
     {
         Debug.Log($"Applying color {color} to player {OwnerClientId}");
-        // 获取 Renderer 组件
-        Renderer[] renderers = GetComponentsInChildren<Renderer>();
-        if (renderers.Length == 0)
+
+        if (playerObject == null)
         {
-            Debug.LogWarning("No Renderer components found on player");
+            Debug.LogWarning("playerObject is null");
+            return;
         }
 
-        foreach (Renderer renderer in renderers)
+        Renderer[] renderers = playerObject.GetComponentsInChildren<Renderer>();
+        if (renderers.Length == 0)
         {
-            // 创建材质实例，避免修改共享材质
-            Material[] materials = renderer.materials;
-            for (int i = 0; i < materials.Length; i++)
+            Debug.LogWarning("No Renderer components found on playerObject");
+        }
+        else
+        {
+            foreach (Renderer renderer in renderers)
             {
-                materials[i] = new Material(materials[i]);
-                materials[i].color = color;
-                Debug.Log($"Changed material color on renderer {renderer.gameObject.name}");
+                Material[] materials = renderer.materials;
+                for (int i = 0; i < materials.Length; i++)
+                {
+                    materials[i] = new Material(materials[i]);
+                    materials[i].color = color;
+                    Debug.Log($"Changed material color on renderer {renderer.gameObject.name}");
+                }
+                renderer.materials = materials;
             }
-            renderer.materials = materials;
         }
     }
 

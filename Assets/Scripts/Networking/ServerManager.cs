@@ -197,30 +197,29 @@ public class ServerManager : Singleton<ServerManager>
         Debug.Log("Client connected: " + clientID);
         Debug.Log("Number of clients connected: " + NetworkManager.Singleton.ConnectedClientsList.Count);
 
-        // 获取 NetworkPlayer 对象
+        // get NetworkPlayer object
         GameObject networkPlayer = NetworkManager.Singleton.ConnectedClients[clientID].PlayerObject.gameObject;
         networkPlayers.Add(networkPlayer);
 
-        // 通过 GameManager 实例化 Player 对象
         _gameManager.AddPlayer(networkPlayer.GetComponent<NetworkPlayer>());
 
-        // 从 GameManager 获取 Player GameObject
         GameObject playerObject = _gameManager.GetPlayerGameObjectByClientId(clientID);
 
         if (playerObject != null)
         {
-            // 将 Player 添加到列表和字典中
+            // Adding Player to the list and dictionary
             players.Add(playerObject);
             playerMap.Add(playerObject, networkPlayer);
             playerIdMap.Add(clientID, playerObject);
 
-            // 为玩家分配颜色
+            networkPlayer.GetComponent<NetworkPlayer>().playerObject = playerObject;
+
+            // assign skinColor
             if (skinPresets != null)
             {
                 Color playerColor = skinPresets.PullColor();
                 Debug.Log($"Assigned color {playerColor} to player {clientID}");
 
-                // 设置 NetworkPlayer 的 skinColor 变量
                 networkPlayer.GetComponent<NetworkPlayer>().skinColor.Value = playerColor;
             }
             else
@@ -233,7 +232,6 @@ public class ServerManager : Singleton<ServerManager>
             Debug.LogError("Player object not found for client ID: " + clientID);
         }
 
-        // 启动更新玩家信息的协程
         StartCoroutine(UpdatePlayerInfo());
     }
 
