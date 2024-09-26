@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f59ed36050114fd3b7e546c60d387b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  threshold: 0.2
+  threshold: 0.18
   VisualInput: {x: 0, y: 0}
   VisualDif: {x: 0, y: 0}
   VisualInitialValue: {x: 0, y: 0}
