@@ -4,6 +4,7 @@ using System.Collections;
 public class ShootingSystem : MonoBehaviour
 {
     public float bulletSpeed = 20.0f;
+    public GameObject volumetricLine;
 
     private InputManager _inputManager;
     [SerializeField] private AudioClip[] shootClips;
@@ -48,25 +49,29 @@ public class ShootingSystem : MonoBehaviour
     }*/
     public void Shoot()
     {
-        GameObject bullet = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        bullet.transform.localScale = new Vector3(0.5f,0.5f,0.5f);
-        bullet.transform.position = this.transform.position;
-        SoundFXManager.instance.PlayRandomSoundFXClip(shootClips, transform, 0.5f);
-        //bullet.transform.rotation = spaceship.transform.rotation;
+        GameObject bullet = Instantiate(volumetricLine, this.transform.position, this.transform.rotation);
 
-        // Add a rigidbody component so that the bullet is affected by physics
-        Rigidbody rb = bullet.AddComponent<Rigidbody>();
+        bullet.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+        SoundFXManager.instance.PlayRandomSoundFXClip(shootClips, transform, 0.5f);
+
+        Rigidbody rb = bullet.GetComponent<Rigidbody>();
+        if (rb == null)
+        {
+            rb = bullet.AddComponent<Rigidbody>();
+        }
         rb.useGravity = false;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
-        BoxCollider collider = bullet.GetComponent<BoxCollider>();
-        collider.isTrigger = true;
-
+        Collider collider = bullet.GetComponent<Collider>();
+        if (collider != null)
+        {
+            collider.isTrigger = true;
+        }
         bullet.AddComponent<Bullet>();
-
         rb.velocity = this.transform.forward * bulletSpeed;
+
         Destroy(bullet, 5.0f);
-        
-        Debug.Log("ShootingSystem: Shoot() called");
+
+        Debug.Log("ShootingSystem: Shoot() called with Volumetric Line");
     }
 }
