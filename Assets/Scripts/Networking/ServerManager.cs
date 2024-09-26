@@ -36,18 +36,12 @@ public class ServerManager : Singleton<ServerManager>
     // For Debug
     [SerializeField]
     private TMP_Text playerInfoText;
+
+    // Lists and Dictionaries for managing players
     public List<GameObject> networkPlayers = new List<GameObject>();
-
-    // A map from Player GameObject to NetworkPlayer GameObject
     private Dictionary<GameObject, GameObject> playerMap = new Dictionary<GameObject, GameObject>();
-
-    // A map from player ID to Player GameObject
     private Dictionary<ulong, GameObject> playerIdMap = new Dictionary<ulong, GameObject>();
-
-    // List of Player GameObjects
     public List<GameObject> players = new List<GameObject>();
-
-    // Map with active players
     private Dictionary<GameObject, bool> activePlayers = new Dictionary<GameObject, bool>();
     private Dictionary<GameObject, bool> activeNetworkPlayers = new Dictionary<GameObject, bool>();
 
@@ -116,24 +110,48 @@ public class ServerManager : Singleton<ServerManager>
             skinPresets.ResetPool();
         }
 
-        // Start updating player names
+        // Start updating player names and info
         StartCoroutine(SetPlayerNames());
         StartCoroutine(UpdatePlayerInfo());
     }
 
     private void OnServerStopped(bool obj)
     {
-        Debug.LogWarning("Server stopped! Going back to title screen");
+        Debug.LogWarning("Server stopped! Going back to main scene");
 
-        // make sure to destroy the network manager before reload scene
-        Destroy(gameObject);
+        // Unsubscribe from events
+        NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+        NetworkManager.Singleton.OnServerStopped -= OnServerStopped;
 
+        // Clean up all players
+        foreach (GameObject player in players)
+        {
+            Destroy(player);
+        }
+        players.Clear();
+        playerMap.Clear();
+        playerIdMap.Clear();
+        activePlayers.Clear();
+
+        // Clean up networkPlayers
+        foreach (GameObject networkPlayer in networkPlayers)
+        {
+            Destroy(networkPlayer);
+        }
+        networkPlayers.Clear();
+
+        // Clean up GameManager's player dictionary
+        _gameManager.ClearPlayers();
+
+        // Destroy the NetworkManager to avoid duplicates on scene reload
+        Destroy(NetworkManager.Singleton.gameObject);
+
+        // Load the main scene
         SceneManager.LoadScene("MAIN_SCENE");
     }
 
-    // _____________________________________________________
-    // Debug
-
+    // Debug: Update player info text
     private IEnumerator UpdatePlayerInfo()
     {
         while (true)
@@ -160,8 +178,6 @@ public class ServerManager : Singleton<ServerManager>
         }
     }
 
-    // _____________________________________________________
-
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.L))
@@ -179,6 +195,7 @@ public class ServerManager : Singleton<ServerManager>
             if (gameStarted)
             {
                 EndGame();
+                RestartServer();
             }
             else
             {
@@ -190,6 +207,9 @@ public class ServerManager : Singleton<ServerManager>
     private void RestartServer()
     {
         NetworkManager.Singleton.Shutdown();
+
+        // Manually invoke OnServerStopped since Shutdown doesn't trigger it automatically
+        OnServerStopped(true);
     }
 
     private void OnClientConnected(ulong clientID)
@@ -235,10 +255,58 @@ public class ServerManager : Singleton<ServerManager>
         StartCoroutine(UpdatePlayerInfo());
     }
 
-
     private void OnClientDisconnected(ulong clientID)
     {
-        // Implement disconnection logic if necessary
+        Debug.Log("Client disconnected: " + clientID);
+
+        // Remove from networkPlayers
+        GameObject networkPlayer = null;
+        foreach (GameObject np in networkPlayers)
+        {
+            if (np.GetComponent<NetworkPlayer>().OwnerClientId == clientID)
+            {
+                networkPlayer = np;
+                break;
+            }
+        }
+
+        if (networkPlayer != null)
+        {
+            networkPlayers.Remove(networkPlayer);
+            Destroy(networkPlayer);
+        }
+        else
+        {
+            Debug.LogWarning("NetworkPlayer not found for client ID: " + clientID);
+        }
+
+        // Remove from playerIdMap and playerMap
+        if (playerIdMap.TryGetValue(clientID, out GameObject playerObject))
+        {
+            players.Remove(playerObject);
+            playerMap.Remove(playerObject);
+            playerIdMap.Remove(clientID);
+            Destroy(playerObject);
+
+            // Also remove from activePlayers if necessary
+            if (activePlayers.ContainsKey(playerObject))
+            {
+                activePlayers.Remove(playerObject);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Player object not found for client ID: " + clientID);
+        }
+
+        // Remove player from GameManager
+        _gameManager.RemovePlayer(clientID);
+
+        // Check if all players have disconnected
+        if (players.Count == 0 && gameStarted)
+        {
+            resetGameButton.gameObject.SetActive(true);
+        }
     }
 
     private void StartGame()
@@ -253,7 +321,6 @@ public class ServerManager : Singleton<ServerManager>
         gameStarted = true;
     }
 
-    // _____________________________________________________
     // Update player names above their heads
     private IEnumerator SetPlayerNames()
     {
@@ -261,19 +328,22 @@ public class ServerManager : Singleton<ServerManager>
         {
             foreach (GameObject player in players)
             {
-                GameObject networkPlayer = playerMap[player];
-                NetworkPlayer networkPlayerComponent = networkPlayer.GetComponent<NetworkPlayer>();
-                string playerName = networkPlayerComponent.GetPlayerName();
+                if (playerMap.ContainsKey(player))
+                {
+                    GameObject networkPlayer = playerMap[player];
+                    NetworkPlayer networkPlayerComponent = networkPlayer.GetComponent<NetworkPlayer>();
+                    string playerName = networkPlayerComponent.GetPlayerName();
 
-                // Find the TMP_Text component on the player
-                TMP_Text text = player.GetComponentInChildren<TMP_Text>();
-                if (text != null)
-                {
-                    text.text = playerName;
-                }
-                else
-                {
-                    Debug.LogWarning("TMP_Text component not found on player: " + player.name);
+                    // Find the TMP_Text component on the player
+                    TMP_Text text = player.GetComponentInChildren<TMP_Text>();
+                    if (text != null)
+                    {
+                        text.text = playerName;
+                    }
+                    else
+                    {
+                        Debug.LogWarning("TMP_Text component not found on player: " + player.name);
+                    }
                 }
             }
             yield return new WaitForSeconds(1);
@@ -290,17 +360,37 @@ public class ServerManager : Singleton<ServerManager>
     /// </summary>
     public void EndGame()
     {
-        // Implement end game logic if necessary
-
         resetGameButton.gameObject.SetActive(false);
 
         activeNetworkPlayers.Clear();
+        activePlayers.Clear();
 
         gameStarted = false;
 
         // Show menu UI
-        startGameButton.gameObject.SetActive(true);
+        //startGameButton.gameObject.SetActive(true);
         menuScreen.SetActive(true);
+
+        // Clean up all players
+        foreach (GameObject player in players)
+        {
+            Destroy(player);
+            Debug.Log("Removed player: " + player.name);
+        }
+        players.Clear();
+        playerMap.Clear();
+        playerIdMap.Clear();
+
+        // Clean up networkPlayers
+        foreach (GameObject networkPlayer in networkPlayers)
+        {
+            Destroy(networkPlayer);
+            Debug.Log("Removed network player: " + networkPlayer.name);
+        }
+        networkPlayers.Clear();
+
+        // Clean up GameManager's player dictionary
+        _gameManager.ClearPlayers();
     }
 
     public int GetActivePlayers()
