@@ -12,8 +12,6 @@ namespace GameSpace
     }
 }
 
-
-
 public class GameManager : MonoBehaviour
 {
     // [SerializeField] private InputType _inputType;
@@ -29,23 +27,16 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject _playerPrefab;
     [SerializeField] private GameObject _obstacleSpawner;
 
-    //mapping player and its NetworkPlayer Object
+    // Mapping player and its NetworkPlayer Object
     private Dictionary<ulong, Player> _playerDictionary = new Dictionary<ulong, Player>();
-    
+
     private void Awake()
     {
         Instance = this;
     }
 
-    void Start()
+    public void AddPlayer(NetworkPlayer networkPlayer)
     {
-        if(DebugMode){
-            AddLocalPlayer();
-        }
-        
-    }
-
-    public void AddNetworkPlayer(NetworkPlayer networkPlayer){
         InputManager _inputManager = new InputManager();
         _inputManager.Initialize(InputType.PHONE, networkPlayer);
 
@@ -54,7 +45,7 @@ public class GameManager : MonoBehaviour
 
         Player playerScript = playerObject.GetComponent<Player>();
         playerScript.Initialize(_inputManager, _playerPrefab);
-        
+
         _playerDictionary.Add(networkPlayer.OwnerClientId, playerScript);
     }
     public void AddLocalPlayer(){
@@ -67,15 +58,42 @@ public class GameManager : MonoBehaviour
         Player playerScript = playerObject.GetComponent<Player>();
         playerScript.Initialize(_inputManager, _playerPrefab);
     }
-    
+
+    public GameObject GetPlayerGameObjectByClientId(ulong clientId)
+    {
+        if (_playerDictionary.TryGetValue(clientId, out Player player))
+        {
+            return player.gameObject;
+        }
+        return null;
+    }
+
     public Player GetPlayerByClientId(ulong clientId)
     {
         _playerDictionary.TryGetValue(clientId, out Player player);
         return player;
     }
-    
-    public void StartGame(){
-        _obstacleSpawner.SetActive(true);
 
+    public void RemovePlayer(ulong clientId)
+    {
+        if (_playerDictionary.TryGetValue(clientId, out Player player))
+        {
+            Destroy(player.gameObject);
+            _playerDictionary.Remove(clientId);
+        }
+    }
+
+    public void ClearPlayers()
+    {
+        foreach (KeyValuePair<ulong, Player> kvp in _playerDictionary)
+        {
+            Destroy(kvp.Value.gameObject);
+        }
+        _playerDictionary.Clear();
+    }
+
+    public void StartGame()
+    {
+        _obstacleSpawner.SetActive(true);
     }
 }

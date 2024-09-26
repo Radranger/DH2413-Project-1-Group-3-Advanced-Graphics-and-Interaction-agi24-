@@ -36,21 +36,14 @@ public class ServerManager : Singleton<ServerManager>
     // For Debug
     [SerializeField]
     private TMP_Text playerInfoText;
+
+    // Lists and Dictionaries for managing players
     public List<GameObject> networkPlayers = new List<GameObject>();
-
-    // A map from Player to NetworkPlayer 
     private Dictionary<GameObject, GameObject> playerMap = new Dictionary<GameObject, GameObject>();
-
-    // A map from player ID to Player
     private Dictionary<ulong, GameObject> playerIdMap = new Dictionary<ulong, GameObject>();
-
-    // List of Players
     public List<GameObject> players = new List<GameObject>();
-
-    // Map with active players, this list is cleared when the game ends and populated when the game starts
     private Dictionary<GameObject, bool> activePlayers = new Dictionary<GameObject, bool>();
     private Dictionary<GameObject, bool> activeNetworkPlayers = new Dictionary<GameObject, bool>();
-
 
     public bool gameStarted = false;
 
@@ -61,7 +54,7 @@ public class ServerManager : Singleton<ServerManager>
     {
         _gameManagerObject = GameObject.FindWithTag("GameManager");
         _gameManager = _gameManagerObject.GetComponent<GameManager>();
-        
+
         countdown.ResetCountdown();
 
         // START SERVER
@@ -117,24 +110,48 @@ public class ServerManager : Singleton<ServerManager>
             skinPresets.ResetPool();
         }
 
-        //StartCoroutine(SetPlayerNames());
+        // Start updating player names and info
+        StartCoroutine(SetPlayerNames());
         StartCoroutine(UpdatePlayerInfo());
-
     }
 
     private void OnServerStopped(bool obj)
     {
-        Debug.LogWarning("Server stopped! Going back to title screen");
+        Debug.LogWarning("Server stopped! Going back to main scene");
 
-        // make sure to destroy the network manager before reload scene
-        Destroy(gameObject);
+        // Unsubscribe from events
+        NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+        NetworkManager.Singleton.OnServerStopped -= OnServerStopped;
 
+        // Clean up all players
+        foreach (GameObject player in players)
+        {
+            Destroy(player);
+        }
+        players.Clear();
+        playerMap.Clear();
+        playerIdMap.Clear();
+        activePlayers.Clear();
+
+        // Clean up networkPlayers
+        foreach (GameObject networkPlayer in networkPlayers)
+        {
+            Destroy(networkPlayer);
+        }
+        networkPlayers.Clear();
+
+        // Clean up GameManager's player dictionary
+        _gameManager.ClearPlayers();
+
+        // Destroy the NetworkManager to avoid duplicates on scene reload
+        Destroy(NetworkManager.Singleton.gameObject);
+
+        // Load the main scene
         SceneManager.LoadScene("MAIN_SCENE");
     }
 
-    // _____________________________________________________
-    // Debug
-
+    // Debug: Update player info text
     private IEnumerator UpdatePlayerInfo()
     {
         while (true)
@@ -149,9 +166,6 @@ public class ServerManager : Singleton<ServerManager>
 
                 // display
                 playerInfo += $"{playerName}: X={accelerometer.x:F2}, Y={accelerometer.y:F2}, Z={accelerometer.z:F2}\n";
-
-                //Debug.Log($"{playerName} Accelerometer: X={accelerometer.x:F2}, Y={accelerometer.y:F2}, Z={accelerometer.z:F2}");
-
             }
 
             // update UI
@@ -163,8 +177,6 @@ public class ServerManager : Singleton<ServerManager>
             yield return new WaitForSeconds(1); // Updated once per second
         }
     }
-
-    // _____________________________________________________
 
     private void Update()
     {
@@ -183,18 +195,21 @@ public class ServerManager : Singleton<ServerManager>
             if (gameStarted)
             {
                 EndGame();
+                RestartServer();
             }
             else
             {
                 RestartServer();
             }
         }
-
     }
 
     private void RestartServer()
     {
         NetworkManager.Singleton.Shutdown();
+
+        // Manually invoke OnServerStopped since Shutdown doesn't trigger it automatically
+        OnServerStopped(true);
     }
 
     private void OnClientConnected(ulong clientID)
@@ -202,66 +217,96 @@ public class ServerManager : Singleton<ServerManager>
         Debug.Log("Client connected: " + clientID);
         Debug.Log("Number of clients connected: " + NetworkManager.Singleton.ConnectedClientsList.Count);
 
-        // find the NetworkPlayer object
+        // get NetworkPlayer object
         GameObject networkPlayer = NetworkManager.Singleton.ConnectedClients[clientID].PlayerObject.gameObject;
-        
         networkPlayers.Add(networkPlayer);
-        
-        //Instantiate the Player object
-        Transform spawnPoint = SpawnPointManager.Instance.GetSpawnPoint();
-        _gameManager.AddNetworkPlayer(networkPlayer.GetComponent<NetworkPlayer>());
-        
-        
-        //GameObject player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
-        //player.GetComponent<NetworkObject>().Spawn();
-        
-        //Link the accelerometer to the player controller
-        //SpaceShipMovement SpaceShipController = player.GetComponent<SpaceShipMovement>();
-        //SpaceShipController.SetNetworkPlayer(networkPlayer.GetComponent<NetworkPlayer>());
-        
-        //Keep track of the player
-        // playerMap.Add(player, networkPlayer);
-        // players.Add(player);
-        // playerIdMap.Add(clientID, player);
 
-        //if (skinPresets != null)
-        //{
-            // Update the player skin color
-            //Color skinColor = skinPresets.PullColor();
-            //Renderer playerRenderer = player.GetComponent<Renderer>();
-            //playerRenderer.material.SetColor("_SkinColor", skinColor);
-            //networkPlayer.GetComponent<NetworkPlayer>().skinColor.Value = skinColor;
-        //}
+        _gameManager.AddPlayer(networkPlayer.GetComponent<NetworkPlayer>());
 
-        // debug
+        GameObject playerObject = _gameManager.GetPlayerGameObjectByClientId(clientID);
+
+        if (playerObject != null)
+        {
+            // Adding Player to the list and dictionary
+            players.Add(playerObject);
+            playerMap.Add(playerObject, networkPlayer);
+            playerIdMap.Add(clientID, playerObject);
+
+            networkPlayer.GetComponent<NetworkPlayer>().playerObject = playerObject;
+
+            // assign skinColor
+            if (skinPresets != null)
+            {
+                Color playerColor = skinPresets.PullColor();
+                Debug.Log($"Assigned color {playerColor} to player {clientID}");
+
+                networkPlayer.GetComponent<NetworkPlayer>().skinColor.Value = playerColor;
+            }
+            else
+            {
+                Debug.LogWarning("skinPresets is null");
+            }
+        }
+        else
+        {
+            Debug.LogError("Player object not found for client ID: " + clientID);
+        }
+
         StartCoroutine(UpdatePlayerInfo());
     }
 
-
     private void OnClientDisconnected(ulong clientID)
     {
-        // to be added
-        
-        //Debug.Log("Client disconnected: " + clientID);
+        Debug.Log("Client disconnected: " + clientID);
 
-        //GameObject temp = playerIdMap[clientID];
+        // Remove from networkPlayers
+        GameObject networkPlayer = null;
+        foreach (GameObject np in networkPlayers)
+        {
+            if (np.GetComponent<NetworkPlayer>().OwnerClientId == clientID)
+            {
+                networkPlayer = np;
+                break;
+            }
+        }
 
-        //// removes the player object from scene
-        //Destroy(playerIdMap[clientID]);
-        //playerIdMap.Remove(clientID);
+        if (networkPlayer != null)
+        {
+            networkPlayers.Remove(networkPlayer);
+            Destroy(networkPlayer);
+        }
+        else
+        {
+            Debug.LogWarning("NetworkPlayer not found for client ID: " + clientID);
+        }
 
-        //// remove the networked player
-        //Destroy(playerMap[temp]);
-        //playerMap.Remove(temp);
+        // Remove from playerIdMap and playerMap
+        if (playerIdMap.TryGetValue(clientID, out GameObject playerObject))
+        {
+            players.Remove(playerObject);
+            playerMap.Remove(playerObject);
+            playerIdMap.Remove(clientID);
+            Destroy(playerObject);
 
-        //// remove from player list
-        //players.Remove(temp);
+            // Also remove from activePlayers if necessary
+            if (activePlayers.ContainsKey(playerObject))
+            {
+                activePlayers.Remove(playerObject);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Player object not found for client ID: " + clientID);
+        }
 
-        //// if all players have disconnected and game is going, end the game
-        //if (players.Count == 0 && gameStarted)
-        //{
-        //    resetGameButton.gameObject.SetActive(true);
-        //}
+        // Remove player from GameManager
+        _gameManager.RemovePlayer(clientID);
+
+        // Check if all players have disconnected
+        if (players.Count == 0 && gameStarted)
+        {
+            resetGameButton.gameObject.SetActive(true);
+        }
     }
 
     private void StartGame()
@@ -273,64 +318,41 @@ public class ServerManager : Singleton<ServerManager>
 
         _gameManager.StartGame();
 
-        // Start countdown
-        // countdown.NewCountDown(countdownTime, () =>
-        // {
-        //     Debug.Log("Game started!");
-
-        //     foreach (GameObject player in players)
-        //     {
-        //         SpaceShipMovement spaceShipController = player.GetComponent<SpaceShipMovement>();
-        //         //skierController.Unfreeze();
-        //     }
-
-        //     // set all players to active
-        //     foreach (GameObject player in players)
-        //     {
-        //         activePlayers.Add(player, true);
-        //     }
-
-        //     foreach (GameObject networkPlayer in networkPlayers)
-        //     {
-        //         activeNetworkPlayers.Add(networkPlayer, true);
-        //     }
-            
-        //     gameStarted = true;
-        // });
+        gameStarted = true;
     }
 
-    // Every second, set the player names
-    //private IEnumerator SetPlayerNames()
-    //{
-        //while (true)
-        //{
-        //    foreach (GameObject player in players)
-        //    {
-        //        GameObject networkPlayer = playerMap[player];
-        //        TMP_Text text = player.GetComponentInChildren<TMP_Text>();
-        //        if (text != null)
-        //            text.text = networkPlayer.GetComponent<NetworkPlayer>().GetPlayerName();
-        //    }
-        //    yield return new WaitForSeconds(1);
-        //}
-    //}
+    // Update player names above their heads
+    private IEnumerator SetPlayerNames()
+    {
+        while (true)
+        {
+            foreach (GameObject player in players)
+            {
+                if (playerMap.ContainsKey(player))
+                {
+                    GameObject networkPlayer = playerMap[player];
+                    NetworkPlayer networkPlayerComponent = networkPlayer.GetComponent<NetworkPlayer>();
+                    string playerName = networkPlayerComponent.GetPlayerName();
+
+                    // Find the TMP_Text component on the player
+                    TMP_Text text = player.GetComponentInChildren<TMP_Text>();
+                    if (text != null)
+                    {
+                        text.text = playerName;
+                    }
+                    else
+                    {
+                        Debug.LogWarning("TMP_Text component not found on player: " + player.name);
+                    }
+                }
+            }
+            yield return new WaitForSeconds(1);
+        }
+    }
 
     private void CullPlayers()
     {
-        //foreach (GameObject player in players)
-        //{
-        //    Vector3 screenPos = Camera.main.WorldToScreenPoint(player.transform.position);
-        //    if (screenPos.x < 0 || screenPos.x > Screen.width || screenPos.y < 0 || screenPos.y > Screen.height)
-        //    {
-        //        activePlayers[player] = false;
-        //        player.SetActive(false);
-
-        //        if (GetActivePlayers() == 0)
-        //        {
-        //            resetGameButton.gameObject.SetActive(true);
-        //        }
-        //    }
-        //}
+        // Implement culling logic if necessary
     }
 
     /// <summary>
@@ -338,54 +360,42 @@ public class ServerManager : Singleton<ServerManager>
     /// </summary>
     public void EndGame()
     {
-        GameplayGoal.Instance.ResetGoal();
-
         resetGameButton.gameObject.SetActive(false);
 
-        //activePlayers.Clear();
         activeNetworkPlayers.Clear();
+        activePlayers.Clear();
 
         gameStarted = false;
 
-        //SpawnPointManager.Instance.ResetSpawnPoints();
-
         // Show menu UI
-        startGameButton.gameObject.SetActive(true);
+        //startGameButton.gameObject.SetActive(true);
         menuScreen.SetActive(true);
 
-        // Reset players
-        //foreach (GameObject player in players)
-        //{
-        //    player.SetActive(true);
-        //    Transform spawnPoint = SpawnPointManager.Instance.GetSpawnPoint();
-        //    player.transform.position = spawnPoint.position;
-        //    player.transform.rotation = spawnPoint.rotation;
+        // Clean up all players
+        foreach (GameObject player in players)
+        {
+            Destroy(player);
+            Debug.Log("Removed player: " + player.name);
+        }
+        players.Clear();
+        playerMap.Clear();
+        playerIdMap.Clear();
 
-        //    SetPlayerSkiControllerActive(player, true);
+        // Clean up networkPlayers
+        foreach (GameObject networkPlayer in networkPlayers)
+        {
+            Destroy(networkPlayer);
+            Debug.Log("Removed network player: " + networkPlayer.name);
+        }
+        networkPlayers.Clear();
 
-        //    PhysicsSkierController skierController = player.GetComponent<PhysicsSkierController>();
-        //    skierController.Freeze();
-
-        //    Debug.Log("Resetting player: " + GetPlayerDisplayName(player));
-        //    Debug.Log("Resetting player: " + GetPlayerDisplayName(player));
-        //}
+        // Clean up GameManager's player dictionary
+        _gameManager.ClearPlayers();
     }
 
-    /// <summary>
-    /// Returns the current number of players which is playing (not eliminated yet).
-    /// </summary>
-    /// <returns></returns>
     public int GetActivePlayers()
     {
-        // go through active players and count them
         int count = 0;
-        //foreach (KeyValuePair<GameObject, bool> player in activePlayers)
-        //{
-        //    if (player.Value)
-        //    {
-        //        count++;
-        //    }
-        //}
 
         foreach (KeyValuePair<GameObject, bool> player in activeNetworkPlayers)
         {
@@ -394,17 +404,7 @@ public class ServerManager : Singleton<ServerManager>
                 count++;
             }
         }
-        
+
         return count;
     }
-
-    //public string GetPlayerDisplayName(GameObject player)
-    //{
-    //    return playerMap[player].GetComponent<NetworkPlayer>().GetPlayerName();
-    //}
-
-    //public void SetPlayerSkiControllerActive(GameObject gameObject, bool active)
-    //{
-    //    gameObject.GetComponent<PhysicsSkierController>().enabled = active;
-    //}
 }

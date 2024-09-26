@@ -36,6 +36,8 @@ public class NetworkPlayer : NetworkBehaviour
         writePerm: NetworkVariableWritePermission.Server
     );
 
+    public GameObject playerObject; // Reference to the Player GameObject
+
     private Vector3 prevAccelerometerInput;
 
     [Header("Low Pass filter Settings")]
@@ -70,39 +72,69 @@ public class NetworkPlayer : NetworkBehaviour
             Logger.Instance.LogInfo("NetworkPlayer spawned on client");
         }
 
-
         if (IsOwner)
         {
             Logger.Instance.LogInfo("I am the owner");
             ClientUIManager.Instance.localNetworkPlayer = this;
             Debug.Log($"Assigned localNetworkPlayer. OwnerClientId = {OwnerClientId}, IsOwner = {IsOwner}");
-            
+
             accelerometer.Value = Vector3.zero;
 
             playerName.Value = ClientUIManager.Instance.nameInputField.text;
-           skinColor.OnValueChanged += (prevValue, newValue) =>
-            {
-                ClientUIManager.Instance.backgroundColor.color = newValue;
-            };
 
             if (Accelerometer.current == null)
             {
-                Logger.Instance.LogInfo("Accelerometer not found, make sure you are runnig on a mobile device");
+                Logger.Instance.LogInfo("Accelerometer not found, make sure you are running on a mobile device");
             }
             else
             {
                 SetupAccelerometer();
             }
-            
-            
-
         }
 
-        // if (IsServer)
-        // {
-        //     accelerometer.OnValueChanged += OnAccelerometerChanged;
-        // }
+        // 添加对 skinColor 的监听
+        skinColor.OnValueChanged += OnSkinColorChanged;
+
+        // 应用初始颜色
+        ApplyPlayerColor(skinColor.Value);
     }
+
+    private void OnSkinColorChanged(Color oldColor, Color newColor)
+    {
+        ApplyPlayerColor(newColor);
+    }
+
+    private void ApplyPlayerColor(Color color)
+    {
+        Debug.Log($"Applying color {color} to player {OwnerClientId}");
+
+        if (playerObject == null)
+        {
+            Debug.LogWarning("playerObject is null");
+            return;
+        }
+
+        Renderer[] renderers = playerObject.GetComponentsInChildren<Renderer>();
+        if (renderers.Length == 0)
+        {
+            Debug.LogWarning("No Renderer components found on playerObject");
+        }
+        else
+        {
+            foreach (Renderer renderer in renderers)
+            {
+                Material[] materials = renderer.materials;
+                for (int i = 0; i < materials.Length; i++)
+                {
+                    materials[i] = new Material(materials[i]);
+                    materials[i].color = color;
+                    Debug.Log($"Changed material color on renderer {renderer.gameObject.name}");
+                }
+                renderer.materials = materials;
+            }
+        }
+    }
+
 
     public override void OnDestroy()
     {
