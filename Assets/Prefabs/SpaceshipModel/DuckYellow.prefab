@@ -66,6 +66,7 @@ MonoBehaviour:
   threshold: 0.2
   VisualInput: {x: 0, y: 0}
   VisualDif: {x: 0, y: 0}
+  VisualInitialValue: {x: 0, y: 0}
 --- !u!65 &-3369484094196266680
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -127,6 +128,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletSpeed: 20
+  shootClips:
+  - {fileID: 8300000, guid: af027fa2b70d3d241a08d3f31ea04f4a, type: 3}
+  - {fileID: 8300000, guid: eecc4d58fcc42514b8984e9d1328459d, type: 3}
 --- !u!114 &2451047042287175646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140,6 +144,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameOverPanel: {fileID: 0}
+  shipExplodeClip: {fileID: 8300000, guid: fc71ccd2c7636f54894048e397c0f094, type: 3}
 --- !u!1001 &3753239570442676736
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -12,7 +12,11 @@ public class Obstacle : MonoBehaviour
     private Vector3 _frameVelocity;
     private Vector3 _blastVelocity;
     float CONSTANT_SPEED = -1000.0f;
+    private bool triggerOnce = true;
+    [SerializeField] private AudioClip[] asteroidPassClips;
+    [SerializeField] private AudioClip[] asteroidExplodeClips;
     
+
     // Start is called before the first frame update
     void Start()
     {
@@ -20,7 +24,8 @@ public class Obstacle : MonoBehaviour
         _rb.AddTorque(new Vector3(0.0f, (float)Random.Range(0.0f, 20.0f), (float)Random.Range(0.0f, 20.0f)));
     }
 
-    public void Initialize(int level, ObstacleManager manager, Vector3 initBlastVelocity = default){
+    public void Initialize(int level, ObstacleManager manager, Vector3 initBlastVelocity = default)
+    {
         _level = level;
         _manager = manager;
         _astroidObjects = _manager.astroids;
@@ -43,13 +48,19 @@ public class Obstacle : MonoBehaviour
 
     }
 
-    public void RegularHit(){
-        if(_level != 1) Split();
+    public void RegularHit()
+    {
+        if(_level != 1)
+        {
+        SoundFXManager.instance.PlayRandomSoundFXClip(asteroidExplodeClips, transform, 0.5f);
+        Split();
         Kill();
+        } 
     }
 
 
-    void Split(){
+    void Split()
+    {
         float angleOfSplit = Random.Range(0.0f, 2 * Mathf.PI);
         float xOffset1 = Mathf.Cos(angleOfSplit) * _manager.splitMagnitude;
         float xOffset2 = Mathf.Cos(angleOfSplit + Mathf.PI) * _manager.splitMagnitude;
@@ -69,10 +80,10 @@ public class Obstacle : MonoBehaviour
         astroidInstance1.GetComponent<Obstacle>().Initialize(_level-1, _manager, blastVelocity1);
         astroidInstance2.GetComponent<Obstacle>().Initialize(_level-1, _manager, blastVelocity2);
     }
-    void Kill(){
+    void Kill()
+    {
         Destroy(gameObject);
     }
-
 
     // Update is called once per frame
     void Update()
@@ -80,9 +91,13 @@ public class Obstacle : MonoBehaviour
         FrameReset();
         HandleMovement();
         ApplyMovement();
-
-        if(gameObject.transform.position.z < -12){Kill();};
-
+        if (gameObject.transform.position.z < 7.5f && triggerOnce)
+        {
+            triggerOnce = false; // Set to false so the sound doesn't play again
+            SoundFXManager.instance.PlayRandomSoundFXClip(asteroidPassClips, transform, 0.5f);
+        }
+        if (gameObject.transform.position.z < -12){Kill();}
+        
         // for debug
         // if (Input.GetKeyDown(KeyCode.Space))
         // {

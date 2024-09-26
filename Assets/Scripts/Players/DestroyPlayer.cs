@@ -5,6 +5,7 @@ using UnityEngine;
 public class DestroyPlayer : MonoBehaviour
 {
     public GameObject gameOverPanel; // Assign Game Over UI panel
+    [SerializeField] private AudioClip shipExplodeClip; // Inspector audio clip
 
     private bool isGameOver; // Tracks game-over state
 
@@ -21,6 +22,7 @@ public class DestroyPlayer : MonoBehaviour
         {
             // Destroy the player GameObject
             Destroy(gameObject);
+            SoundFXManager.instance.PlaySoundFXClip(shipExplodeClip, transform, 1f);
             //CheckAllPlayersDestroyed();
         }
     }
