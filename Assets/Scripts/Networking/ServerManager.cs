@@ -31,6 +31,12 @@ public class ServerManager : Singleton<ServerManager>
     private UICountdown countdown;
 
     [SerializeField]
+    private GameObject RestartScreen;
+
+    [SerializeField]
+    private Button RestartGameButton;
+
+    [SerializeField]
     private int countdownTime = 5;
 
     // For Debug
@@ -49,6 +55,7 @@ public class ServerManager : Singleton<ServerManager>
 
     private GameManager _gameManager;
     private GameObject _gameManagerObject;
+    private Coroutine playerNameCoroutine;
 
     private async void Start()
     {
@@ -73,6 +80,23 @@ public class ServerManager : Singleton<ServerManager>
             EndGame();
         });
         resetGameButton.gameObject.SetActive(false);
+
+        // 
+        //if (RestartGameButton != null)
+        //{
+        //    RestartGameButton.onClick.AddListener(() =>
+        //    {
+        //        Debug.Log("RestartGameButton clicked. Restarting server.");
+        //        RestartServer();
+        //        RestartScreen.SetActive(false);
+        //    });
+        //}
+        //else
+        //{
+        //    Debug.LogError("RestartGameButton is not assigned in the Inspector.");
+        //}
+
+        //RestartScreen.SetActive(false);
 
         RelayHostData hostData;
         if (RelayManager.Instance.IsRelayEnabled)
@@ -111,8 +135,8 @@ public class ServerManager : Singleton<ServerManager>
         }
 
         // Start updating player names and info
-        StartCoroutine(SetPlayerNames());
-        StartCoroutine(UpdatePlayerInfo());
+        playerNameCoroutine = StartCoroutine(SetPlayerNames());
+        //StartCoroutine(UpdatePlayerInfo());
     }
 
     private void OnServerStopped(bool obj)
@@ -157,24 +181,36 @@ public class ServerManager : Singleton<ServerManager>
         while (true)
         {
             string playerInfo = "";
-            foreach (GameObject networkPlayer in networkPlayers)
+            for (int i = networkPlayers.Count - 1; i >= 0; i--)
             {
+                GameObject networkPlayer = networkPlayers[i];
+                if (networkPlayer == null)
+                {
+                    networkPlayers.RemoveAt(i);
+                    continue;
+                }
+
                 NetworkPlayer networkPlayerComponent = networkPlayer.GetComponent<NetworkPlayer>();
-                // get player's acceleration
+                if (networkPlayerComponent == null)
+                {
+                    continue;
+                }
+
+                // Get player's acceleration
                 Vector3 accelerometer = networkPlayerComponent.accelerometer.Value;
                 string playerName = networkPlayerComponent.GetPlayerName();
 
-                // display
+                // Display
                 playerInfo += $"{playerName}: X={accelerometer.x:F2}, Y={accelerometer.y:F2}, Z={accelerometer.z:F2}\n";
             }
 
-            // update UI
+            // Update UI
             if (playerInfoText != null)
             {
                 playerInfoText.text = playerInfo;
             }
 
-            yield return new WaitForSeconds(1); // Updated once per second
+            yield return new WaitForSeconds(1);
         }
     }
 
@@ -189,6 +225,9 @@ public class ServerManager : Singleton<ServerManager>
         {
             CullPlayers();
         }
+        
+
+
 
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -288,7 +327,7 @@ public class ServerManager : Singleton<ServerManager>
             playerIdMap.Remove(clientID);
             Destroy(playerObject);
 
-            // Also remove from activePlayers if necessary
+            // Remove from activePlayers
             if (activePlayers.ContainsKey(playerObject))
             {
                 activePlayers.Remove(playerObject);
@@ -309,6 +348,7 @@ public class ServerManager : Singleton<ServerManager>
         }
     }
 
+
     private void StartGame()
     {
         Debug.Log("starting");
@@ -326,12 +366,48 @@ public class ServerManager : Singleton<ServerManager>
     {
         while (true)
         {
-            foreach (GameObject player in players)
+            for (int i = players.Count - 1; i >= 0; i--)
             {
+                GameObject player = players[i];
+
+                if (player == null)
+                {
+                    // Remove from players list
+                    players.RemoveAt(i);
+
+                    // Remove from playerMap
+                    if (playerMap.ContainsKey(player))
+                    {
+                        playerMap.Remove(player);
+                    }
+
+                    // Remove from activePlayers
+                    if (activePlayers.ContainsKey(player))
+                    {
+                        activePlayers.Remove(player);
+                    }
+
+                    continue;
+                }
+
                 if (playerMap.ContainsKey(player))
                 {
                     GameObject networkPlayer = playerMap[player];
+
+                    if (networkPlayer == null)
+                    {
+                        // Remove from playerMap
+                        playerMap.Remove(player);
+                        continue;
+                    }
+
                     NetworkPlayer networkPlayerComponent = networkPlayer.GetComponent<NetworkPlayer>();
+
+                    if (networkPlayerComponent == null)
+                    {
+                        continue;
+                    }
+
                     string playerName = networkPlayerComponent.GetPlayerName();
 
                     // Find the TMP_Text component on the player
@@ -349,6 +425,7 @@ public class ServerManager : Singleton<ServerManager>
             yield return new WaitForSeconds(1);
         }
     }
+
 
     private void CullPlayers()
     {
@@ -368,30 +445,77 @@ public class ServerManager : Singleton<ServerManager>
         gameStarted = false;
 
         // Show menu UI
-        //startGameButton.gameObject.SetActive(true);
         menuScreen.SetActive(true);
 
         // Clean up all players
         foreach (GameObject player in players)
         {
-            Destroy(player);
-            Debug.Log("Removed player: " + player.name);
+            if (player != null)
+            {
+                Destroy(player);
+            }
         }
         players.Clear();
         playerMap.Clear();
         playerIdMap.Clear();
+        activePlayers.Clear();
 
+        if (playerNameCoroutine != null)
+        {
+            StopCoroutine(playerNameCoroutine);
+            playerNameCoroutine = null;
+        }
+        
         // Clean up networkPlayers
         foreach (GameObject networkPlayer in networkPlayers)
         {
-            Destroy(networkPlayer);
-            Debug.Log("Removed network player: " + networkPlayer.name);
+            if (networkPlayer != null)
+            {
+                Destroy(networkPlayer);
+            }
         }
         networkPlayers.Clear();
+        activeNetworkPlayers.Clear();
 
         // Clean up GameManager's player dictionary
         _gameManager.ClearPlayers();
     }
+
+    public void PlayerDestroyed(GameObject player)
+    {
+        if (players.Contains(player))
+        {
+            players.Remove(player);
+        }
+
+        if (playerMap.ContainsKey(player))
+        {
+            GameObject networkPlayer = playerMap[player];
+            playerMap.Remove(player);
+
+            if (networkPlayer != null)
+            {
+                networkPlayers.Remove(networkPlayer);
+                Destroy(networkPlayer);
+            }
+        }
+
+        // Remove from activePlayers
+        if (activePlayers.ContainsKey(player))
+        {
+            activePlayers.Remove(player);
+            Debug.Log("Remove from activePlayers");
+        }
+
+        // If all players are destroyed, end the game
+        if (players.Count == 0 && gameStarted)
+        {
+            Debug.Log("All players have been destroyed. Activating RestartScreen.");
+            RestartScreen.SetActive(true);
+            EndGame();
+        }
+    }
+
 
     public int GetActivePlayers()
     {

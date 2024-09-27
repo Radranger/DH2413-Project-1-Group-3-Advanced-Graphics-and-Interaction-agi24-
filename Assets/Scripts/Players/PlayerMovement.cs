@@ -65,11 +65,11 @@ public class PlayerMovement : MonoBehaviour
     void HandleDirection()
     {
         Vector2 movementVector = _inputManager.GetMovementVector();
-        Debug.Log($"Movement Vector: X = {movementVector.x}, Y = {movementVector.y}");
+        //Debug.Log($"Movement Vector: X = {movementVector.x}, Y = {movementVector.y}");
 
         Vector2 input = CalculateMovementVector(InitialAccelerometerValue, movementVector, threshold);
 
-        Debug.Log($"input: X = {input.x}, Y = {input.y}");
+        //Debug.Log($"input: X = {input.x}, Y = {input.y}");
         input = Vector2.ClampMagnitude(input, 1f);
 
         Vector2 acceleration = input * GlobalSettings.ACCELERATION; 
@@ -106,7 +106,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void ApplyMovement()
     {
-        Debug.Log($"Applying Movement: _frameVelocity = {_frameVelocity}, _velocity = {_velocity}");
+        //Debug.Log($"Applying Movement: _frameVelocity = {_frameVelocity}, _velocity = {_velocity}");
 
         _rb.velocity = _frameVelocity;
 

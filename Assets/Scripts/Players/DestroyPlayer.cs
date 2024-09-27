@@ -20,9 +20,16 @@ public class DestroyPlayer : MonoBehaviour
         // Check if the player collided with the asteroid
         if (other.gameObject.tag == "enemy")
         {
+            Debug.Log("DestroyPlayer: Player collided with enemy. Requesting destruction.");
+            ServerManager.Instance.PlayerDestroyed(gameObject);
+
             // Destroy the player GameObject
             Destroy(gameObject);
+
+
             SoundFXManager.instance.PlaySoundFXClip(shipExplodeClip, transform, 1f);
+            Debug.Log("DestroyPlayer: Destroy(gameObject) called.");
+
             //CheckAllPlayersDestroyed();
         }
     }
