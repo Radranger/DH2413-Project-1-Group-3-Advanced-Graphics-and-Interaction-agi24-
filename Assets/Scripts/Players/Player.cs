@@ -7,7 +7,7 @@ public class Player : MonoBehaviour
 {
     private bool _active;
     private InputManager _inputManager;
-    private PlayerMovement _playerMovement;
+    private PlayerMovementNEW _playerMovementNEW;
     private ShootingSystem _shootingSystem;
 
     public void Initialize(InputManager inputManager, GameObject playerPrefab){
@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
         _inputManager = inputManager;
         //if(networkPlayer != null) _networkPlayer = networkPlayer;
 
-        if (TryGetComponent(out _playerMovement)){_playerMovement.Initialize(_inputManager);};
+        if (TryGetComponent(out _playerMovementNEW)){_playerMovementNEW.Initialize(_inputManager);};
         if (TryGetComponent(out _shootingSystem)){ _shootingSystem.Initialize(_inputManager); }
         // _playerMovement = GetComponent<PlayerMovement>();
         // _playerMovement.Initialize(_inputManager);   

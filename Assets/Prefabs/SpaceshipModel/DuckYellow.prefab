@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: -7291966461100727890}
   - component: {fileID: 7535991846212085337}
   - component: {fileID: 2451047042287175646}
+  - component: {fileID: 1006719892700765420}
   m_Layer: 0
   m_Name: DuckYellow
   m_TagString: Untagged
@@ -59,7 +60,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1374619643111585439}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f59ed36050114fd3b7e546c60d387b1, type: 3}
   m_Name: 
@@ -147,6 +148,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameOverPanel: {fileID: 0}
   shipExplodeClip: {fileID: 8300000, guid: fc71ccd2c7636f54894048e397c0f094, type: 3}
+--- !u!114 &1006719892700765420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1374619643111585439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed67ba2e0221c4ab89b9f1a20d094009, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxTilt: {x: 0.4, y: 0}
+  thresholdX: 0.15
+  thresholdY: 0.15
+  acceleration: 0.16
+  maxSpeed: 16
+  VisualInput: {x: 0, y: 0}
+  VisualDif: {x: 0, y: 0}
+  VisualInitialValue: {x: 0, y: 0}
 --- !u!1 &6821573182965583848
 GameObject:
   m_ObjectHideFlags: 0
