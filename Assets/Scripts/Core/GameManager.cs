@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,7 +26,8 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     [SerializeField] private GameObject _playerPrefab;
-    [SerializeField] private GameObject _obstacleSpawner;
+    private GameObject _obstacleSpawnerObject;
+    private ObstacleManager _obstacleManager;
 
     // Mapping player and its NetworkPlayer Object
     private Dictionary<ulong, Player> _playerDictionary = new Dictionary<ulong, Player>();
@@ -33,6 +35,17 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+    }
+
+    private void Start()
+    {
+        _obstacleSpawnerObject = GameObject.Find("SpawnPlane");
+        _obstacleManager = _obstacleSpawnerObject.GetComponent<ObstacleManager>();
+        
+        if (DebugMode)
+        {
+            AddLocalPlayer();
+        }
     }
 
     public void AddPlayer(NetworkPlayer networkPlayer)
@@ -94,6 +107,6 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        _obstacleSpawner.SetActive(true);
+        _obstacleManager.startSpawning();
     }
 }

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: -1942315904633271453}
   - component: {fileID: 5490730523236041620}
   - component: {fileID: -8382655292500676935}
+  - component: {fileID: -113605419701104881}
   m_Layer: 0
   m_Name: DistAsteroid1
   m_TagString: enemy
@@ -157,3 +158,24 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 0396c5463a1886942ba6dd320503cc66, type: 3}
   - {fileID: 8300000, guid: 588acf965b385e847800af9c36f66ec4, type: 3}
   - {fileID: 8300000, guid: fed1a5d45b2700d45a3541d17c3e9981, type: 3}
+--- !u!65 &-113605419701104881
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8361993126442357810}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.034446742, y: 0.02313766, z: 0.03213518}
+  m_Center: {x: -0.0022651455, y: 0.00067245576, z: -0.00038101984}

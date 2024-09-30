@@ -6,8 +6,34 @@
   <component name="ChangeListManager">
     <list default="true" id="ac760f21-e2f4-4faa-945d-b46efe56c7f5" name="更改" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.DH2413-Project-1-Group-3-Advanced-Graphics-and-Interaction-agi24-/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DH2413-Project-1-Group-3-Advanced-Graphics-and-Interaction-agi24-/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Materials/AstroidTestMaterial2.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Materials/AstroidTestMaterial2.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Environment/Asteroid1.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Environment/Asteroid1.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Environment/Asteroid2.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Environment/Asteroid2.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Environment/DistAsteroid1.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Environment/DistAsteroid1.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/SpaceshipModel/DuckBlue.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/SpaceshipModel/DuckBlue.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/SpaceshipModel/DuckPink.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/SpaceshipModel/DuckPink.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/SpaceshipModel/DuckSkin.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/SpaceshipModel/DuckSkin.mat.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Prefabs/SpaceshipModel/DuckYellow.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/SpaceshipModel/DuckYellow.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Players/Player.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/Player.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/SpaceshipModel/SpaceShipOld.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/SpaceshipModel/SpaceShipOld.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/SpaceshipModel/ducks1.fbx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/SpaceshipModel/ducks1.fbx.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/SpaceshipModel/ducks2.fbx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/SpaceshipModel/ducks2.fbx.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/SpaceshipModel/ducks3.fbx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/SpaceshipModel/ducks3.fbx.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/SpaceshipModel/sapceship.fbx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/SpaceshipModel/sapceship.fbx.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/MAIN_SCENE_2.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/MAIN_SCENE_2.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Core/GameManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Core/GameManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Inputs/DebugKeyboardInput.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Inputs/DebugKeyboardInput.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Inputs/InputManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Inputs/InputManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Interactibles/Obstacle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Interactibles/Obstacle.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Interactibles/ObstacleManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Interactibles/ObstacleManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Players/ShootingSystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/ShootingSystem.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,6 +49,7 @@
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.universal@14.0.8/Runtime/UniversalAdditionalCameraData.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Button.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
+  <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -38,7 +65,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "#Movement-experiments",
+    "git-widget-placeholder": "#shooting-aimassist",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -61,6 +88,14 @@
       <option name="EXE_PATH" value="$PROJECT_DIR$/../server1\Astro Rush.exe" />
       <option name="PROGRAM_PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="D:\School doc\IMT Program\AGI Project\server1" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Standalone Player" type="RunUnityExe" factoryName="Unity Executable">
+      <option name="EXE_PATH" value="$PROJECT_DIR$/hello_world_test_1.app/Contents/MacOS/Astro Rush" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/hello_world_test_1.app/Contents/MacOS" />
       <option name="PASS_PARENT_ENVS" value="1" />
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
       <method v="2" />
@@ -131,6 +166,7 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="true" />
   <component name="UnityProjectDiscoverer">
     <option name="hasUnityReference" value="true" />

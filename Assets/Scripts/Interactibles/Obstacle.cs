@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+
 
 public class Obstacle : MonoBehaviour
 {
@@ -16,20 +18,23 @@ public class Obstacle : MonoBehaviour
     [SerializeField] private AudioClip[] asteroidPassClips;
     [SerializeField] private AudioClip[] asteroidExplodeClips;
     
+    private Action<GameObject> _onDestroyed;
 
     // Start is called before the first frame update
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
-        _rb.AddTorque(new Vector3(0.0f, (float)Random.Range(0.0f, 20.0f), (float)Random.Range(0.0f, 20.0f)));
+        _rb.AddTorque(new Vector3(0.0f, (float)UnityEngine.Random.Range(0.0f, 20.0f), (float)UnityEngine.Random.Range(0.0f, 20.0f)));
     }
 
-    public void Initialize(int level, ObstacleManager manager, Vector3 initBlastVelocity = default)
+    public void Initialize(int level, ObstacleManager manager, Vector3 initBlastVelocity = default, Action<GameObject> onDestroyed = null)
     {
         _level = level;
         _manager = manager;
         _astroidObjects = _manager.astroids;
         if(initBlastVelocity != default) StartCoroutine(BlastMovement(initBlastVelocity));
+        _onDestroyed = onDestroyed;
+
     }
 
     IEnumerator BlastMovement(Vector3 initBlastVelocity)
@@ -61,7 +66,7 @@ public class Obstacle : MonoBehaviour
 
     void Split()
     {
-        float angleOfSplit = Random.Range(0.0f, 2 * Mathf.PI);
+        float angleOfSplit = UnityEngine.Random.Range(0.0f, 2 * Mathf.PI);
         float xOffset1 = Mathf.Cos(angleOfSplit) * _manager.splitMagnitude;
         float xOffset2 = Mathf.Cos(angleOfSplit + Mathf.PI) * _manager.splitMagnitude;
         float yOffset1 = Mathf.Sin(angleOfSplit) * _manager.splitMagnitude;
@@ -77,11 +82,18 @@ public class Obstacle : MonoBehaviour
         Vector3 blastVelocity1 = new Vector3(xOffset1 * _manager.splitBlastMagnitude, yOffset1 * _manager.splitBlastMagnitude, 0.0f);
         Vector3 blastVelocity2 = new Vector3(xOffset2 * _manager.splitBlastMagnitude, yOffset2 * _manager.splitBlastMagnitude, 0.0f);
 
-        astroidInstance1.GetComponent<Obstacle>().Initialize(_level-1, _manager, blastVelocity1);
-        astroidInstance2.GetComponent<Obstacle>().Initialize(_level-1, _manager, blastVelocity2);
+        astroidInstance1.GetComponent<Obstacle>().Initialize(_level-1, _manager, blastVelocity1, _onDestroyed);
+        astroidInstance2.GetComponent<Obstacle>().Initialize(_level-1, _manager, blastVelocity2, _onDestroyed);
+        
+        _manager.asteroids.Add(astroidInstance1);
+        _manager.asteroids.Add(astroidInstance2);
+        _manager.onAsteroidsChange?.Invoke();
     }
     void Kill()
     {
+        _onDestroyed?.Invoke(gameObject);
+        _manager.asteroids.Remove(gameObject);
+        _manager.onAsteroidsChange?.Invoke();
         Destroy(gameObject);
     }
 

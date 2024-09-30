@@ -10,13 +10,11 @@ public class DebugKeyboardInput : MonoBehaviour, IInputProvider
     }
 
     public Vector2 GetMovementVector(){
-        Debug.Log(Input.GetAxisRaw("Horizontal") + " - " + Input.GetAxisRaw("Vertical"));
-
         return new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
     }
 
     void Update(){
-        if (Input.GetKeyDown("space"))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             OnShoot?.Invoke();
         }
