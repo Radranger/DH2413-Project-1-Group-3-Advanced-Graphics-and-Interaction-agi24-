@@ -11,6 +11,8 @@ public class Target
     public LineRenderer boxLineRenderer;
     public GameObject targetAsteroid;
     public BoxCollider boxCollider;
+
+    public GameObject player;
 }
 
 public class LineRendererScript : MonoBehaviour
@@ -56,7 +58,7 @@ public class LineRendererScript : MonoBehaviour
         if(_targetObjects.Count != 0) DrawAll();
     }
 
-    public void addWireCube(GameObject Asteroid)
+    public void addWireCube(GameObject Asteroid, GameObject player)
     {
         Debug.Log("adding wire cube");
         if (Asteroid == null)
@@ -76,6 +78,8 @@ public class LineRendererScript : MonoBehaviour
         obj.lineRendererObjectL.transform.parent = this.transform;
         obj.targetAsteroid = Asteroid;
         obj.boxCollider = Asteroid.GetComponent<BoxCollider>();
+
+        obj.player = player;
         
 
         // Configure boxLineRenderer
@@ -85,6 +89,13 @@ public class LineRendererScript : MonoBehaviour
         obj.boxLineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         obj.boxLineRenderer.startColor = lineColor;
         obj.boxLineRenderer.endColor = lineColor;
+
+        obj.laserLineRenderer.positionCount = 2;
+        obj.laserLineRenderer.startWidth = 0.05f;
+        obj.laserLineRenderer.endWidth = 0.05f;
+        obj.laserLineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+        obj.laserLineRenderer.startColor = lineColor;
+        obj.laserLineRenderer.endColor = lineColor;
 
         _targetObjects.Add(obj);
         
@@ -98,6 +109,7 @@ public class LineRendererScript : MonoBehaviour
         {
             if (t.targetAsteroid == Asteroid) // Check if this is the target GameObject
             {
+                Debug.Log("Destroy astroiud");
                 Destroy(t.lineRendererObjectB);
                 Destroy(t.lineRendererObjectL);
                 _targetObjects.Remove(t);
@@ -119,6 +131,9 @@ public class LineRendererScript : MonoBehaviour
             {
                 obj.boxLineRenderer.SetPosition(i, center + Vector3.Scale(size, _boxPoints[_edgeIndices[i]]));
             }
+
+            obj.laserLineRenderer.SetPosition(0, center);
+            obj.laserLineRenderer.SetPosition(1, new Vector3(obj.player.transform.position.x-1.5f, obj.player.transform.position.y + 0.5f , obj.player.transform.position.z));
         }
     }
 }

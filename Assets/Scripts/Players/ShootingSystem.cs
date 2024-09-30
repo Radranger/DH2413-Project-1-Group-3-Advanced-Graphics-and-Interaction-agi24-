@@ -49,8 +49,11 @@ public class ShootingSystem : MonoBehaviour
         _lineRenderer = _lineRendererObject.GetComponent<LineRendererScript>();
 
         _obstacleManager.onAsteroidsChange += obstacleChange;
+        _aimObject = null;
         
         StartCoroutine(aimAssistCheck());
+
+       
     }
     void OnDestroy()
     {
@@ -88,17 +91,23 @@ public class ShootingSystem : MonoBehaviour
                 }
             }
 
-            if (!_aimFocusOn)
+            if(bestTarget == null){ // nothing found
+                if(_aimObject != null) {
+                    _lineRenderer.removeWireCube(_aimObject);
+                    _aimFocusOn = false;
+                }
+            }
+            else if (!_aimFocusOn)
             {
-                Debug.Log("found");
                 _aimObject = bestTarget;
                 _aimFocusOn = true;
+                _lineRenderer.addWireCube(_aimObject, gameObject);
             }
             else if (_aimObject != bestTarget)
             {
                 _lineRenderer.removeWireCube(_aimObject);
                 _aimObject = bestTarget;
-                _lineRenderer.addWireCube(_aimObject);
+                _lineRenderer.addWireCube(_aimObject, gameObject);
             }
         }
     }
@@ -129,6 +138,5 @@ public class ShootingSystem : MonoBehaviour
 
         Destroy(bullet, 5.0f);
 
-        Debug.Log("ShootingSystem: Shoot() called with Volumetric Line");
     }
 }

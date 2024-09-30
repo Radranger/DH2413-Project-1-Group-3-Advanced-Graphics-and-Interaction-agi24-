@@ -134,7 +134,7 @@ MonoBehaviour:
   shootClips:
   - {fileID: 8300000, guid: af027fa2b70d3d241a08d3f31ea04f4a, type: 3}
   - {fileID: 8300000, guid: eecc4d58fcc42514b8984e9d1328459d, type: 3}
-  aimAssistSensitivity: {x: 2, y: 2, z: 35}
+  aimAssistSensitivity: {x: 2.5, y: 2.5, z: 62.3}
 --- !u!114 &2451047042287175646
 MonoBehaviour:
   m_ObjectHideFlags: 0
