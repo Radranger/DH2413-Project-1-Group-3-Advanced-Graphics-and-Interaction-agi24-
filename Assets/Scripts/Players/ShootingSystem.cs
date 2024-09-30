@@ -67,6 +67,8 @@ public class ShootingSystem : MonoBehaviour
     {
         while (true)
         {
+            yield return new WaitForSeconds(.1f);
+
             float bestValue = 10000;
             GameObject bestTarget = null;
 
@@ -98,8 +100,6 @@ public class ShootingSystem : MonoBehaviour
                 _aimObject = bestTarget;
                 _lineRenderer.addWireCube(_aimObject);
             }
-
-            yield return new WaitForSeconds(.1f);
         }
     }
 
