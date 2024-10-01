@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Assertions.Must;
+using System;
+
 
 
 public class ShootingSystem : MonoBehaviour
@@ -32,12 +34,13 @@ public class ShootingSystem : MonoBehaviour
     private GameObject _obstacleManagerObject;
     private ObstacleManager _obstacleManager;
 
+    public Action<GameObject> onAimObjectDestroyed;
+
     public void Initialize(InputManager inputManager)
     {
         _aimFocusOn = false;
         
         _obstacleManagerObject = GameObject.Find("SpawnPlane");
-        Debug.Log(_obstacleManagerObject);
         _obstacleManager = _obstacleManagerObject.GetComponent<ObstacleManager>();
         
         
@@ -55,12 +58,22 @@ public class ShootingSystem : MonoBehaviour
 
        
     }
+
+    private void Awake()
+    {
+        onAimObjectDestroyed += AimObjectDestroyed;
+    }
+    
+    
+
     void OnDestroy()
     {
+        onAimObjectDestroyed -= AimObjectDestroyed;
         if (_inputManager != null) _inputManager.OnShoot -= Shoot;
         if(_obstacleManager != null) _obstacleManager.onAsteroidsChange -= obstacleChange;
     }
-
+    
+    
     void obstacleChange()
     {
         _targetObjects = _obstacleManager.asteroids;
@@ -81,7 +94,7 @@ public class ShootingSystem : MonoBehaviour
                 Vector3 diffXYZ = target.transform.position - transform.position;
                 float distanceXY = new Vector2(diffXYZ.x, diffXYZ.y).magnitude;
 
-                if (distanceXY < aimAssistSensitivity.x && diffXYZ.z < aimAssistSensitivity.z)
+                if (distanceXY < aimAssistSensitivity.x && diffXYZ.z < aimAssistSensitivity.z && diffXYZ.z > 1.0f)
                 {
                     if (bestValue > diffXYZ.z)
                     {
@@ -100,6 +113,7 @@ public class ShootingSystem : MonoBehaviour
             else if (!_aimFocusOn)
             {
                 _aimObject = bestTarget;
+                onNewAimObject();
                 _aimFocusOn = true;
                 _lineRenderer.addWireCube(_aimObject, gameObject);
             }
@@ -107,13 +121,25 @@ public class ShootingSystem : MonoBehaviour
             {
                 _lineRenderer.removeWireCube(_aimObject);
                 _aimObject = bestTarget;
+                onNewAimObject();
                 _lineRenderer.addWireCube(_aimObject, gameObject);
             }
         }
     }
 
+    private void onNewAimObject()
+    {
+        _aimObject.GetComponent<Obstacle>().addOnDestroyed(onAimObjectDestroyed);
+    }
+    private void AimObjectDestroyed(GameObject astr)
+    {
+        _aimFocusOn = false;
+        _lineRenderer.removeWireCube(astr);
+    }
+
     public void Shoot()
     {
+        Debug.Log("Shootin");
         Vector3 shootPosition  = this.transform.position + new Vector3(-2.0f, 0.5f, 0.0f);
 
         Vector3 velocity = new Vector3(0.0f, 0.0f, 0.0f);

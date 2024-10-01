@@ -34,7 +34,6 @@ public class InputManager
 
     private void HandleOnShoot()
     {
-        Debug.Log("Shootin");
         OnShoot?.Invoke();
     }
 

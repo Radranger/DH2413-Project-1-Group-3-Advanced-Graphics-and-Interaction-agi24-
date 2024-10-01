@@ -9,9 +9,16 @@ public class DestroyPlayer : MonoBehaviour
 
     private bool isGameOver; // Tracks game-over state
 
+    public int playerHealth;
+    private int _currentHealth;
+    
+    private bool _canBeHit;
+
     void Start()
     {
         isGameOver = false;
+        _currentHealth = playerHealth;
+        _canBeHit = true;
     }
 
     // Check for trigger collisions
@@ -20,18 +27,36 @@ public class DestroyPlayer : MonoBehaviour
         // Check if the player collided with the asteroid
         if (other.gameObject.tag == "enemy")
         {
-            Debug.Log("DestroyPlayer: Player collided with enemy. Requesting destruction.");
-            ServerManager.Instance.PlayerDestroyed(gameObject);
+            if (_canBeHit)
+            {
+                StartCoroutine(coolDown());
+                _canBeHit = false;
+                SoundFXManager.instance.PlaySoundFXClip(shipExplodeClip, transform, 1f);
+                if (_currentHealth == 1)
+                {
+                    Debug.Log("DestroyPlayer: Player collided with enemy. Requesting destruction.");
+                    ServerManager.Instance.PlayerDestroyed(gameObject);
 
-            // Destroy the player GameObject
-            Destroy(gameObject);
-
-
-            SoundFXManager.instance.PlaySoundFXClip(shipExplodeClip, transform, 1f);
-            Debug.Log("DestroyPlayer: Destroy(gameObject) called.");
-
+                    // Destroy the player GameObject
+                    Destroy(gameObject);
+                    
+                    Debug.Log("DestroyPlayer: Destroy(gameObject) called.");
+                }
+                else
+                {
+                    
+                    _currentHealth--;
+                }
+                
+            }
             //CheckAllPlayersDestroyed();
         }
+    }
+
+    IEnumerator coolDown()
+    {
+        yield return new WaitForSeconds(1f);
+        _canBeHit = true;
     }
 
     // Check if all players are destroyed

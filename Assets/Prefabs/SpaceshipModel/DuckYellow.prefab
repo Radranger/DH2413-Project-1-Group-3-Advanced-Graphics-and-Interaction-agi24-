@@ -149,6 +149,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameOverPanel: {fileID: 0}
   shipExplodeClip: {fileID: 8300000, guid: fc71ccd2c7636f54894048e397c0f094, type: 3}
+  playerHealth: 3
 --- !u!114 &1006719892700765420
 MonoBehaviour:
   m_ObjectHideFlags: 0

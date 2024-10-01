@@ -24,7 +24,8 @@ public class LineRendererScript : MonoBehaviour
         get { return _targetObjects; }
     }
     
-    public Color lineColor = Color.green;
+    Color c1 = new Color(0, 1, 65.0f/255.0f, 0.05f);
+    Color c2 = new Color(0, 1, 65.0f/255.0f, 0.7f);
 
     private int[] _edgeIndices;
     private Vector3[] _boxPoints;
@@ -87,15 +88,13 @@ public class LineRendererScript : MonoBehaviour
         obj.boxLineRenderer.startWidth = 0.05f;
         obj.boxLineRenderer.endWidth = 0.05f;
         obj.boxLineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-        obj.boxLineRenderer.startColor = lineColor;
-        obj.boxLineRenderer.endColor = lineColor;
+        obj.boxLineRenderer.SetColors(c2, c2);
 
         obj.laserLineRenderer.positionCount = 2;
         obj.laserLineRenderer.startWidth = 0.05f;
         obj.laserLineRenderer.endWidth = 0.05f;
         obj.laserLineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-        obj.laserLineRenderer.startColor = lineColor;
-        obj.laserLineRenderer.endColor = lineColor;
+        obj.laserLineRenderer.SetColors(c2, c1);
 
         _targetObjects.Add(obj);
         
@@ -109,7 +108,6 @@ public class LineRendererScript : MonoBehaviour
         {
             if (t.targetAsteroid == Asteroid) // Check if this is the target GameObject
             {
-                Debug.Log("Destroy astroiud");
                 Destroy(t.lineRendererObjectB);
                 Destroy(t.lineRendererObjectL);
                 _targetObjects.Remove(t);
@@ -124,6 +122,7 @@ public class LineRendererScript : MonoBehaviour
     {
         foreach (Target obj in _targetObjects)
         {
+            if(obj == null) continue;
             Vector3 center = obj.targetAsteroid.transform.position + obj.boxCollider.center;
             Vector3 size = obj.targetAsteroid.GetComponent<MeshRenderer>().bounds.size / 3;
 
