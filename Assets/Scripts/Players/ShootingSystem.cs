@@ -6,7 +6,7 @@ using UnityEngine.Assertions.Must;
 
 public class ShootingSystem : MonoBehaviour
 {
-    public float bulletSpeed = 20.0f;
+    public float bulletSpeed = 35.0f;
     public GameObject volumetricLine;
 
     private InputManager _inputManager;
@@ -115,10 +115,24 @@ public class ShootingSystem : MonoBehaviour
     public void Shoot()
     {
         Vector3 shootPosition  = this.transform.position + new Vector3(-2.0f, 0.5f, 0.0f);
-        GameObject bullet = Instantiate(volumetricLine, shootPosition, this.transform.rotation);
 
+        Vector3 velocity = new Vector3(0.0f, 0.0f, 0.0f);
+
+        if (_aimFocusOn)
+        {
+            Vector3 diffVector  = _aimObject.transform.position - shootPosition;
+            velocity = bulletSpeed * Vector3.Normalize(diffVector);
+        }
+        else
+        {
+            velocity = this.transform.forward * bulletSpeed;
+        }
+        
+        Quaternion bulletRotation = Quaternion.LookRotation(velocity);
+        GameObject bullet = Instantiate(volumetricLine, shootPosition, bulletRotation);
         bullet.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
         SoundFXManager.instance.PlayRandomSoundFXClip(shootClips, transform, 0.5f);
+
 
         Rigidbody rb = bullet.GetComponent<Rigidbody>();
         if (rb == null)
@@ -134,7 +148,8 @@ public class ShootingSystem : MonoBehaviour
             collider.isTrigger = true;
         }
         bullet.AddComponent<Bullet>();
-        rb.velocity = this.transform.forward * bulletSpeed;
+        
+        rb.velocity = velocity;
 
         Destroy(bullet, 5.0f);
 
