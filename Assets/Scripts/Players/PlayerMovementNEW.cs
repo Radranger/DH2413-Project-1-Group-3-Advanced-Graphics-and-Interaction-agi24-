@@ -15,11 +15,17 @@ public class PlayerMovementNEW : MonoBehaviour
     public Vector2 maxTilt = new Vector2(0.5f, 0.5f);
     public float thresholdX = 0.2f;
     public float thresholdY = 0.2f;
-    public float acceleration = 0.001f;
+    public float accelerationSpeed = 0.16f;
     public float maxSpeed = 0.2f;
     public Vector2 VisualInput;
     public Vector2 VisualDif;
     public Vector2 VisualInitialValue;
+
+    
+    private Vector2 _previousVelocity;
+    public Vector2 _acceleration;
+    
+    public float wobbleAmount = 30.0f;
     
 
     public void Initialize(InputManager inputManager)
@@ -33,6 +39,8 @@ public class PlayerMovementNEW : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         _col = GetComponent<BoxCollider>();
         _rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
+        _previousVelocity = new Vector2(0, 0);
+        _acceleration = new Vector2(0, 0);
     }
 
     // Update is called once per frame
@@ -41,12 +49,19 @@ public class PlayerMovementNEW : MonoBehaviour
         FrameReset();
         HandleDirection();
         HandleRotation();
+        CalcAcceleration();
         ApplyMovement();
 
         //Debug
         VisualValue();
 
         //visualInput = _inputManager.GetMovementVector();
+    }
+
+    void CalcAcceleration()
+    {
+        _acceleration = _velocity - _previousVelocity;
+        _previousVelocity = _velocity;
     }
 
     void VisualValue()
@@ -73,13 +88,26 @@ public class PlayerMovementNEW : MonoBehaviour
 
         //float delta = 0.0f;
         
-        _velocity = Vector2.MoveTowards(_velocity, thresholdTargetVector, acceleration);
+        _velocity = Vector2.MoveTowards(_velocity, thresholdTargetVector, accelerationSpeed);
         
         _frameVelocity = maxSpeed * _velocity;
     }
-    void HandleRotation(){
+    // void HandleRotation(){
+    //     Vector3 currentRotation = transform.eulerAngles;
+    //     currentRotation.z = (_acceleration.x * wobbleAmount) * -30.0f;
+    //     transform.eulerAngles = currentRotation;
+    // }
+    private Vector3 targetRotation;
+    private float rotationSpeed = 5f;
+    void HandleRotation()
+    {
+        //float targetZRotation = (_acceleration.x * wobbleAmount) * -50.0f;
+        //targetRotation = new Vector3(0, 0, targetZRotation);
+        //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(targetRotation), rotationSpeed * Time.deltaTime);
+        
         Vector3 currentRotation = transform.eulerAngles;
-        currentRotation.z = (_velocity.x / GlobalSettings.MAX_SPEED) * -30.0f;
+        currentRotation.z = (_velocity.x) * -20.0f;
+        currentRotation.x = (_velocity.y) * -20.0f;
         transform.eulerAngles = currentRotation;
     }
 
