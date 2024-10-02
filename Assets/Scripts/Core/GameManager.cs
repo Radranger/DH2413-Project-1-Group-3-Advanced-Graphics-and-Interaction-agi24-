@@ -26,13 +26,21 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GameObject _playerPrefab;
     [SerializeField] private GameObject _obstacleSpawner;
-
+    [SerializeField] private GameObject _spawnPoints;
     // Mapping player and its NetworkPlayer Object
     private Dictionary<ulong, Player> _playerDictionary = new Dictionary<ulong, Player>();
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject); 
+        }
+        else
+        {
+            Destroy(gameObject); 
+        }
     }
 
     public void AddPlayer(NetworkPlayer networkPlayer)
@@ -57,6 +65,19 @@ public class GameManager : MonoBehaviour
 
         Player playerScript = playerObject.GetComponent<Player>();
         playerScript.Initialize(_inputManager, _playerPrefab);
+    }
+    
+    public void InitializeDependencies()
+    {
+        _spawnPoints = GameObject.Find("SpawnPoints");
+        if (_obstacleSpawner == null)
+        {
+            _obstacleSpawner = _spawnPoints.transform.Find("SpawnPlane").gameObject;
+            if (_obstacleSpawner == null)
+            {
+                Debug.LogError("ObstacleSpawner not found after scene reload.");
+            }
+        }
     }
 
     public GameObject GetPlayerGameObjectByClientId(ulong clientId)
@@ -94,6 +115,19 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        _obstacleSpawner.SetActive(true);
+        if (_obstacleSpawner == null)
+        {
+            _spawnPoints = GameObject.Find("SpawnPoints");
+            if (_obstacleSpawner == null)
+            {
+                _obstacleSpawner = _spawnPoints.transform.Find("SpawnPlane").gameObject;
+                if (_obstacleSpawner == null)
+                {
+                    Debug.LogError("ObstacleSpawner not found after scene reload.");
+                }
+                _obstacleSpawner.SetActive(true);
+            }
+        }
     }
+
 }

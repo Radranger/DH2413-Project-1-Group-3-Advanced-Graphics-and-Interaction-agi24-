@@ -51,4 +51,33 @@ public class DestroyPlayer : MonoBehaviour
     //         }
     //     }
     // }
+    
+    //---------------------For debug--------------------------
+    
+    private void DestroyThisPlayer()
+    {
+        Debug.Log("DestroyPlayer: Player is being destroyed.");
+        
+        // Notify the ServerManager that this player is destroyed
+        ServerManager.Instance.PlayerDestroyed(gameObject);
+
+        // Play explosion sound effect
+        if (shipExplodeClip != null)
+        {
+            SoundFXManager.instance.PlaySoundFXClip(shipExplodeClip, transform, 1f);
+        }
+
+        // Destroy the player GameObject
+        Destroy(gameObject);
+    }
+    
+    void Update()
+    {
+        // Check if the 'K' key is pressed for manual destruction
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            Debug.Log("Debug Mode: Manual player destruction triggered.");
+            DestroyThisPlayer();
+        }
+    }
 }
