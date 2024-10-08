@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Goal
   - GameManager
+  - enemy
+  - shield
   layers:
   - Default
   - TransparentFX
