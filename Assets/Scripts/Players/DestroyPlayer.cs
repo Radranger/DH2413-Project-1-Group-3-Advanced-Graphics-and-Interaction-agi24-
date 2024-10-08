@@ -15,6 +15,7 @@ public class DestroyPlayer : MonoBehaviour
     private bool _canBeHit;
 
     private bool _isInvincible; //check if the player got the shield
+    private Renderer[] _playerRenderers;
 
     void Start()
     {
@@ -22,6 +23,8 @@ public class DestroyPlayer : MonoBehaviour
         _currentHealth = playerHealth;
         _canBeHit = true;
         _isInvincible = false;
+
+        _playerRenderers = GetComponentsInChildren<Renderer>();
     }
 
     // Check for trigger collisions
@@ -58,7 +61,6 @@ public class DestroyPlayer : MonoBehaviour
         {
             StartCoroutine(Invincibility());
             Destroy(other.gameObject);
-
         }
 
     }
@@ -71,10 +73,36 @@ public class DestroyPlayer : MonoBehaviour
     IEnumerator Invincibility()
     {
         _isInvincible = true;
+        float elapsedTime = 0f;
+        float invincibilityDuration = 3f;
+        float blinkInterval = 0.1f;
 
-        yield return new WaitForSeconds(3f);
+        Dictionary<Renderer, Color> originalColors = new Dictionary<Renderer, Color>();
+        foreach (Renderer renderer in _playerRenderers)
+        {
+            originalColors[renderer] = renderer.material.color;
+        }
+
+        while (elapsedTime < invincibilityDuration)
+        {
+            foreach (Renderer renderer in _playerRenderers)
+            {
+                Color color = renderer.material.color;
+                color.a = (color.a == 1f) ? 0.3f : 1f;
+                renderer.material.color = color;
+            }
+
+            yield return new WaitForSeconds(blinkInterval);
+
+            elapsedTime += blinkInterval;
+        }
+
+        foreach (Renderer renderer in _playerRenderers)
+        {
+            renderer.material.color = originalColors[renderer];
+        }
+
         _isInvincible = false;
-
     }
     // Check if all players are destroyed
     // void CheckAllPlayersDestroyed()
