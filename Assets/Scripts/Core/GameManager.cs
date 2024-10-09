@@ -108,19 +108,6 @@ public class GameManager : MonoBehaviour
         
         _playerDictionary.Add(0, playerScript);
     }
-    
-    public void InitializeDependencies()
-    {
-        _spawnPoints = GameObject.Find("SpawnPoints");
-        if (_obstacleSpawner == null)
-        {
-            _obstacleSpawner = _spawnPoints.transform.Find("SpawnPlane").gameObject;
-            if (_obstacleSpawner == null)
-            {
-                Debug.LogError("ObstacleSpawner not found after scene reload.");
-            }
-        }
-    }
 
     public GameObject GetPlayerGameObjectByClientId(ulong clientId)
     {
@@ -158,7 +145,7 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         _obstacleManager.startSpawning();
-        _pickupSpawner.StartSpawningPickup();
+        //_pickupSpawner.StartSpawningPickup();
     }
 
 }

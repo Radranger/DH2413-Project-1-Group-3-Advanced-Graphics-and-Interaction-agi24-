@@ -105,7 +105,6 @@ public class ServerManager : Singleton<ServerManager>
     {
         if (Input.GetKeyDown(KeyCode.L))
         {
-            Debug.Log("Start Game");
             StartGame();
         }
         if (gameStarted)
@@ -329,14 +328,15 @@ public class ServerManager : Singleton<ServerManager>
     
     private void StartGame()
     {
-        Debug.Log("starting");
+        gameStarted = true;
+        Debug.Log("starting" + gameStarted);
         // Hide menu UI
         startGameButton.gameObject.SetActive(false);
         menuScreen.SetActive(false);
 
         _gameManager.StartGame();
 
-        gameStarted = true;
+
     }
     
     public void EndGame()
@@ -616,6 +616,7 @@ public class ServerManager : Singleton<ServerManager>
         if (players.Contains(player))
         {
             players.Remove(player);
+            Debug.Log("Player removed. Remaining players: " + players.Count + gameStarted);
         }
 
         if (playerMap.ContainsKey(player))
@@ -625,6 +626,8 @@ public class ServerManager : Singleton<ServerManager>
 
             if (networkPlayer != null)
             {
+                ulong clientID = networkPlayer.GetComponent<NetworkPlayer>().OwnerClientId;
+                _gameManager.RemovePlayer(clientID);
                 networkPlayers.Remove(networkPlayer);
                 Destroy(networkPlayer);
             }
