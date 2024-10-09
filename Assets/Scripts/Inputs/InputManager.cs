@@ -18,8 +18,8 @@ public class InputManager
     public void Initialize(InputType inputType, NetworkPlayer networkPlayer = null){
         playerInputType = inputType;
         if(inputType == InputType.KEYBOARD){
-            _inputProvider =  new DebugKeyboardInput();
-            
+            GameObject inputGameObject = new GameObject("KeyboardInputHandler");
+            _inputProvider = inputGameObject.AddComponent<DebugKeyboardInput>();
         }
         if(inputType == InputType.PHONE){
             _ = networkPlayer ?? throw new ArgumentException("networkPlayer cannot be null when using phone"); 
@@ -32,7 +32,7 @@ public class InputManager
         }
     }
 
-     private void HandleOnShoot()
+    private void HandleOnShoot()
     {
         OnShoot?.Invoke();
     }
