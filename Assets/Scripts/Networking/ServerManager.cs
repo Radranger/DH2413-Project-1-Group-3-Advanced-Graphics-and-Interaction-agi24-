@@ -522,39 +522,38 @@ public class ServerManager : Singleton<ServerManager>
         float timeRemaining = countdownTime;
         if (countdownText != null)
         {
-            countdownText.gameObject.SetActive(true);  // 显示倒计时文本
+            countdownText.gameObject.SetActive(true);  
         }
 
         while (timeRemaining > 0)
         {
             if (countdownText != null)
             {
-                countdownText.text = Mathf.Ceil(timeRemaining).ToString();  // 更新倒计时文本
+                countdownText.text = Mathf.Ceil(timeRemaining).ToString();  
             }
             timeRemaining -= Time.deltaTime;
             yield return null;
         }
-
-        // 隐藏Slider或其他处理
+        
         if (countdownText != null)
         {
-            countdownText.gameObject.SetActive(false);  // 隐藏倒计时Slider
+            countdownText.gameObject.SetActive(false);  
         }
         
-        //StartGame();
+        StartGame();
     }
     
     private void StopCountdown()
     {
         if (countdownCoroutine != null)
         {
-            StopCoroutine(countdownCoroutine);  // 停止倒计时协程
+            StopCoroutine(countdownCoroutine);  
             countdownCoroutine = null;
 
             if (countdownText != null)
             {
-                countdownText.text = "";  // 清空倒计时文本
-                countdownText.gameObject.SetActive(false);  // 隐藏倒计时UI
+                countdownText.text = "";  
+                countdownText.gameObject.SetActive(false);  
             }
 
             Debug.Log("Countdown stopped and reset.");

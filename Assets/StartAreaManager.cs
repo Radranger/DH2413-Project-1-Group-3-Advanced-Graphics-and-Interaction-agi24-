@@ -5,17 +5,10 @@ using UnityEngine;
 public class StartAreaManager : MonoBehaviour
 {
     public Collider startArea;
-    public GameObject countdownUI;
     private bool gameStarted = false;
-    public float countdownTime = 3.0f; // time for ready
-    
     private Dictionary<ulong, bool> playersInArea = new Dictionary<ulong, bool>();
-    
     private Coroutine countdownCoroutine;
     
-    //---------------------------for debug--------------------------
-    public bool PlayerIn;
-    public string PlayerClientId;
     void Start()
     {
         
@@ -29,7 +22,6 @@ public class StartAreaManager : MonoBehaviour
     
     private void OnTriggerEnter(Collider other)
     {
-        PlayerIn = true;
         if (gameStarted) return;
         
         Player player = other.GetComponent<Player>();
@@ -47,7 +39,6 @@ public class StartAreaManager : MonoBehaviour
     
     private void OnTriggerExit(Collider other)
     {
-        PlayerIn = false;
         if (gameStarted) return; 
 
         Player player = other.GetComponent<Player>();
@@ -61,9 +52,4 @@ public class StartAreaManager : MonoBehaviour
             }
         }
     }
-    
-    
-    //------------------------Countdown----------------------------
-    
-   
 }
