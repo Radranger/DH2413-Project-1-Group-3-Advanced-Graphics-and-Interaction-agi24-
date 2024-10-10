@@ -38,8 +38,6 @@ public class ServerManager : Singleton<ServerManager>
     [SerializeField]
     private Button RestartGameButton;
 
-    [SerializeField]
-    private int countdownTime = 5;
 
     // For Debug
     [SerializeField]
@@ -52,6 +50,7 @@ public class ServerManager : Singleton<ServerManager>
     public List<GameObject> players = new List<GameObject>();
     private Dictionary<GameObject, bool> activePlayers = new Dictionary<GameObject, bool>();
     private Dictionary<GameObject, bool> activeNetworkPlayers = new Dictionary<GameObject, bool>();
+    private Dictionary<ulong, bool> playersReadyStatus = new Dictionary<ulong, bool>();
 
     public bool gameStarted = false;
 
@@ -60,6 +59,10 @@ public class ServerManager : Singleton<ServerManager>
     private Coroutine playerNameCoroutine;
     
     private CancellationTokenSource cts;
+    private Coroutine countdownCoroutine;
+    public float countdownTime = 10.0f;
+    public Slider countdownSlider; 
+    public TextMeshProUGUI countdownText; 
     
     // ---------------------------------- Debug ----------------------------------
     
@@ -253,7 +256,7 @@ public class ServerManager : Singleton<ServerManager>
             if (skinPresets != null)
             {
                 Color playerColor = skinPresets.PullColor();
-                Debug.Log($"Assigned color {playerColor} to player {clientID}");
+                //Debug.Log($"Assigned color {playerColor} to player {clientID}");
 
                 networkPlayer.GetComponent<NetworkPlayer>().skinColor.Value = playerColor;
             }
@@ -329,14 +332,11 @@ public class ServerManager : Singleton<ServerManager>
     private void StartGame()
     {
         gameStarted = true;
-        Debug.Log("starting" + gameStarted);
         // Hide menu UI
         startGameButton.gameObject.SetActive(false);
         menuScreen.SetActive(false);
 
         _gameManager.StartGame();
-
-
     }
     
     public void EndGame()
@@ -362,6 +362,7 @@ public class ServerManager : Singleton<ServerManager>
         playerMap.Clear();
         playerIdMap.Clear();
         activePlayers.Clear();
+        playersReadyStatus.Clear();
 
         if (playerNameCoroutine != null)
         {
@@ -485,6 +486,80 @@ public class ServerManager : Singleton<ServerManager>
         }
     }
     
+    public void SetPlayerReady(ulong clientId, bool isReady)
+    {
+        playersReadyStatus[clientId] = isReady;
+        Debug.Log("Player " + clientId + " is " + (isReady ? "ready" : "not ready"));
+
+        CheckAllPlayersReady();
+    }
+    
+    private void CheckAllPlayersReady()
+    {
+        if (gameStarted) return;
+
+        foreach (bool isReady in playersReadyStatus.Values)
+        {
+            if (!isReady)
+            {
+                StopCountdown();
+                Debug.Log("Not all players are ready.");
+                return;
+            }
+        }
+
+        // 所有玩家都准备好了，启动倒计时
+        Debug.Log("All players are ready.");
+        if (countdownCoroutine == null)
+        {
+            countdownCoroutine = StartCoroutine(StartCountdown());
+            countdownText.gameObject.SetActive(true);
+        }
+    }
+    
+    private IEnumerator StartCountdown()
+    {
+        float timeRemaining = countdownTime;
+        if (countdownText != null)
+        {
+            countdownText.gameObject.SetActive(true);  // 显示倒计时文本
+        }
+
+        while (timeRemaining > 0)
+        {
+            if (countdownText != null)
+            {
+                countdownText.text = Mathf.Ceil(timeRemaining).ToString();  // 更新倒计时文本
+            }
+            timeRemaining -= Time.deltaTime;
+            yield return null;
+        }
+
+        // 隐藏Slider或其他处理
+        if (countdownText != null)
+        {
+            countdownText.gameObject.SetActive(false);  // 隐藏倒计时Slider
+        }
+        
+        //StartGame();
+    }
+    
+    private void StopCountdown()
+    {
+        if (countdownCoroutine != null)
+        {
+            StopCoroutine(countdownCoroutine);  // 停止倒计时协程
+            countdownCoroutine = null;
+
+            if (countdownText != null)
+            {
+                countdownText.text = "";  // 清空倒计时文本
+                countdownText.gameObject.SetActive(false);  // 隐藏倒计时UI
+            }
+
+            Debug.Log("Countdown stopped and reset.");
+        }
+    }
     
     // ---------------------------------- Server Shutdown and Cleanup ----------------------------------
     

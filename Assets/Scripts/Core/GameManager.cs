@@ -92,7 +92,7 @@ public class GameManager : MonoBehaviour
         GameObject playerObject = Instantiate(_playerPrefab, spawnPos, Quaternion.identity);
 
         Player playerScript = playerObject.GetComponent<Player>();
-        playerScript.Initialize(_inputManager, _playerPrefab);
+        playerScript.Initialize(_inputManager, _playerPrefab, networkPlayer);
 
         _playerDictionary.Add(networkPlayer.OwnerClientId, playerScript);
     }
