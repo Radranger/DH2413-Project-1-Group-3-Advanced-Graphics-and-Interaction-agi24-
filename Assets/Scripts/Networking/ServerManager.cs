@@ -59,9 +59,9 @@ public class ServerManager : Singleton<ServerManager>
     private Coroutine playerNameCoroutine;
     
     private CancellationTokenSource cts;
+    private GameObject _startGameArea;
     private Coroutine countdownCoroutine;
     public float countdownTime = 10.0f;
-    public Slider countdownSlider; 
     public TextMeshProUGUI countdownText; 
     
     // ---------------------------------- Debug ----------------------------------
@@ -131,14 +131,11 @@ public class ServerManager : Singleton<ServerManager>
         }
     }
     
-    
-    // ---------------------------------- Scene Management ----------------------------------
-    
-    
     // ---------------------------------- Initialization ----------------------------------
     
     private async Task InitializeServer(CancellationToken token) {
         Debug.Log("Initializing server.");
+        _startGameArea = GameObject.Find("StartGameArea");
         _gameManagerObject = GameObject.FindWithTag("GameManager");
         _gameManager = _gameManagerObject.GetComponent<GameManager>();
 
@@ -304,6 +301,7 @@ public class ServerManager : Singleton<ServerManager>
             players.Remove(playerObject);
             playerMap.Remove(playerObject);
             playerIdMap.Remove(clientID);
+            playersReadyStatus.Remove(clientID);
             Destroy(playerObject);
 
             // Remove from activePlayers
@@ -507,8 +505,7 @@ public class ServerManager : Singleton<ServerManager>
                 return;
             }
         }
-
-        // 所有玩家都准备好了，启动倒计时
+        
         Debug.Log("All players are ready.");
         if (countdownCoroutine == null)
         {
@@ -541,6 +538,7 @@ public class ServerManager : Singleton<ServerManager>
         }
         
         StartGame();
+        _startGameArea.gameObject.SetActive(false);
     }
     
     private void StopCountdown()
