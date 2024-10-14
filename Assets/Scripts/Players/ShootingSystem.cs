@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Assertions.Must;
 using System;
-
+using Unity.VisualScripting;
 
 
 public class ShootingSystem : MonoBehaviour
@@ -36,6 +36,15 @@ public class ShootingSystem : MonoBehaviour
 
     public Action<GameObject> onAimObjectDestroyed;
 
+    public GameObject explosionParticlePrefab;
+
+    private Vector3 shootPosition;
+
+    public float maxShootingFreq = 60.0f;
+    private bool _shootTimeout;
+    private bool _hasBuffer;
+
+    
     public void Initialize(InputManager inputManager)
     {
         _aimFocusOn = false;
@@ -43,34 +52,40 @@ public class ShootingSystem : MonoBehaviour
         _obstacleManagerObject = GameObject.Find("SpawnPlane");
         _obstacleManager = _obstacleManagerObject.GetComponent<ObstacleManager>();
         
-        
         _inputManager = inputManager;
 
-        _inputManager.OnShoot += Shoot;
+        _inputManager.OnShoot += ShootInput;
 
         _lineRendererObject = GameObject.Find("LineRenderer");
         _lineRenderer = _lineRendererObject.GetComponent<LineRendererScript>();
 
         _obstacleManager.onAsteroidsChange += obstacleChange;
         _aimObject = null;
+
+        _shootTimeout = false;
+        _hasBuffer = false;
         
         StartCoroutine(aimAssistCheck());
-
-       
     }
 
     private void Awake()
     {
         onAimObjectDestroyed += AimObjectDestroyed;
     }
-    
-    
 
     void OnDestroy()
     {
         onAimObjectDestroyed -= AimObjectDestroyed;
         if (_inputManager != null) _inputManager.OnShoot -= Shoot;
         if(_obstacleManager != null) _obstacleManager.onAsteroidsChange -= obstacleChange;
+    }
+    
+    void displayParticle()
+    {
+        GameObject explosionParticle = Instantiate(explosionParticlePrefab, shootPosition, Quaternion.identity);
+        //explosionParticle.transform.localScale = _level * Vector3.one * 5.0f; // scaling particles according to obstacle size
+        explosionParticle.transform.parent = gameObject.transform;
+        Destroy(explosionParticle, 0.2f);
     }
     
     
@@ -137,10 +152,42 @@ public class ShootingSystem : MonoBehaviour
         _lineRenderer.removeWireCube(astr);
     }
 
-    public void Shoot()
+    IEnumerator startShootTimout()
     {
-        Debug.Log("Shootin");
-        Vector3 shootPosition  = this.transform.position + new Vector3(-2.0f, 0.5f, 0.0f);
+        Debug.Log("1?");
+        _shootTimeout = true;
+        yield return new WaitForSeconds(60.0f/maxShootingFreq);
+        Debug.Log("here?");
+        
+        _shootTimeout = false;
+        if (_hasBuffer)
+        {
+            _hasBuffer = false;
+            Shoot();
+            StartCoroutine(startShootTimout());
+        }
+    }
+
+    public void ShootInput()
+    {
+        Debug.Log(_shootTimeout);
+        if (!_shootTimeout)
+        {
+            Shoot();
+            StartCoroutine(startShootTimout());
+        }
+        else
+        {
+            _hasBuffer = true;
+        }
+    }
+
+    private void Shoot()
+    {
+        shootPosition  = this.transform.position + new Vector3(-2.0f, 0.5f, 1.0f);
+        displayParticle();
+
+        //Debug.Log("Shootin");
 
         Vector3 velocity = new Vector3(0.0f, 0.0f, 0.0f);
 
