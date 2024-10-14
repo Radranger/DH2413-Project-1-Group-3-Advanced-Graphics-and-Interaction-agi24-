@@ -76,8 +76,8 @@ public class Obstacle : MonoBehaviour
     {
         GameObject explosionParticle = Instantiate(explosionParticlePrefab, transform.position, Quaternion.identity);
         explosionParticle.transform.localScale = _level * Vector3.one * 5.0f; // scaling particles according to obstacle size
-
         explosionParticle.transform.parent = null;
+        Destroy(explosionParticle, 2.0f);
     }
 
     private void Split()

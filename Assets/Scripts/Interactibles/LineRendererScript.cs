@@ -106,7 +106,7 @@ public class LineRendererScript : MonoBehaviour
     {
         foreach (Target t in _targetObjects)
         {
-            if (t.targetAsteroid == Asteroid) // Check if this is the target GameObject
+            if (t.targetAsteroid == Asteroid) 
             {
                 Destroy(t.lineRendererObjectB);
                 Destroy(t.lineRendererObjectL);

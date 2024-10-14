@@ -98,17 +98,20 @@ public class PlayerMovementNEW : MonoBehaviour
     //     transform.eulerAngles = currentRotation;
     // }
     private Vector3 targetRotation;
-    private float rotationSpeed = 5f;
     void HandleRotation()
     {
         //float targetZRotation = (_acceleration.x * wobbleAmount) * -50.0f;
         //targetRotation = new Vector3(0, 0, targetZRotation);
         //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(targetRotation), rotationSpeed * Time.deltaTime);
         
-        Vector3 currentRotation = transform.eulerAngles;
-        currentRotation.z = (_velocity.x) * -20.0f;
-        currentRotation.x = (_velocity.y) * -20.0f;
-        transform.eulerAngles = currentRotation;
+        Vector3 targetRotation = new Vector3(_velocity.y * -20.0f, 0, _velocity.x * -20.0f);
+        Quaternion targetQuaternion = Quaternion.Euler(targetRotation);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetQuaternion, 10f * Time.deltaTime);
+        
+        // Vector3 currentRotation = transform.eulerAngles;
+        // currentRotation.z = (_velocity.x) * -20.0f;
+        // currentRotation.x = (_velocity.y) * -20.0f;
+        // transform.eulerAngles = currentRotation;
     }
 
     private void ApplyMovement()

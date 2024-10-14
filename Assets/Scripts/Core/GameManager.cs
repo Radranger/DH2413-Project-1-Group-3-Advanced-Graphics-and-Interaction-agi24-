@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviour
     public bool DebugMode = true;
     
     public static GameManager Instance { get; private set; }
+    
+    public Vector2 bounds = new Vector2(10, 20); // height and with of bounds total bounds is this * 2 from -x -> x
 
     [SerializeField] private GameObject _playerPrefab;
     private GameObject _obstacleSpawnerObject;
@@ -31,6 +33,8 @@ public class GameManager : MonoBehaviour
 
     // Mapping player and its NetworkPlayer Object
     private Dictionary<ulong, Player> _playerDictionary = new Dictionary<ulong, Player>();
+
+    public Vector2 playerMass; // The current average player position.
 
     private void Awake()
     {
@@ -41,10 +45,28 @@ public class GameManager : MonoBehaviour
     {
         _obstacleSpawnerObject = GameObject.Find("SpawnPlane");
         _obstacleManager = _obstacleSpawnerObject.GetComponent<ObstacleManager>();
+
+        StartCoroutine(calcMass());
         
         if (DebugMode)
         {
             AddLocalPlayer();
+        }
+    }
+
+    IEnumerator calcMass()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(0.1f);
+            playerMass = Vector2.zero;
+            int length = _playerDictionary.Count;
+            foreach (var player in _playerDictionary.Values)
+            {
+                playerMass.x += player.transform.position.x / bounds.x;
+                playerMass.y += player.transform.position.y / bounds.y;
+            }
+            playerMass /= length;
         }
     }
 
@@ -70,6 +92,8 @@ public class GameManager : MonoBehaviour
 
         Player playerScript = playerObject.GetComponent<Player>();
         playerScript.Initialize(_inputManager, _playerPrefab);
+        
+        _playerDictionary.Add(0, playerScript);
     }
 
     public GameObject GetPlayerGameObjectByClientId(ulong clientId)

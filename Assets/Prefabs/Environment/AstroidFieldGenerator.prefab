@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   asteroidPrefab: {fileID: 8306953352933246526, guid: 2688375ab69a9644ebb65a4c0270d887, type: 3}
-  fieldRadius: 20
+  fieldRadius: 35
   fieldHeight: 100
   asteroidCount: 300
   movementSpeed: 10
