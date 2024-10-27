@@ -328,8 +328,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 566db767464e84b3b9e9802663437dce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inputType: 0
-  _player: {fileID: 1647678483}
+  DebugMode: 1
+  bounds: {x: 10, y: 20}
+  _playerPrefab: {fileID: 0}
+  playerMass: {x: 0, y: 0}
 --- !u!4 &1435812315
 Transform:
   m_ObjectHideFlags: 0
@@ -367,6 +369,7 @@ MonoBehaviour:
   splitMagnitude: 1.04
   splitBlastMagnitude: 4
   splitBlastDecelerationRate: 10
+  asteroids: []
 --- !u!114 &1435812317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -380,7 +383,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletSpeed: 20
-  spaceship: {fileID: 1647678483}
+  volumetricLine: {fileID: 0}
+  shootClips: []
+  aimAssistSensitivity: {x: 2, y: 2, z: 35}
+  explosionParticlePrefab: {fileID: 0}
+  maxShootingFreq: 60
 --- !u!1 &1468125819
 GameObject:
   m_ObjectHideFlags: 0
@@ -635,9 +642,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f59ed36050114fd3b7e546c60d387b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _frameVelocity: {x: 0, y: 0}
-  _velocity: {x: 0, y: 0}
-  visualInput: {x: 0, y: 0}
+  threshold: 0.2
+  VisualInput: {x: 0, y: 0}
+  VisualDif: {x: 0, y: 0}
+  VisualInitialValue: {x: 0, y: 0}
 --- !u!114 &1647678490
 MonoBehaviour:
   m_ObjectHideFlags: 0
