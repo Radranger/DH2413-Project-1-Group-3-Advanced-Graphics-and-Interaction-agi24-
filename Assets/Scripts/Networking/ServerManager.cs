@@ -60,12 +60,15 @@ public class ServerManager : Singleton<ServerManager>
     
     private CancellationTokenSource cts;
     private GameObject _startGameArea;
+    private GameObject _BackgroundAsteroids;
+    public GameObject _QRimage;
+    public GameObject _gamecode;
     private Coroutine countdownCoroutine;
     public float countdownTime = 10.0f;
     public TextMeshProUGUI countdownText; 
     
     // ---------------------------------- Debug ----------------------------------
-    
+
 
     // ---------------------------------- Unity Lifecycle ----------------------------------
     
@@ -138,6 +141,7 @@ public class ServerManager : Singleton<ServerManager>
         _startGameArea = GameObject.Find("StartGameArea");
         _gameManagerObject = GameObject.FindWithTag("GameManager");
         _gameManager = _gameManagerObject.GetComponent<GameManager>();
+        _BackgroundAsteroids = GameObject.Find("BackgroundAsteroids").gameObject;
 
         countdown.ResetCountdown();
 
@@ -333,6 +337,7 @@ public class ServerManager : Singleton<ServerManager>
         // Hide menu UI
         startGameButton.gameObject.SetActive(false);
         menuScreen.SetActive(false);
+        _BackgroundAsteroids.GetComponent<Animator>().enabled = true;
 
         _gameManager.StartGame();
     }
@@ -521,6 +526,8 @@ public class ServerManager : Singleton<ServerManager>
         {
             countdownText.gameObject.SetActive(true);  
         }
+        _QRimage.gameObject.SetActive(false);
+        _gamecode.gameObject.SetActive(false);
 
         while (timeRemaining > 0)
         {
@@ -551,7 +558,9 @@ public class ServerManager : Singleton<ServerManager>
             if (countdownText != null)
             {
                 countdownText.text = "";  
-                countdownText.gameObject.SetActive(false);  
+                countdownText.gameObject.SetActive(false); 
+                _QRimage.gameObject.SetActive(true);
+                _gamecode.gameObject.SetActive(true);
             }
 
             Debug.Log("Countdown stopped and reset.");
