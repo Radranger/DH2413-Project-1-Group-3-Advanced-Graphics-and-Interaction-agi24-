@@ -131,12 +131,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0669bdb8904d1fe4198633d31db91a9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletSpeed: 20
+  bulletSpeed: 30.7
   volumetricLine: {fileID: 122648, guid: 11530f2b0a0cd2442949827ecbb622f2, type: 3}
   shootClips:
   - {fileID: 8300000, guid: af027fa2b70d3d241a08d3f31ea04f4a, type: 3}
   - {fileID: 8300000, guid: eecc4d58fcc42514b8984e9d1328459d, type: 3}
   aimAssistSensitivity: {x: 2.5, y: 2.5, z: 62.3}
+  explosionParticlePrefab: {fileID: 2868324657682006320, guid: 2dbccdff2e336455c97b8da96a00552b, type: 3}
+  maxShootingFreq: 420
 --- !u!114 &2451047042287175646
 MonoBehaviour:
   m_ObjectHideFlags: 0

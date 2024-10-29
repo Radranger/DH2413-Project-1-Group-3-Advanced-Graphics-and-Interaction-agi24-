@@ -25,11 +25,8 @@ public class CameraRotation : MonoBehaviour
     void Update()
     {
         _playerMass = _gameManager.playerMass;
-        Debug.Log(_playerMass);
-
         
         _targetRotiation = Quaternion.Euler(-_playerMass.y*rotationAmount, _playerMass.x*rotationAmount, 0);
-        Debug.Log(_targetRotiation);
         transform.rotation = Quaternion.Slerp(transform.rotation, _targetRotiation, rotationSpeed * Time.deltaTime);
     }
 }
