@@ -664,6 +664,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3a23c8913552b7a4db79712d72693f73, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6519420284198764572}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3a23c8913552b7a4db79712d72693f73, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8373873490860634531}
   m_SourcePrefab: {fileID: 100100000, guid: 3a23c8913552b7a4db79712d72693f73, type: 3}
 --- !u!4 &7425394233304570797 stripped
 Transform:
@@ -792,3 +795,17 @@ MonoBehaviour:
   VisualInitialValue: {x: 0, y: 0}
   _acceleration: {x: 0, y: 0}
   wobbleAmount: 3
+--- !u!114 &8373873490860634531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7802376515528294679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdb6b4755b0214468fdbd46271a8aa6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  freezeDuration: 3
+  freezeEffectPrefab: {fileID: 0}

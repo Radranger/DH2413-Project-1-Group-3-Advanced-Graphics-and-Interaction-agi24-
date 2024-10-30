@@ -63,8 +63,8 @@ public class GameManager : MonoBehaviour
          _playerAmountUIElement = GameObject.Find("PlayersAmount");
          _playerAmountUIElementTextMeshPro = _playerAmountUIElement.GetComponent<TextMeshProUGUI>();
 
-        //_pickupSpawnerObject = GameObject.Find("PickupSpawn");
-        //_pickupSpawner = _pickupSpawnerObject.GetComponent<PickupSpawner>();
+        _pickupSpawnerObject = GameObject.Find("PickupSpawn");
+        _pickupSpawner = _pickupSpawnerObject.GetComponent<PickupSpawner>();
 
         StartCoroutine(calcMass());
         
@@ -161,7 +161,7 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         _obstacleManager.startSpawning();
-        //_pickupSpawner.StartSpawningPickup();
+        _pickupSpawner.StartSpawningPickup();
     }
 
 }
