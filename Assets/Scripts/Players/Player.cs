@@ -9,10 +9,13 @@ public class Player : MonoBehaviour
     private InputManager _inputManager;
     private PlayerMovementNEW _playerMovementNEW;
     private ShootingSystem _shootingSystem;
+    private NetworkPlayer _networkPlayer;
+    
 
-    public void Initialize(InputManager inputManager, GameObject playerPrefab){
+    public void Initialize(InputManager inputManager, GameObject playerPrefab, NetworkPlayer networkPlayer = null){
         _active = true;
         _inputManager = inputManager;
+        _networkPlayer = networkPlayer;
         //if(networkPlayer != null) _networkPlayer = networkPlayer;
 
         if (TryGetComponent(out _playerMovementNEW)){_playerMovementNEW.Initialize(_inputManager);};
@@ -20,6 +23,11 @@ public class Player : MonoBehaviour
         // _playerMovement = GetComponent<PlayerMovement>();
         // _playerMovement.Initialize(_inputManager);   
 
+    }
+    
+    public NetworkPlayer GetNetworkPlayer()
+    {
+        return _networkPlayer;
     }
 
     void Start()

@@ -69,6 +69,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   accelerometer:
     m_InternalValue: {x: 0, y: 0, z: 0}
+  shootInput:
+    m_InternalValue: 0
   playerName:
     m_InternalValue:
       utf8LengthInBytes: 0
@@ -106,6 +108,7 @@ MonoBehaviour:
         byte0029: 0
   skinColor:
     m_InternalValue: {r: 0, g: 0, b: 0, a: 1}
+  playerObject: {fileID: 0}
   accelerometerUpdateFrequency: 100
   lowPassKernelWidthInSeconds: 1
 --- !u!114 &33086245561681764

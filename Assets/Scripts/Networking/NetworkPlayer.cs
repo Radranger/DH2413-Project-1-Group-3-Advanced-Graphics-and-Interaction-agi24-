@@ -106,7 +106,7 @@ public class NetworkPlayer : NetworkBehaviour
 
     private void ApplyPlayerColor(Color color)
     {
-        Debug.Log($"Applying color {color} to player {OwnerClientId}");
+        //Debug.Log($"Applying color {color} to player {OwnerClientId}");
 
         if (playerObject == null)
         {
@@ -128,7 +128,7 @@ public class NetworkPlayer : NetworkBehaviour
                 {
                     materials[i] = new Material(materials[i]);
                     materials[i].color = color;
-                    Debug.Log($"Changed material color on renderer {renderer.gameObject.name}");
+                    //Debug.Log($"Changed material color on renderer {renderer.gameObject.name}");
                 }
                 renderer.materials = materials;
             }

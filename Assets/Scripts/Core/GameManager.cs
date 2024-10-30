@@ -31,6 +31,8 @@ public class GameManager : MonoBehaviour
     private GameObject _obstacleSpawnerObject;
     private ObstacleManager _obstacleManager;
 
+    private GameObject _pickupSpawnerObject;
+    private PickupSpawner _pickupSpawner;
     // Mapping player and its NetworkPlayer Object
     private Dictionary<ulong, Player> _playerDictionary = new Dictionary<ulong, Player>();
 
@@ -38,13 +40,24 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject); 
+        }
+        else
+        {
+            Destroy(gameObject); 
+        }
     }
 
     private void Start()
     {
         _obstacleSpawnerObject = GameObject.Find("SpawnPlane");
         _obstacleManager = _obstacleSpawnerObject.GetComponent<ObstacleManager>();
+
+        _pickupSpawnerObject = GameObject.Find("PickupSpawn");
+        _pickupSpawner = _pickupSpawnerObject.GetComponent<PickupSpawner>();
 
         StartCoroutine(calcMass());
         
@@ -79,7 +92,7 @@ public class GameManager : MonoBehaviour
         GameObject playerObject = Instantiate(_playerPrefab, spawnPos, Quaternion.identity);
 
         Player playerScript = playerObject.GetComponent<Player>();
-        playerScript.Initialize(_inputManager, _playerPrefab);
+        playerScript.Initialize(_inputManager, _playerPrefab, networkPlayer);
 
         _playerDictionary.Add(networkPlayer.OwnerClientId, playerScript);
     }
@@ -132,5 +145,7 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         _obstacleManager.startSpawning();
+        //_pickupSpawner.StartSpawningPickup();
     }
+
 }
