@@ -106,7 +106,7 @@ public class NetworkPlayer : NetworkBehaviour
 
     private void ApplyPlayerColor(Color color)
     {
-        Debug.Log($"Applying color {color} to player {OwnerClientId}");
+    
 
         if (playerObject == null)
         {
@@ -114,7 +114,30 @@ public class NetworkPlayer : NetworkBehaviour
             return;
         }
 
-        Renderer[] renderers = playerObject.GetComponentsInChildren<Renderer>();
+        GameObject shipHullObject = playerObject.transform.Find("ship")?.gameObject;
+        GameObject duckObject = playerObject.transform.Find("duck")?.gameObject;
+
+        if (shipHullObject == null || duckObject == null)
+        {
+            Debug.LogWarning("shipHullObject or duckObject is null");
+            return;
+        }
+        
+
+        Debug.Log($"Applying color {color} to player {OwnerClientId}");
+
+        MeshRenderer rend1 = shipHullObject.GetComponent<MeshRenderer>();
+        MeshRenderer rend2 = duckObject.GetComponent<MeshRenderer>();
+    
+        Material[] materials = rend1.materials;
+        materials[2].color = color;
+        rend1.materials = materials;
+
+        Material[] materialDuck = rend2.materials;
+        materialDuck[0].SetColor("_BC", color);
+        rend2.materials = materialDuck;
+
+        /*Renderer[] renderers = playerObject.GetComponentsInChildren<Renderer>();
         if (renderers.Length == 0)
         {
             Debug.LogWarning("No Renderer components found on playerObject");
@@ -132,7 +155,7 @@ public class NetworkPlayer : NetworkBehaviour
                 }
                 renderer.materials = materials;
             }
-        }
+        }*/
     }
 
 
