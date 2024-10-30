@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GameSpace;
+using TMPro;
 
 namespace GameSpace
 {
@@ -38,6 +39,9 @@ public class GameManager : MonoBehaviour
 
     public Vector2 playerMass; // The current average player position.
 
+    private GameObject _playerAmountUIElement;
+    private TextMeshProUGUI _playerAmountUIElementTextMeshPro;
+    
     private void Awake()
     {
         if (Instance == null)
@@ -55,6 +59,9 @@ public class GameManager : MonoBehaviour
     {
         _obstacleSpawnerObject = GameObject.Find("SpawnPlane");
         _obstacleManager = _obstacleSpawnerObject.GetComponent<ObstacleManager>();
+        
+         _playerAmountUIElement = GameObject.Find("PlayersAmount");
+         _playerAmountUIElementTextMeshPro = _playerAmountUIElement.GetComponent<TextMeshProUGUI>();
 
         //_pickupSpawnerObject = GameObject.Find("PickupSpawn");
         //_pickupSpawner = _pickupSpawnerObject.GetComponent<PickupSpawner>();
@@ -83,8 +90,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void updatePlayerLimit()
+    {
+        _playerAmountUIElementTextMeshPro.text = _playerDictionary.Count.ToString() + "/4 Connected";
+    }
+
     public void AddPlayer(NetworkPlayer networkPlayer)
     {
+        if (_playerDictionary.Count >= 4) return;
+        updatePlayerLimit();
+        
         InputManager _inputManager = new InputManager();
         _inputManager.Initialize(InputType.PHONE, networkPlayer);
 
@@ -96,6 +111,7 @@ public class GameManager : MonoBehaviour
 
         _playerDictionary.Add(networkPlayer.OwnerClientId, playerScript);
     }
+    
     public void AddLocalPlayer(){
         InputManager _inputManager = new InputManager();
         _inputManager.Initialize(InputType.KEYBOARD);

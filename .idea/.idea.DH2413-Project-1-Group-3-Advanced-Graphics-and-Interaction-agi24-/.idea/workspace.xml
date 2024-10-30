@@ -6,10 +6,16 @@
   <component name="ChangeListManager">
     <list default="true" id="ac760f21-e2f4-4faa-945d-b46efe56c7f5" name="更改" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.DH2413-Project-1-Group-3-Advanced-Graphics-and-Interaction-agi24-/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DH2413-Project-1-Group-3-Advanced-Graphics-and-Interaction-agi24-/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Materials/Surreal-Skyboxes/Snow_Village.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Materials/Surreal-Skyboxes/Snow_Village.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Materials/Surreal-Skyboxes/Textures/snow_village_night.png" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Materials/Surreal-Skyboxes/Textures/snow_village_night.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Environment/AsteroidField.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Environment/AsteroidField.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/SpaceshipModel/ufo.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/SpaceshipModel/ufo.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/MAIN_SCENE_2.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/MAIN_SCENE_2.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/MAIN_SCENE_2/Global Volume Profile 2.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/MAIN_SCENE_2/Global Volume Profile 2.asset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Core/GameManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Core/GameManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/TextMesh Pro/Examples &amp; Extras/Resources/Fonts &amp; Materials/Electronic Highway Sign SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TextMesh Pro/Examples &amp; Extras/Resources/Fonts &amp; Materials/Electronic Highway Sign SDF.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/TextMesh Pro/Examples &amp; Extras/Resources/Fonts &amp; Materials/Oswald Bold SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TextMesh Pro/Examples &amp; Extras/Resources/Fonts &amp; Materials/Oswald Bold SDF.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/TextMesh Pro/Examples &amp; Extras/Resources/Fonts &amp; Materials/Roboto-Bold SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TextMesh Pro/Examples &amp; Extras/Resources/Fonts &amp; Materials/Roboto-Bold SDF.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Fallback.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Fallback.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,17 +29,13 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3b24cc7fa9794ed8ab04312c53e6dedd172c00/86/f2c24920/SetupCoroutine.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3b24cc7fa9794ed8ab04312c53e6dedd172c00/cf/d662eabb/Random.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3b24cc7fa9794ed8ab04312c53e6dedd172c00/d4/8c8ab89e/Object.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3b24cc7fa9794ed8ab04312c53e6dedd172c00/f7/f562667e/MonoBehaviour.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/787acc3c9a4c471ba7d971300105af2446ac00/6c/c35b6cb8/Task.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/787acc3c9a4c471ba7d971300105af2446ac00/8e/f07796ac/Task`1.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/787acc3c9a4c471ba7d971300105af2446ac00/a4/1f15ad91/IntPtr.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/787acc3c9a4c471ba7d971300105af2446ac00/cf/c8c61d47/List`1.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b54eaf4963a54fba850ab55ad04d0ce23c00/a7/b18bcc02/NativeInputSystem.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/fe7039efe678478d9c83e73bc6a6566d94b400/24/75057263/PhysicsDebugDraw.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock:///Users/martinhakansson/Documents/GitHub/DH2413-Project-1-Group-3-Advanced-Graphics-and-Interaction-agi24-/Assets/Scripts/Networking/NetworkPlayer.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/martinhakansson/Documents/GitHub/DH2413-Project-1-Group-3-Advanced-Graphics-and-Interaction-agi24-/Assets/Scripts/Networking/NetworkPlayer.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/martinhakansson/Documents/GitHub/DH2413-Project-1-Group-3-Advanced-Graphics-and-Interaction-agi24-/Assets/Scripts/Players/DestroyPlayer.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/martinhakansson/Documents/GitHub/DH2413-Project-1-Group-3-Advanced-Graphics-and-Interaction-agi24-/Assets/Scripts/Players/DestroyPlayer.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.netcode.gameobjects@1.6.0/Runtime/Messaging/NetworkMessageManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.universal@14.0.8/Runtime/UniversalAdditionalCameraData.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.render-pipelines.universal@14.0.8/Shaders/Lit.shader" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Button.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
@@ -52,7 +54,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "Max-join",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -90,7 +92,7 @@
       <method v="2" />
     </configuration>
     <configuration name="Start Unity" type="RunUnityExe" factoryName="Unity Executable">
-      <option name="EXE_PATH" value="E:/software/unity/2022.3.10f1/Editor/Unity.exe" />
+      <option name="EXE_PATH" value="/Applications/Unity/Hub/Editor/2022.3.10f1/Unity.app/Contents/MacOS/Unity" />
       <option name="PROGRAM_PARAMETERS" value="-projectPath $PROJECT_DIR$ -debugCodeOptimization" />
       <option name="WORKING_DIRECTORY" value="E:/software/unity/2022.3.10f1/Editor" />
       <option name="PASS_PARENT_ENVS" value="1" />
