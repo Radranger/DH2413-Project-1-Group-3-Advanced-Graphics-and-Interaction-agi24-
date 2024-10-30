@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class PickupSpawner : MonoBehaviour
 {
-    public GameObject pickupPrefab; 
-    public float spawnInterval = 5f;
-    public float spawnRadius = 10f;
+    public List<GameObject> pickupPrefabs;    // List of pickup item prefabs
+    public float spawnInterval = 5f;          // Base spawn interval
+    public float randomIntervalRange = 3f;    // Random interval range
+    public float spawnRadius = 10f;           // Spawn radius
+
 
     private void Start()
     {
@@ -21,6 +23,7 @@ public class PickupSpawner : MonoBehaviour
         while (true)
         {
             SpawnPickup();
+            float randomInterval = spawnInterval + Random.Range(-randomIntervalRange, randomIntervalRange);
             yield return new WaitForSeconds(spawnInterval);
         }
     }
@@ -28,7 +31,10 @@ public class PickupSpawner : MonoBehaviour
     void SpawnPickup()
     {
         Vector3 spawnPosition = GetRandomPositionOnPlane();
-        Instantiate(pickupPrefab, spawnPosition, Quaternion.identity);
+        int randomIndex = Random.Range(0, pickupPrefabs.Count);
+        GameObject randomPickup = pickupPrefabs[randomIndex];
+
+        Instantiate(randomPickup, spawnPosition, Quaternion.identity);
     }
 
     Vector3 GetRandomPositionOnPlane()

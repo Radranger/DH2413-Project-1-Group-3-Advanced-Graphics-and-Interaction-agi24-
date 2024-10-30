@@ -16,6 +16,7 @@ public class DestroyPlayer : MonoBehaviour
 
     private bool _isInvincible; //check if the player got the shield
     private Renderer[] _playerRenderers;
+    Dictionary<Renderer, Color> originalColors = new Dictionary<Renderer, Color>();
 
     void Start()
     {
@@ -25,6 +26,14 @@ public class DestroyPlayer : MonoBehaviour
         _isInvincible = false;
 
         _playerRenderers = GetComponentsInChildren<Renderer>();
+
+        foreach (Renderer renderer in _playerRenderers)
+        {
+            if (renderer.material.HasProperty("_Color"))
+            {
+                originalColors[renderer] = renderer.material.color;
+            }
+        }
     }
 
     // Check for trigger collisions
@@ -77,33 +86,33 @@ public class DestroyPlayer : MonoBehaviour
         float invincibilityDuration = 3f;
         float blinkInterval = 0.1f;
 
-        Dictionary<Renderer, Color> originalColors = new Dictionary<Renderer, Color>();
-        foreach (Renderer renderer in _playerRenderers)
-        {
-            originalColors[renderer] = renderer.material.color;
-        }
-
         while (elapsedTime < invincibilityDuration)
         {
             foreach (Renderer renderer in _playerRenderers)
             {
-                Color color = renderer.material.color;
-                color.a = (color.a == 1f) ? 0.3f : 1f;
-                renderer.material.color = color;
+                if (renderer.material.HasProperty("_Color"))
+                {
+                    Color color = renderer.material.color;
+                    color.a = (color.a == 1f) ? 0.3f : 1f;
+                    renderer.material.color = color;
+                }
             }
 
             yield return new WaitForSeconds(blinkInterval);
-
             elapsedTime += blinkInterval;
         }
 
         foreach (Renderer renderer in _playerRenderers)
         {
-            renderer.material.color = originalColors[renderer];
+            if (renderer.material.HasProperty("_Color"))
+            {
+                renderer.material.color = originalColors[renderer];
+            }
         }
 
         _isInvincible = false;
     }
+
     // Check if all players are destroyed
     // void CheckAllPlayersDestroyed()
     // {
