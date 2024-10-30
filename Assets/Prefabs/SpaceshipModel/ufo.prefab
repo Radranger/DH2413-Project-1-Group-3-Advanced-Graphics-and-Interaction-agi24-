@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4321018350334077730}
   - component: {fileID: 2569004489250913318}
   - component: {fileID: 5324212877320902402}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -129,7 +129,7 @@ GameObject:
   - component: {fileID: 6520498955913221834}
   - component: {fileID: 2400465105526133718}
   - component: {fileID: 2841121769935050259}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Point Light (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -247,7 +247,7 @@ GameObject:
   - component: {fileID: 7535859642531260096}
   - component: {fileID: 1670711284116439252}
   - component: {fileID: 7865074236428128538}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -383,7 +383,7 @@ GameObject:
   - component: {fileID: 1500823578818141049}
   - component: {fileID: 2864933474450452393}
   - component: {fileID: 7682824093779261047}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -541,7 +541,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7019763800116617469, guid: 3a23c8913552b7a4db79712d72693f73, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: -6811550095892938889, guid: 3a23c8913552b7a4db79712d72693f73, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -557,11 +557,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 7bb1a4508970b9f46979a78e9dbef5d1, type: 2}
     - target: {fileID: -4675220124430512514, guid: 3a23c8913552b7a4db79712d72693f73, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: -4619342603592232540, guid: 3a23c8913552b7a4db79712d72693f73, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: -4450303550400443120, guid: 3a23c8913552b7a4db79712d72693f73, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -589,11 +589,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 590f538733adaaa4390ae1f3ce5162a6, type: 2}
     - target: {fileID: -650433988561056430, guid: 3a23c8913552b7a4db79712d72693f73, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: -42076320733947015, guid: 3a23c8913552b7a4db79712d72693f73, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 3a23c8913552b7a4db79712d72693f73, type: 3}
       propertyPath: m_Name
@@ -601,15 +601,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 3a23c8913552b7a4db79712d72693f73, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1950280374722395236, guid: 3a23c8913552b7a4db79712d72693f73, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2562278014110352501, guid: 3a23c8913552b7a4db79712d72693f73, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5291648239853415593, guid: 3a23c8913552b7a4db79712d72693f73, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -617,11 +617,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: dbc519d5220a911409c2ff026285138d, type: 2}
     - target: {fileID: 8264085604206248853, guid: 3a23c8913552b7a4db79712d72693f73, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8947090684172926957, guid: 3a23c8913552b7a4db79712d72693f73, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

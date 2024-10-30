@@ -56,8 +56,8 @@ public class GameManager : MonoBehaviour
         _obstacleSpawnerObject = GameObject.Find("SpawnPlane");
         _obstacleManager = _obstacleSpawnerObject.GetComponent<ObstacleManager>();
 
-        _pickupSpawnerObject = GameObject.Find("PickupSpawn");
-        _pickupSpawner = _pickupSpawnerObject.GetComponent<PickupSpawner>();
+        //_pickupSpawnerObject = GameObject.Find("PickupSpawn");
+        //_pickupSpawner = _pickupSpawnerObject.GetComponent<PickupSpawner>();
 
         StartCoroutine(calcMass());
         
