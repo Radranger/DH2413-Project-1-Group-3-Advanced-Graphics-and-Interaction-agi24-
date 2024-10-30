@@ -4,6 +4,8 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine.SceneManagement;
 
@@ -36,8 +38,6 @@ public class ServerManager : Singleton<ServerManager>
     [SerializeField]
     private Button RestartGameButton;
 
-    [SerializeField]
-    private int countdownTime = 5;
 
     // For Debug
     [SerializeField]
@@ -50,17 +50,98 @@ public class ServerManager : Singleton<ServerManager>
     public List<GameObject> players = new List<GameObject>();
     private Dictionary<GameObject, bool> activePlayers = new Dictionary<GameObject, bool>();
     private Dictionary<GameObject, bool> activeNetworkPlayers = new Dictionary<GameObject, bool>();
+    private Dictionary<ulong, bool> playersReadyStatus = new Dictionary<ulong, bool>();
 
     public bool gameStarted = false;
 
     private GameManager _gameManager;
     private GameObject _gameManagerObject;
     private Coroutine playerNameCoroutine;
+    
+    private CancellationTokenSource cts;
+    private GameObject _startGameArea;
+    private GameObject _BackgroundAsteroids;
+    public GameObject _QRimage;
+    public GameObject _gamecode;
+    private Coroutine countdownCoroutine;
+    public float countdownTime = 10.0f;
+    public TextMeshProUGUI countdownText; 
+    
+    // ---------------------------------- Debug ----------------------------------
 
+
+    // ---------------------------------- Unity Lifecycle ----------------------------------
+    
+    
     private async void Start()
     {
+        cts = new CancellationTokenSource();
+        
+        if (NetworkManager.Singleton == null)
+        {
+            Debug.Log("NetworkManager is null, initializing a new one.");
+
+        }
+        else
+        {
+            Debug.LogWarning("NetworkManager already exists: " + NetworkManager.Singleton.gameObject.name);
+        }
+
+        // make sure only one NetworkManager 
+        await InitializeServer(cts.Token);
+    }
+
+    void OnDisable()
+    {
+        Debug.Log("ServerManager::OnDisable Instance ID: " + this.GetInstanceID());
+        StopServerAndDestroyNetworkManager();
+    }
+    
+    private void OnDestroy()
+    {
+        if (cts != null)
+        {
+            cts.Cancel();
+            cts.Dispose();
+            cts = null;
+        }
+    }
+    
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            StartGame();
+        }
+        if (gameStarted)
+        {
+            CullPlayers();
+        }
+        
+        
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            if (gameStarted)
+            {
+                EndGame();
+                //RestartServer();
+            }
+            else
+            {
+                //RestartServer();
+            }
+            
+        }
+    }
+    
+    // ---------------------------------- Initialization ----------------------------------
+    
+    private async Task InitializeServer(CancellationToken token) {
+        Debug.Log("Initializing server.");
+        _startGameArea = GameObject.Find("StartGameArea");
         _gameManagerObject = GameObject.FindWithTag("GameManager");
         _gameManager = _gameManagerObject.GetComponent<GameManager>();
+        _BackgroundAsteroids = GameObject.Find("BackgroundAsteroids").gameObject;
 
         countdown.ResetCountdown();
 
@@ -75,47 +156,55 @@ public class ServerManager : Singleton<ServerManager>
             StartGame();
         });
 
-        resetGameButton?.onClick.AddListener(() =>
-        {
-            EndGame();
-        });
-        resetGameButton.gameObject.SetActive(false);
-
-        // 
-        //if (RestartGameButton != null)
-        //{
-        //    RestartGameButton.onClick.AddListener(() =>
-        //    {
-        //        Debug.Log("RestartGameButton clicked. Restarting server.");
-        //        RestartServer();
-        //        RestartScreen.SetActive(false);
-        //    });
-        //}
-        //else
-        //{
-        //    Debug.LogError("RestartGameButton is not assigned in the Inspector.");
-        //}
-
-        //RestartScreen.SetActive(false);
-
+        // Configure Relay
         RelayHostData hostData;
         if (RelayManager.Instance.IsRelayEnabled)
         {
-            hostData = await RelayManager.Instance.SetupRelay();
+            try
+            {
+                hostData = await RelayManager.Instance.SetupRelay();
+                // Check if cancellation is requested
+                if (token.IsCancellationRequested) return;
+                Debug.Log("Relay setup complete.");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Relay setup failed: {ex.Message}");
+                return;
+            }
         }
         else
         {
-            throw new Exception("Relay could not be enabled!");
+            Debug.LogError("Relay is not enabled!");
+            return;
         }
 
+        // Start the server
         if (NetworkManager.Singleton.StartServer())
+        {
             Debug.Log("Server started successfully!");
+        }
         else
+        {
             Debug.Log("Server failed to start!");
+            return;
+        }
 
-        joinCode.GetComponentInChildren<TMP_Text>().text = hostData.JoinCode;
+        // Set join code
+        if (joinCode != null)
+        {
+            TMP_Text tmpText = joinCode.GetComponentInChildren<TMP_Text>();
+            if (tmpText != null)
+            {
+                tmpText.text = hostData.JoinCode;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("joinCode object is null after async operation.");
+        }
 
-        // Handle client connection and disconnection
+        // Register server callbacks
         if (NetworkManager.Singleton.IsServer)
         {
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
@@ -135,122 +224,13 @@ public class ServerManager : Singleton<ServerManager>
         }
 
         // Start updating player names and info
+        // Check if cancellation is requested before starting coroutine
+        if (token.IsCancellationRequested) return;
         playerNameCoroutine = StartCoroutine(SetPlayerNames());
-        //StartCoroutine(UpdatePlayerInfo());
     }
-
-    private void OnServerStopped(bool obj)
-    {
-        Debug.LogWarning("Server stopped! Going back to main scene");
-
-        // Unsubscribe from events
-        NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
-        NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
-        NetworkManager.Singleton.OnServerStopped -= OnServerStopped;
-
-        // Clean up all players
-        foreach (GameObject player in players)
-        {
-            Destroy(player);
-        }
-        players.Clear();
-        playerMap.Clear();
-        playerIdMap.Clear();
-        activePlayers.Clear();
-
-        // Clean up networkPlayers
-        foreach (GameObject networkPlayer in networkPlayers)
-        {
-            Destroy(networkPlayer);
-        }
-        networkPlayers.Clear();
-
-        // Clean up GameManager's player dictionary
-        _gameManager.ClearPlayers();
-
-        // Destroy the NetworkManager to avoid duplicates on scene reload
-        Destroy(NetworkManager.Singleton.gameObject);
-
-        // Load the main scene
-        SceneManager.LoadScene("MAIN_SCENE");
-    }
-
-    // Debug: Update player info text
-    private IEnumerator UpdatePlayerInfo()
-    {
-        while (true)
-        {
-            string playerInfo = "";
-            for (int i = networkPlayers.Count - 1; i >= 0; i--)
-            {
-                GameObject networkPlayer = networkPlayers[i];
-                if (networkPlayer == null)
-                {
-                    networkPlayers.RemoveAt(i);
-                    continue;
-                }
-
-                NetworkPlayer networkPlayerComponent = networkPlayer.GetComponent<NetworkPlayer>();
-                if (networkPlayerComponent == null)
-                {
-                    continue;
-                }
-
-                // Get player's acceleration
-                Vector3 accelerometer = networkPlayerComponent.accelerometer.Value;
-                string playerName = networkPlayerComponent.GetPlayerName();
-
-                // Display
-                playerInfo += $"{playerName}: X={accelerometer.x:F2}, Y={accelerometer.y:F2}, Z={accelerometer.z:F2}\n";
-            }
-
-            // Update UI
-            if (playerInfoText != null)
-            {
-                playerInfoText.text = playerInfo;
-            }
-
-            yield return new WaitForSeconds(1);
-        }
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            Debug.Log("Start Game");
-            StartGame();
-        }
-        if (gameStarted)
-        {
-            CullPlayers();
-        }
-        
-
-
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            if (gameStarted)
-            {
-                EndGame();
-                RestartServer();
-            }
-            else
-            {
-                RestartServer();
-            }
-        }
-    }
-
-    private void RestartServer()
-    {
-        NetworkManager.Singleton.Shutdown();
-
-        // Manually invoke OnServerStopped since Shutdown doesn't trigger it automatically
-        OnServerStopped(true);
-    }
-
+    
+    // ---------------------------------- Client Management ----------------------------------
+    
     private void OnClientConnected(ulong clientID)
     {
         Debug.Log("Client connected: " + clientID);
@@ -277,7 +257,7 @@ public class ServerManager : Singleton<ServerManager>
             if (skinPresets != null)
             {
                 Color playerColor = skinPresets.PullColor();
-                Debug.Log($"Assigned color {playerColor} to player {clientID}");
+                //Debug.Log($"Assigned color {playerColor} to player {clientID}");
 
                 networkPlayer.GetComponent<NetworkPlayer>().skinColor.Value = playerColor;
             }
@@ -325,6 +305,7 @@ public class ServerManager : Singleton<ServerManager>
             players.Remove(playerObject);
             playerMap.Remove(playerObject);
             playerIdMap.Remove(clientID);
+            playersReadyStatus.Remove(clientID);
             Destroy(playerObject);
 
             // Remove from activePlayers
@@ -347,21 +328,65 @@ public class ServerManager : Singleton<ServerManager>
             resetGameButton.gameObject.SetActive(true);
         }
     }
-
-
+    
+    // ---------------------------------- Game State Management ----------------------------------
+    
     private void StartGame()
     {
-        Debug.Log("starting");
+        gameStarted = true;
         // Hide menu UI
         startGameButton.gameObject.SetActive(false);
         menuScreen.SetActive(false);
+        _BackgroundAsteroids.GetComponent<Animator>().enabled = true;
 
         _gameManager.StartGame();
+    }
+    
+    public void EndGame()
+    {
+        resetGameButton.gameObject.SetActive(false);
 
-        gameStarted = true;
+        activeNetworkPlayers.Clear();
+        activePlayers.Clear();
+
+        gameStarted = false;
+
+        NetworkManager.Singleton.Shutdown();
+
+        // 清理所有玩家
+        foreach (GameObject player in players)
+        {
+            if (player != null)
+            {
+                Destroy(player);
+            }
+        }
+        players.Clear();
+        playerMap.Clear();
+        playerIdMap.Clear();
+        activePlayers.Clear();
+        playersReadyStatus.Clear();
+
+        if (playerNameCoroutine != null)
+        {
+            StopCoroutine(playerNameCoroutine);
+            playerNameCoroutine = null;
+        }
+
+        // clear networkPlayers
+        foreach (GameObject networkPlayer in networkPlayers)
+        {
+            if (networkPlayer != null)
+            {
+                Destroy(networkPlayer);
+            }
+        }
+        networkPlayers.Clear();
+        activeNetworkPlayers.Clear();
+        
+        _gameManager.ClearPlayers();
     }
 
-    // Update player names above their heads
     private IEnumerator SetPlayerNames()
     {
         while (true)
@@ -425,6 +450,236 @@ public class ServerManager : Singleton<ServerManager>
             yield return new WaitForSeconds(1);
         }
     }
+    
+    private IEnumerator UpdatePlayerInfo()
+    {
+        while (true)
+        {
+            string playerInfo = "";
+            for (int i = networkPlayers.Count - 1; i >= 0; i--)
+            {
+                GameObject networkPlayer = networkPlayers[i];
+                if (networkPlayer == null)
+                {
+                    networkPlayers.RemoveAt(i);
+                    continue;
+                }
+
+                NetworkPlayer networkPlayerComponent = networkPlayer.GetComponent<NetworkPlayer>();
+                if (networkPlayerComponent == null)
+                {
+                    continue;
+                }
+
+                // Get player's acceleration
+                Vector3 accelerometer = networkPlayerComponent.accelerometer.Value;
+                string playerName = networkPlayerComponent.GetPlayerName();
+
+                // Display
+                playerInfo += $"{playerName}: X={accelerometer.x:F2}, Y={accelerometer.y:F2}, Z={accelerometer.z:F2}\n";
+            }
+
+            // Update UI
+            if (playerInfoText != null)
+            {
+                playerInfoText.text = playerInfo;
+            }
+
+            yield return new WaitForSeconds(1);
+        }
+    }
+    
+    public void SetPlayerReady(ulong clientId, bool isReady)
+    {
+        playersReadyStatus[clientId] = isReady;
+        Debug.Log("Player " + clientId + " is " + (isReady ? "ready" : "not ready"));
+
+        CheckAllPlayersReady();
+    }
+    
+    private void CheckAllPlayersReady()
+    {
+        if (gameStarted) return;
+
+        foreach (bool isReady in playersReadyStatus.Values)
+        {
+            if (!isReady)
+            {
+                StopCountdown();
+                Debug.Log("Not all players are ready.");
+                return;
+            }
+        }
+        
+        Debug.Log("All players are ready.");
+        if (countdownCoroutine == null)
+        {
+            countdownCoroutine = StartCoroutine(StartCountdown());
+            countdownText.gameObject.SetActive(true);
+        }
+    }
+    
+    private IEnumerator StartCountdown()
+    {
+        float timeRemaining = countdownTime;
+        if (countdownText != null)
+        {
+            countdownText.gameObject.SetActive(true);  
+        }
+        _QRimage.gameObject.SetActive(false);
+        _gamecode.gameObject.SetActive(false);
+
+        while (timeRemaining > 0)
+        {
+            if (countdownText != null)
+            {
+                countdownText.text = Mathf.Ceil(timeRemaining).ToString();  
+            }
+            timeRemaining -= Time.deltaTime;
+            yield return null;
+        }
+        
+        if (countdownText != null)
+        {
+            countdownText.gameObject.SetActive(false);  
+        }
+        
+        StartGame();
+        _startGameArea.gameObject.SetActive(false);
+    }
+    
+    private void StopCountdown()
+    {
+        if (countdownCoroutine != null)
+        {
+            StopCoroutine(countdownCoroutine);  
+            countdownCoroutine = null;
+
+            if (countdownText != null)
+            {
+                countdownText.text = "";  
+                countdownText.gameObject.SetActive(false); 
+                _QRimage.gameObject.SetActive(true);
+                _gamecode.gameObject.SetActive(true);
+            }
+
+            Debug.Log("Countdown stopped and reset.");
+        }
+    }
+    
+    // ---------------------------------- Server Shutdown and Cleanup ----------------------------------
+    
+    private void OnServerStopped(bool obj)
+    {
+        Debug.LogWarning("Server stopped! Going back to RestartPagePC");
+
+        // Unsubscribe from events
+        NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+        NetworkManager.Singleton.OnServerStopped -= OnServerStopped;
+        
+        foreach (GameObject player in players)
+        {
+            Destroy(player);
+        }
+        players.Clear();
+        playerMap.Clear();
+        playerIdMap.Clear();
+        activePlayers.Clear();
+
+        // 清理networkPlayers
+        foreach (GameObject networkPlayer in networkPlayers)
+        {
+            Destroy(networkPlayer);
+        }
+        networkPlayers.Clear();
+
+        // 清理GameManager中的玩家
+        _gameManager.ClearPlayers();
+
+        // 销毁 NetworkManager，防止重复创建
+        Destroy(NetworkManager.Singleton.gameObject);
+
+        // 加载RestartPagePC场景
+        SceneManager.LoadScene("Scenes/RestartPagePC");
+    }
+    
+    private void StopServerAndDestroyNetworkManager()
+    {
+        // Stop Server
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.Shutdown();
+            Debug.Log("Server stopped.");
+        }
+
+        // Destroy NetworkManager Instance
+        if (NetworkManager.Singleton != null)
+        {
+            Destroy(NetworkManager.Singleton.gameObject);
+            Debug.Log("NetworkManager destroyed.");
+        }
+
+        // make sure NetworkManager is destroyed
+        if (NetworkManager.Singleton == null)
+        {
+            Debug.Log("NetworkManager is null after destruction.");
+        }
+        else
+        {
+            Debug.LogWarning("NetworkManager still exists after destruction.");
+        }
+    }
+
+
+
+    // Debug: Update player info text
+
+
+
+
+    /*public async void RestartServer()
+    {
+        //NetworkManager.Singleton.Shutdown();
+        //menuScreen.SetActive(true);
+        //Destroy(NetworkManager.Singleton.gameObject);
+        // Manually invoke OnServerStopped since Shutdown doesn't trigger it automatically
+        //OnServerStopped(true);
+        
+        SceneManager.LoadScene("Scenes/MAIN_SCENE");
+        Debug.Log("Restarting Server successfully!");
+    }
+    private async Task RestartServerCoroutine()
+    {
+        await Task.Delay(100); // 等待100毫秒，等价于原来的WaitForSeconds(0.1f)
+        InitializeSceneObjects();
+        // 重新初始化服务器
+        await InitializeServer(cts.Token);
+    }
+    private void InitializeSceneObjects()
+    {
+        // 重新查找并赋值 GameManager 的依赖项
+        _gameManager = GameObject.FindWithTag("GameManager").GetComponent<GameManager>();
+
+        if (_gameManager == null)
+        {
+            Debug.LogError("GameManager not found after scene reload.");
+        }
+        else
+        {
+            // 如果有需要，还可以在这里重新分配其他依赖对象
+            _gameManager.InitializeDependencies(); // 如果 GameManager 需要重新分配依赖项
+        }
+    }*/
+    
+    
+
+
+
+
+
+    // Update player names above their heads
+
 
 
     private void CullPlayers()
@@ -435,57 +690,14 @@ public class ServerManager : Singleton<ServerManager>
     /// <summary>
     /// Ends the gameplay session, and returns to the "main menu".
     /// </summary>
-    public void EndGame()
-    {
-        resetGameButton.gameObject.SetActive(false);
-
-        activeNetworkPlayers.Clear();
-        activePlayers.Clear();
-
-        gameStarted = false;
-
-        // Show menu UI
-        menuScreen.SetActive(true);
-
-        // Clean up all players
-        foreach (GameObject player in players)
-        {
-            if (player != null)
-            {
-                Destroy(player);
-            }
-        }
-        players.Clear();
-        playerMap.Clear();
-        playerIdMap.Clear();
-        activePlayers.Clear();
-
-        if (playerNameCoroutine != null)
-        {
-            StopCoroutine(playerNameCoroutine);
-            playerNameCoroutine = null;
-        }
-        
-        // Clean up networkPlayers
-        foreach (GameObject networkPlayer in networkPlayers)
-        {
-            if (networkPlayer != null)
-            {
-                Destroy(networkPlayer);
-            }
-        }
-        networkPlayers.Clear();
-        activeNetworkPlayers.Clear();
-
-        // Clean up GameManager's player dictionary
-        _gameManager.ClearPlayers();
-    }
+   
 
     public void PlayerDestroyed(GameObject player)
     {
         if (players.Contains(player))
         {
             players.Remove(player);
+            Debug.Log("Player removed. Remaining players: " + players.Count + gameStarted);
         }
 
         if (playerMap.ContainsKey(player))
@@ -495,6 +707,8 @@ public class ServerManager : Singleton<ServerManager>
 
             if (networkPlayer != null)
             {
+                ulong clientID = networkPlayer.GetComponent<NetworkPlayer>().OwnerClientId;
+                _gameManager.RemovePlayer(clientID);
                 networkPlayers.Remove(networkPlayer);
                 Destroy(networkPlayer);
             }
@@ -511,12 +725,14 @@ public class ServerManager : Singleton<ServerManager>
         if (players.Count == 0 && gameStarted)
         {
             Debug.Log("All players have been destroyed. Activating RestartScreen.");
-            RestartScreen.SetActive(true);
+            //ShowRestartScreen();
             EndGame();
+            
+            SceneManager.LoadScene("Scenes/RestartPagePC");
         }
     }
-
-
+    
+    
     public int GetActivePlayers()
     {
         int count = 0;

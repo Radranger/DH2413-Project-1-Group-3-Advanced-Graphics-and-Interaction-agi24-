@@ -543,7 +543,7 @@ GameObject:
   - component: {fileID: 1035042429}
   - component: {fileID: 1035042428}
   - component: {fileID: 1035042427}
-  - component: {fileID: 1035042426}
+  - component: {fileID: 1035042430}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -571,18 +571,6 @@ RectTransform:
   m_AnchoredPosition: {x: 7, y: -16}
   m_SizeDelta: {x: 329.5262, y: 94.601}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1035042426
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1035042424}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d7e9b7cf77ae41044ad602c48482709f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1035042427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -627,9 +615,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1035042426}
-        m_TargetAssemblyTypeName: StartGame, Assembly-CSharp
-        m_MethodName: StartMenu
+      - m_Target: {fileID: 1035042430}
+        m_TargetAssemblyTypeName: RestartGame, Assembly-CSharp
+        m_MethodName: OnRestartButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -677,6 +665,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1035042424}
   m_CullTransparentMesh: 1
+--- !u!114 &1035042430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1035042424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 559931c2e8d22cd4ba8cd03263899d66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1169724954
 GameObject:
   m_ObjectHideFlags: 0

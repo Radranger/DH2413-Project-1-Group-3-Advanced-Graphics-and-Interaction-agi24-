@@ -15,7 +15,6 @@ public class ObstacleManager : MonoBehaviour
     public float splitMagnitude = 10.0f;
     public float splitBlastMagnitude = 5.0f;
     public float splitBlastDecelerationRate = 10.0f;
-
     private GameObject _lineRenderer; 
     private LineRendererScript _lineRendererScript; 
     
