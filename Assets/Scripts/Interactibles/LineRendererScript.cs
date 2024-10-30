@@ -132,7 +132,7 @@ public class LineRendererScript : MonoBehaviour
             }
 
             obj.laserLineRenderer.SetPosition(0, center);
-            obj.laserLineRenderer.SetPosition(1, new Vector3(obj.player.transform.position.x-1.5f, obj.player.transform.position.y + 0.5f , obj.player.transform.position.z));
+            obj.laserLineRenderer.SetPosition(1, obj.player.transform.position + obj.player.GetComponent<BoxCollider>().center);
         }
     }
 }

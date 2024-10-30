@@ -184,7 +184,7 @@ public class ShootingSystem : MonoBehaviour
 
     private void Shoot()
     {
-        shootPosition  = this.transform.position + new Vector3(-2.0f, 0.5f, 1.0f);
+        shootPosition  = this.transform.position; //+ new Vector3(-2.0f, 0.5f, 1.0f);
         displayParticle();
 
         //Debug.Log("Shootin");
