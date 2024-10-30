@@ -8,6 +8,8 @@ TagManager:
   - GameManager
   - enemy
   - shield
+  - Laser
+  - frozen
   layers:
   - Default
   - TransparentFX

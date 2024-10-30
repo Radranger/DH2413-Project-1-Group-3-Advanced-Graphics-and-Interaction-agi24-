@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 7535991846212085337}
   - component: {fileID: 2451047042287175646}
   - component: {fileID: 1006719892700765420}
+  - component: {fileID: -412151534315660253}
   m_Layer: 0
   m_Name: DuckYellow
   m_TagString: Player
@@ -91,7 +92,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1.6632669, y: 1.0335686, z: 1}
-  m_Center: {x: -1.3765727, y: 0.69561636, z: 0.0000000016401817}
+  m_Center: {x: -1.68, y: 0.2, z: 0.0000000016401817}
 --- !u!54 &-7291966461100727890
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -176,6 +177,20 @@ MonoBehaviour:
   VisualInitialValue: {x: 0, y: 0}
   _acceleration: {x: 0, y: 0}
   wobbleAmount: 3
+--- !u!114 &-412151534315660253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1374619643111585439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdb6b4755b0214468fdbd46271a8aa6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  freezeDuration: 3
+  freezeEffectPrefab: {fileID: 2618214732094421749, guid: bd4a4333238131b448994eca3875664a, type: 3}
 --- !u!1 &3520885568590921442
 GameObject:
   m_ObjectHideFlags: 0
@@ -726,6 +741,34 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 0c63ca2a5cb069a4ea1d5efb3cb68325, type: 3}
       propertyPath: m_Name
       value: sapceship
+      objectReference: {fileID: 0}
+    - target: {fileID: 2677304124955947278, guid: 0c63ca2a5cb069a4ea1d5efb3cb68325, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7040583
+      objectReference: {fileID: 0}
+    - target: {fileID: 2677304124955947278, guid: 0c63ca2a5cb069a4ea1d5efb3cb68325, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.71014166
+      objectReference: {fileID: 0}
+    - target: {fileID: 2677304124955947278, guid: 0c63ca2a5cb069a4ea1d5efb3cb68325, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.0006257294
+      objectReference: {fileID: 0}
+    - target: {fileID: 2677304124955947278, guid: 0c63ca2a5cb069a4ea1d5efb3cb68325, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.0006310938
+      objectReference: {fileID: 0}
+    - target: {fileID: 2677304124955947278, guid: 0c63ca2a5cb069a4ea1d5efb3cb68325, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90.503
+      objectReference: {fileID: 0}
+    - target: {fileID: 2677304124955947278, guid: 0c63ca2a5cb069a4ea1d5efb3cb68325, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 11.673004
+      objectReference: {fileID: 0}
+    - target: {fileID: 2677304124955947278, guid: 0c63ca2a5cb069a4ea1d5efb3cb68325, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -11.673004
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
