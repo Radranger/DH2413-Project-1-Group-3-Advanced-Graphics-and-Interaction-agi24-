@@ -5557,8 +5557,8 @@ MonoBehaviour:
   pickupPrefabs:
   - {fileID: 1945954225771131976, guid: 927153b809dce2a4f828356650545a28, type: 3}
   - {fileID: 1945954225771131976, guid: 38b91e48dce557049b3c59d186a338b2, type: 3}
-  spawnInterval: 5
-  randomIntervalRange: 3
+  spawnInterval: 21.6
+  randomIntervalRange: 22.1
   spawnRadius: 10
 --- !u!4 &694170036
 Transform:

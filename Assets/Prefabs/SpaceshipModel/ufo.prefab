@@ -752,6 +752,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3a23c8913552b7a4db79712d72693f73, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8373873490860634531}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3a23c8913552b7a4db79712d72693f73, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -4300722860037132576}
   m_SourcePrefab: {fileID: 100100000, guid: 3a23c8913552b7a4db79712d72693f73, type: 3}
 --- !u!4 &7425394233304570797 stripped
 Transform:
@@ -775,6 +778,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f142f3a6ec0054005ad57d62ff3002fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerID: 0
 --- !u!65 &2207468502610316558
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -878,6 +882,10 @@ MonoBehaviour:
   VisualInput: {x: 0, y: 0}
   VisualDif: {x: 0, y: 0}
   VisualInitialValue: {x: 0, y: 0}
+  shakestatement: 0
+  shakeThreshold: 2
+  shakeDetectionWindow: 1
+  shakeCooldown: 0.5
   _acceleration: {x: 0, y: 0}
   wobbleAmount: 3
 --- !u!114 &8373873490860634531
@@ -893,5 +901,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   freezeDuration: 3
-  freezeShader: {fileID: -6465566751694194690, guid: 3d4da9cdf19286144a77ba7e3c2975dc, type: 3}
-  additionalRenderers: []
+  freezeEffectPrefab: {fileID: 0}
+  _shakeText: {fileID: 0}
+--- !u!95 &-4300722860037132576
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7802376515528294679}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
