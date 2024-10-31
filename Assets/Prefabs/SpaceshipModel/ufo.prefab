@@ -808,4 +808,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   freezeDuration: 3
-  freezeEffectPrefab: {fileID: 0}
+  freezeShader: {fileID: -6465566751694194690, guid: 3d4da9cdf19286144a77ba7e3c2975dc, type: 3}

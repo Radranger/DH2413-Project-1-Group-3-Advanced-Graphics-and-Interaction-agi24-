@@ -1,32 +1,44 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FreezePlayer : MonoBehaviour
 {
     public float freezeDuration = 3f;
-    public GameObject freezeEffectPrefab;
+    public Shader freezeShader;
+    public Renderer[] additionalRenderers;
     private bool _isFrozen;
     private Renderer[] _playerRenderers;
     private PlayerMovementNEW _playerMovementScript;
     private Rigidbody _rb;
     private RigidbodyConstraints _originalConstraints;
 
-    private Color originalColor = Color.white;
+    private Shader[] originalShaders;
 
     void Start()
     {
         _isFrozen = false;
-        _playerRenderers = GetComponentsInChildren<Renderer>();
+
+        var childRenderers = GetComponentsInChildren<Renderer>(true);
+        int totalRenderers = childRenderers.Length + (additionalRenderers != null ? additionalRenderers.Length : 0);
+
+        _playerRenderers = new Renderer[totalRenderers];
+        childRenderers.CopyTo(_playerRenderers, 0);
+
+        if (additionalRenderers != null && additionalRenderers.Length > 0)
+        {
+            additionalRenderers.CopyTo(_playerRenderers, childRenderers.Length);
+        }
+
         _playerMovementScript = GetComponent<PlayerMovementNEW>();
         _rb = GetComponent<Rigidbody>();
         _originalConstraints = _rb.constraints;
 
-        if (_playerRenderers.Length > 0)
+        originalShaders = new Shader[_playerRenderers.Length];
+        for (int i = 0; i < _playerRenderers.Length; i++)
         {
-            if (_playerRenderers[0].material.HasProperty("_Color"))
+            if (_playerRenderers[i].material != null)
             {
-                originalColor = _playerRenderers[0].material.color;
+                originalShaders[i] = _playerRenderers[i].material.shader;
             }
         }
     }
@@ -56,23 +68,11 @@ public class FreezePlayer : MonoBehaviour
             _rb.constraints = RigidbodyConstraints.FreezeAll;
         }
 
-        GameObject freezeEffect = null;
-        if (freezeEffectPrefab != null)
-        {
-            freezeEffect = Instantiate(freezeEffectPrefab, transform.position, Quaternion.identity);
-            freezeEffect.transform.SetParent(transform);
-        }
-
-        SetPlayerColor(Color.cyan);
+        SetPlayerShader(freezeShader);
 
         yield return new WaitForSeconds(freezeDuration);
 
-        SetPlayerColor(originalColor);
-
-        if (freezeEffect != null)
-        {
-            Destroy(freezeEffect);
-        }
+        RestoreOriginalShaders();
 
         _isFrozen = false;
 
@@ -87,13 +87,24 @@ public class FreezePlayer : MonoBehaviour
         }
     }
 
-    private void SetPlayerColor(Color color)
+    private void SetPlayerShader(Shader shader)
     {
         foreach (Renderer renderer in _playerRenderers)
         {
-            if (renderer.material.HasProperty("_Color"))
+            if (renderer.material != null)
             {
-                renderer.material.color = color;
+                renderer.material.shader = shader;
+            }
+        }
+    }
+
+    private void RestoreOriginalShaders()
+    {
+        for (int i = 0; i < _playerRenderers.Length; i++)
+        {
+            if (_playerRenderers[i].material != null)
+            {
+                _playerRenderers[i].material.shader = originalShaders[i];
             }
         }
     }
