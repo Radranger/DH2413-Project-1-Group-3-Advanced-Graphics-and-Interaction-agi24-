@@ -15,6 +15,7 @@ public class DestroyPlayer : MonoBehaviour
     private bool _canBeHit;
 
     private bool _isInvincible; //check if the player got the shield
+    private GameObject _shield;
     private Renderer[] _playerRenderers;
     Dictionary<Renderer, Color> originalColors = new Dictionary<Renderer, Color>();
 
@@ -28,6 +29,7 @@ public class DestroyPlayer : MonoBehaviour
         _canBeHit = true;
         _isInvincible = false;
 
+        _shield = transform.Find("Shield")?.gameObject;
         _playerRenderers = GetComponentsInChildren<Renderer>();
 
         foreach (Renderer renderer in _playerRenderers)
@@ -148,12 +150,21 @@ public class DestroyPlayer : MonoBehaviour
     IEnumerator Invincibility()
     {
         _isInvincible = true;
-        float elapsedTime = 0f;
+
+        // Activate the shield object when invincibility starts
+        if (_shield != null)
+        {
+            _shield.SetActive(true);
+        }
+
+        // Set the invincibility duration to 3 seconds
         float invincibilityDuration = 3f;
+        float elapsedTime = 0f;
         float blinkInterval = 0.1f;
 
         while (elapsedTime < invincibilityDuration)
         {
+            // Blink effect (optional)
             foreach (Renderer renderer in _playerRenderers)
             {
                 if (renderer.material.HasProperty("_Color"))
@@ -168,12 +179,19 @@ public class DestroyPlayer : MonoBehaviour
             elapsedTime += blinkInterval;
         }
 
+        // Reset colors to original
         foreach (Renderer renderer in _playerRenderers)
         {
             if (renderer.material.HasProperty("_Color"))
             {
                 renderer.material.color = originalColors[renderer];
             }
+        }
+
+        // Deactivate the shield object after invincibility ends
+        if (_shield != null)
+        {
+            _shield.SetActive(false);
         }
 
         _isInvincible = false;
@@ -196,9 +214,9 @@ public class DestroyPlayer : MonoBehaviour
     //         }
     //     }
     // }
-    
+
     //---------------------For debug--------------------------
-    
+
     private void DestroyThisPlayer()
     {
         Debug.Log("DestroyPlayer: Player is being destroyed.");
