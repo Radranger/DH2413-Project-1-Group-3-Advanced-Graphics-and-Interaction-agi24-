@@ -41,6 +41,29 @@ public class GameManager : MonoBehaviour
 
     private GameObject _playerAmountUIElement;
     private TextMeshProUGUI _playerAmountUIElementTextMeshPro;
+
+    private float _gameProgress;
+    public Action onGameProgressChanged;
+
+    public GameObject progressBar;
+    private float _fullWidth;
+
+    public int ScoreToFinish = 100;
+
+    public GameObject gameUICanvas;
+    
+    public float GameProgress
+    {
+        get => _gameProgress;
+        set
+        {
+            if (_gameProgress != value)
+            {
+                _gameProgress = value;
+                onGameProgressChanged?.Invoke();
+            }
+        }
+    }
     
     private void Awake()
     {
@@ -53,6 +76,25 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject); 
         }
+        
+        onGameProgressChanged += GameProgressUpdate;
+        
+        
+    }
+
+    private void GameProgressUpdate()
+    {
+        Debug.Log($"Game Progress: {GameProgress}");
+        
+        foreach(Player player in _playerDictionary.Values){
+            Debug.Log($"{player.playerID} Game Progress: {player.Score}");
+        }
+        RectTransform rect = progressBar.GetComponent<RectTransform>();
+        Debug.Log("full width: " + _fullWidth);
+        Debug.Log($"Game Progress pixels: {(_gameProgress / (float)ScoreToFinish) * _fullWidth}");
+        rect.sizeDelta = new Vector2((_gameProgress / (float)ScoreToFinish) * _fullWidth, rect.sizeDelta.y);
+
+        if (_gameProgress == ScoreToFinish) FinishGame();
     }
 
     private void Start()
@@ -63,6 +105,13 @@ public class GameManager : MonoBehaviour
          _playerAmountUIElement = GameObject.Find("PlayersAmount");
          _playerAmountUIElementTextMeshPro = _playerAmountUIElement.GetComponent<TextMeshProUGUI>();
 
+         RectTransform rect = progressBar.GetComponent<RectTransform>();
+         _fullWidth = rect.sizeDelta.x;
+         rect.sizeDelta = new Vector2(0, rect.sizeDelta.y);
+         gameUICanvas.SetActive(false);
+         
+
+
         _pickupSpawnerObject = GameObject.Find("PickupSpawn");
         _pickupSpawner = _pickupSpawnerObject.GetComponent<PickupSpawner>();
 
@@ -72,6 +121,11 @@ public class GameManager : MonoBehaviour
         {
             AddLocalPlayer();
         }
+    }
+
+    private void FinishGame()
+    {
+      //win game logic here   
     }
 
     IEnumerator calcMass()
@@ -107,7 +161,7 @@ public class GameManager : MonoBehaviour
         GameObject playerObject = Instantiate(_playerPrefab, spawnPos, Quaternion.identity);
 
         Player playerScript = playerObject.GetComponent<Player>();
-        playerScript.Initialize(_inputManager, _playerPrefab, networkPlayer);
+        playerScript.Initialize(_inputManager, _playerPrefab, networkPlayer.OwnerClientId, networkPlayer);
 
         _playerDictionary.Add(networkPlayer.OwnerClientId, playerScript);
     }
@@ -120,7 +174,7 @@ public class GameManager : MonoBehaviour
         GameObject playerObject = Instantiate(_playerPrefab, spawnPos, Quaternion.identity);
 
         Player playerScript = playerObject.GetComponent<Player>();
-        playerScript.Initialize(_inputManager, _playerPrefab);
+        playerScript.Initialize(_inputManager, _playerPrefab, 100);
         
         _playerDictionary.Add(0, playerScript);
     }
@@ -162,6 +216,7 @@ public class GameManager : MonoBehaviour
     {
         _obstacleManager.startSpawning();
         _pickupSpawner.StartSpawningPickup();
+        gameUICanvas.SetActive(true);
     }
 
 }

@@ -59,15 +59,16 @@ public class Obstacle : MonoBehaviour
 
     }
 
-    public void RegularHit()
+    public void RegularHit(Player source)
     {
-        Debug.Log("Regular Hit");
         SoundFXManager.instance.PlayRandomSoundFXClip(asteroidExplodeClips, transform, 0.5f);
         if(_level != 1)
         {
         Split();
         }
+        Debug.Log($"player : {source.playerID}");
 
+        _manager.addToProgress(source);
         displayParticle();
         Kill();
     }
@@ -82,8 +83,6 @@ public class Obstacle : MonoBehaviour
 
     private void Split()
     {
-        Debug.Log("Splitting into 2 ");
-        Debug.Log(_level.ToString());
         float angleOfSplit = UnityEngine.Random.Range(0.0f, 2 * Mathf.PI);
         float xOffset1 = Mathf.Cos(angleOfSplit) * _manager.splitMagnitude;
         float xOffset2 = Mathf.Cos(angleOfSplit + Mathf.PI) * _manager.splitMagnitude;

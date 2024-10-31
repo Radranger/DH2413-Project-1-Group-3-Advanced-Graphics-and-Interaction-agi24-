@@ -61,7 +61,6 @@ public class LineRendererScript : MonoBehaviour
 
     public void addWireCube(GameObject Asteroid, GameObject player)
     {
-        Debug.Log("adding wire cube");
         if (Asteroid == null)
         {
             Debug.LogError("Asteroid parameter is null!");

@@ -4,10 +4,10 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     private bool hasHit = false;
+    private Player _source;
 
     void OnTriggerEnter(Collider collision)
     {
-        Debug.Log("Trigger enter ** ");
         // Check if the colliding object is an Obstacle
         if (!hasHit && collision.gameObject.CompareTag("enemy"))
         {
@@ -15,11 +15,16 @@ public class Bullet : MonoBehaviour
             if (obstacle != null)
             {
                 hasHit = true;
-                obstacle.RegularHit();
+                obstacle.RegularHit(_source);
 
                 // Destroy the bullet
                 Destroy(gameObject);
             }
         }
+    }
+
+    public void setSource(Player src)
+    {
+        _source = src;
     }
 }
