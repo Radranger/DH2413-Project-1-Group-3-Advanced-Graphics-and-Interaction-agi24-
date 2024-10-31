@@ -18,9 +18,6 @@ public class Player : MonoBehaviour
         set => _score = value;
     }
     
-    
-
-    
     public ulong playerID;
 
     public void Initialize(InputManager inputManager, GameObject playerPrefab, ulong iplayerID, NetworkPlayer networkPlayer = null)

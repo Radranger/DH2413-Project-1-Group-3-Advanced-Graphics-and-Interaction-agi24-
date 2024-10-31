@@ -10,6 +10,7 @@ TagManager:
   - shield
   - Laser
   - frozen
+  - FreezeEffect
   layers:
   - Default
   - TransparentFX

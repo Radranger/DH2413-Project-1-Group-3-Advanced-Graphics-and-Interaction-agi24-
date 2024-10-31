@@ -11,6 +11,12 @@ public class PlayerMovementNEW : MonoBehaviour
     private Vector2 _velocity;
     private Rigidbody _rb;
     private BoxCollider _col;
+    
+    public Vector2 Velocity
+    {
+        get => _velocity;
+        set => _velocity = value;
+    }
 
     public Vector2 maxTilt = new Vector2(0.5f, 0.5f);
     public float thresholdX = 0.2f;
@@ -38,13 +44,17 @@ public class PlayerMovementNEW : MonoBehaviour
     private bool _isFrozen = false;
     private Vector3 _frozenPosition;
     private FreezePlayer _freezePlayerScript;
+
+    public float bumpSpeed = 2;
     
     public float wobbleAmount = 30.0f;
-    
+
+    private bool _canBump;
 
     public void Initialize(InputManager inputManager)
     {
         _inputManager = inputManager;
+        _canBump = true;
     }
 
     // Start is called before the first frame update
@@ -56,6 +66,34 @@ public class PlayerMovementNEW : MonoBehaviour
         _previousVelocity = new Vector2(0, 0);
         _acceleration = new Vector2(0, 0);
         _freezePlayerScript = GetComponent<FreezePlayer>();
+    }
+    
+    private void OnCollisionEnter(Collision collision)
+    {
+        // Check if the collided object is the one you are interested in
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            StartCoroutine(bumpCoolDown());
+            PlayerMovementNEW other = collision.gameObject.GetComponent<PlayerMovementNEW>();
+            Vector3 otherPos = other.transform.position;
+            Vector3 bumpVector = (transform.position - otherPos).normalized;
+            Vector3 otherSpeedVector = new Vector3(other.Velocity.x, other.Velocity.y, 0.0f);
+            Vector3 thisSpeedVector = new Vector3(_velocity.x, _velocity.y, 0.0f);
+
+            float impactSpeedThis = Vector3.Dot(-bumpVector, thisSpeedVector);
+            float impactSpeedOther = Vector3.Dot(bumpVector, otherSpeedVector);
+
+            if (impactSpeedOther < impactSpeedThis) return;
+
+            _velocity = bumpVector * bumpSpeed;
+        }
+    }
+
+    IEnumerator bumpCoolDown()
+    {
+        _canBump = false;
+        yield return new WaitForSeconds(.2f);
+        _canBump = true;
     }
 
     // Update is called once per frame
