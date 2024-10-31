@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class FreezePlayer : MonoBehaviour
@@ -9,6 +10,8 @@ public class FreezePlayer : MonoBehaviour
     private bool _isFrozen;
     private Renderer[] _playerRenderers;
     private PlayerMovementNEW _playerMovementScript;
+    private Animator _shakeTextAnimator;
+    public GameObject _shakeText;
     private Rigidbody _rb;
     private RigidbodyConstraints _originalConstraints;
 
@@ -19,6 +22,7 @@ public class FreezePlayer : MonoBehaviour
         _isFrozen = false;
         _playerRenderers = GetComponentsInChildren<Renderer>();
         _playerMovementScript = GetComponent<PlayerMovementNEW>();
+        _shakeTextAnimator = GetComponent<Animator>();
         _rb = GetComponent<Rigidbody>();
         _originalConstraints = _rb.constraints;
 
@@ -35,18 +39,20 @@ public class FreezePlayer : MonoBehaviour
     {
         if (other.CompareTag("frozen") && !_isFrozen)
         {
-            StartCoroutine(FreezeMovement());
+            //StartCoroutine(FreezeMovement());
+            FreezeMovement();
             Destroy(other.gameObject);
         }
     }
 
-    private IEnumerator FreezeMovement()
+    private void FreezeMovement()
     {
         _isFrozen = true;
-
+        _shakeTextAnimator.enabled = true;
+        
         if (_playerMovementScript != null)
         {
-            _playerMovementScript.enabled = false;
+            _playerMovementScript.FreezeMovement();
         }
 
         if (_rb != null)
@@ -62,10 +68,12 @@ public class FreezePlayer : MonoBehaviour
             freezeEffect = Instantiate(freezeEffectPrefab, transform.position, Quaternion.identity);
             freezeEffect.transform.SetParent(transform);
         }
+        
+        
 
         SetPlayerColor(Color.cyan);
 
-        yield return new WaitForSeconds(freezeDuration);
+        /*yield return new WaitForSeconds(freezeDuration);
 
         SetPlayerColor(originalColor);
 
@@ -84,6 +92,32 @@ public class FreezePlayer : MonoBehaviour
         if (_rb != null)
         {
             _rb.constraints = _originalConstraints;
+        }*/
+    }
+    
+    public void Unfreeze()
+    {
+        if (_isFrozen)
+        {
+            _isFrozen = false;
+            _shakeTextAnimator.SetTrigger("disableShake");
+            _shakeText.SetActive(false);
+            _shakeTextAnimator.enabled = false;
+            SetPlayerColor(originalColor);
+            
+
+            if (_playerMovementScript != null)
+                _playerMovementScript.UnfreezeMovement();
+
+            if (_rb != null)
+                _rb.constraints = _originalConstraints;
+
+            // Destroy freeze effect if exists
+            foreach (Transform child in transform)
+            {
+                if (child.gameObject.CompareTag("FreezeEffect"))
+                    Destroy(child.gameObject);
+            }
         }
     }
 

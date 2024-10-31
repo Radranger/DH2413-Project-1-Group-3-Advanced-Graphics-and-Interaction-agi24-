@@ -8,9 +8,9 @@ using UnityEngine.Events;
 public class InputManager
 {
     private IInputProvider _inputProvider;
+    private ShakeDetector _shakeDetector;
 
     public event Action OnShoot;
-
     public InputType playerInputType;
 
    
@@ -30,6 +30,7 @@ public class InputManager
         {
             _inputProvider.OnShoot += HandleOnShoot;
         }
+        
     }
 
     private void HandleOnShoot()

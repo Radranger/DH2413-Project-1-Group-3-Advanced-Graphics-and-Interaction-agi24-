@@ -20,10 +20,24 @@ public class PlayerMovementNEW : MonoBehaviour
     public Vector2 VisualInput;
     public Vector2 VisualDif;
     public Vector2 VisualInitialValue;
-
+    
+    //--- for shake detection ---
+    public bool shakestatement;
+    public float shakeThreshold = 2.0f; 
+    private bool isShaking = false;
+    private int shakeCount = 0;
+    private float lastShakeTime = 0f;
+    public float shakeDetectionWindow = 1f; 
+    private float cooldownTimer = 0f;
+    public float shakeCooldown = 0.5f; 
+    //===
     
     private Vector2 _previousVelocity;
     public Vector2 _acceleration;
+    
+    private bool _isFrozen = false;
+    private Vector3 _frozenPosition;
+    private FreezePlayer _freezePlayerScript;
     
     public float wobbleAmount = 30.0f;
     
@@ -41,27 +55,108 @@ public class PlayerMovementNEW : MonoBehaviour
         _rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
         _previousVelocity = new Vector2(0, 0);
         _acceleration = new Vector2(0, 0);
+        _freezePlayerScript = GetComponent<FreezePlayer>();
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (_isFrozen)
+        {
+            _rb.velocity = Vector3.zero;
+            transform.position = _frozenPosition;
+            CheckForShake();
+            return;
+        }
+        
         FrameReset();
         HandleDirection();
         HandleRotation();
         CalcAcceleration();
         ApplyMovement();
+        
 
         //Debug
         VisualValue();
 
         //visualInput = _inputManager.GetMovementVector();
     }
+    
+    void HandleShakeStarted()
+    {
+        Debug.Log("Shake started!");
+        shakestatement = true;
+        if (_isFrozen) UnfreezeMovement();
+        if (_freezePlayerScript != null)
+        {
+            _freezePlayerScript.Unfreeze();
+        }
+    }
+
+    void HandleShakeStopped()
+    {
+        Debug.Log("Shake stopped!");
+        shakestatement = false;
+    }
+    
+    void CheckForShake()
+    {
+        Vector3 acceleration = _inputManager.GetMovementVector();
+        
+        if (Mathf.Abs(acceleration.x) > shakeThreshold || Mathf.Abs(acceleration.y) > shakeThreshold)
+        {
+            float currentTime = Time.time;
+            
+            if (currentTime - lastShakeTime > shakeDetectionWindow)
+            {
+                shakeCount = 0;
+            }
+
+            lastShakeTime = currentTime;
+            shakeCount++;
+            
+            if (shakeCount >= 8 && !isShaking)
+            {
+                isShaking = true;
+                shakestatement = true;
+                HandleShakeStarted();
+            }
+            
+            cooldownTimer = 0f;
+        }
+        else
+        {
+            if (isShaking)
+            {
+                cooldownTimer += Time.deltaTime;
+                if (cooldownTimer >= shakeCooldown)
+                {
+                    isShaking = false;
+                    shakestatement = false;
+                    HandleShakeStopped();
+                    shakeCount = 0;
+                    cooldownTimer = 0f;
+                }
+            }
+        }
+    }
 
     void CalcAcceleration()
     {
         _acceleration = _velocity - _previousVelocity;
         _previousVelocity = _velocity;
+    }
+    
+    public void FreezeMovement()
+    {
+        _isFrozen = true;
+        _frozenPosition = transform.position;
+    }
+
+    public void UnfreezeMovement()
+    {
+        _isFrozen = false;
+        
     }
 
     void VisualValue()

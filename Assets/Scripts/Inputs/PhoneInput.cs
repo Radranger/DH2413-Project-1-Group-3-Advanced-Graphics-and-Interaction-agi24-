@@ -25,4 +25,9 @@ public class PhoneInput : IInputProvider
     {
         OnShoot?.Invoke();
     }
+
+    public Vector3 GetAccelerometerData()
+    {
+        return _networkPlayer.GetAccelerometerData();
+    }
 }

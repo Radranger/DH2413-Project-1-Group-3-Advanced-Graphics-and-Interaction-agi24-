@@ -49,6 +49,7 @@ public class NetworkPlayer : NetworkBehaviour
     public float lowPassKernelWidthInSeconds = 1.0f;
 
     private float lowPassFilterFactor;
+    
 
     public event Action OnPhoneFire1;
 
@@ -220,6 +221,11 @@ public class NetworkPlayer : NetworkBehaviour
         return accelerometer.Value.z;
     }
 
+    public Vector3 GetAccelerometerData()
+    {
+        return Accelerometer.current.acceleration.ReadValue();
+    }
+
     public string GetPlayerName()
     {
         return playerName.Value.ToString();
@@ -268,5 +274,7 @@ public class NetworkPlayer : NetworkBehaviour
             Debug.LogWarning("Player object not found on server for this NetworkPlayer");
         }
     }
+    
 }
+
 
