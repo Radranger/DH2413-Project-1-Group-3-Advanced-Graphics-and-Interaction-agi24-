@@ -113,7 +113,7 @@ public class GameManager : MonoBehaviour
          _fullWidth = rect.sizeDelta.x;
          rect.sizeDelta = new Vector2(0, rect.sizeDelta.y);
          gameUICanvas.SetActive(false);
-         
+         gameScoreboardUICanvas.SetActive(false);
 
 
         _pickupSpawnerObject = GameObject.Find("PickupSpawn");
@@ -139,6 +139,8 @@ public class GameManager : MonoBehaviour
             int score = sortedPlayers[i].Score;
             playerTexts[i].text = $"{name}: {score}";
         }
+        Time.timeScale = 0;
+
         gameScoreboardUICanvas.SetActive(true);
     }
 
