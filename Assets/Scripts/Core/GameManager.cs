@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using GameSpace;
 using TMPro;
@@ -41,6 +42,10 @@ public class GameManager : MonoBehaviour
 
     private GameObject _playerAmountUIElement;
     private TextMeshProUGUI _playerAmountUIElementTextMeshPro;
+    public TextMeshProUGUI player1;
+    public TextMeshProUGUI player2;
+    public TextMeshProUGUI player3;
+    public TextMeshProUGUI player4;
 
     private float _gameProgress;
     public Action onGameProgressChanged;
@@ -51,6 +56,7 @@ public class GameManager : MonoBehaviour
     public int ScoreToFinish = 100;
 
     public GameObject gameUICanvas;
+    public GameObject gameScoreboardUICanvas;
     
     public float GameProgress
     {
@@ -78,8 +84,6 @@ public class GameManager : MonoBehaviour
         }
         
         onGameProgressChanged += GameProgressUpdate;
-        
-        
     }
 
     private void GameProgressUpdate()
@@ -125,7 +129,17 @@ public class GameManager : MonoBehaviour
 
     private void FinishGame()
     {
-      //win game logic here   
+        TextMeshProUGUI[] playerTexts = { player1, player2, player3, player4 };
+        var sortedPlayers = _playerDictionary.OrderByDescending(element => element.Value.Score).Select(element => element.Value).ToList();
+        int index = 0;
+
+        for (int i = 0; i < sortedPlayers.Count; i++)
+        {
+            string name = sortedPlayers[i].NetworkPlayer.GetPlayerName();
+            int score = sortedPlayers[i].Score;
+            playerTexts[i].text = $"{name}: {score}";
+        }
+        gameScoreboardUICanvas.SetActive(true);
     }
 
     IEnumerator calcMass()

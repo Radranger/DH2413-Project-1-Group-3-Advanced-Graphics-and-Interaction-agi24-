@@ -10,6 +10,11 @@ public class Player : MonoBehaviour
     private PlayerMovementNEW _playerMovementNEW;
     private ShootingSystem _shootingSystem;
     private NetworkPlayer _networkPlayer;
+    public NetworkPlayer NetworkPlayer
+    {
+        get => _networkPlayer;
+        set => _networkPlayer = value;
+    }
     private int _score;
     
     public int Score
