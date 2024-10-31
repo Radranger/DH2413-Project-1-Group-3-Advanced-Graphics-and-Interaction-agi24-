@@ -23,6 +23,8 @@ public class FreezePlayer : MonoBehaviour
         _playerRenderers = GetComponentsInChildren<Renderer>();
         _playerMovementScript = GetComponent<PlayerMovementNEW>();
         _shakeTextAnimator = GetComponent<Animator>();
+        _shakeTextAnimator.enabled = false;
+
         _rb = GetComponent<Rigidbody>();
         _originalConstraints = _rb.constraints;
 
