@@ -129,10 +129,16 @@ public class GameManager : MonoBehaviour
     }
 
     IEnumerator calcMass()
+    
     {
+        
         while (true)
         {
             yield return new WaitForSeconds(0.1f);
+            if(_playerDictionary.Count == 0){
+                playerMass = Vector2.zero;
+                continue;
+            }
             playerMass = Vector2.zero;
             int length = _playerDictionary.Count;
             foreach (var player in _playerDictionary.Values)
