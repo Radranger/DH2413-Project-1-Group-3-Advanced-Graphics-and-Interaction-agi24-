@@ -1041,8 +1041,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   freezeDuration: 3
-  freezeEffectPrefab: {fileID: 2618214732094421749, guid: bd4a4333238131b448994eca3875664a, type: 3}
   _shakeText: {fileID: 71288070992263408}
+  freezeShader: {fileID: -6465566751694194690, guid: 3f9c281274e2b564abf44d5ab7d36237, type: 3}
 --- !u!95 &-4300722860037132576
 Animator:
   serializedVersion: 5
