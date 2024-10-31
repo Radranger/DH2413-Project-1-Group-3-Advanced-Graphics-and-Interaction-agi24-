@@ -10,9 +10,19 @@ public class Player : MonoBehaviour
     private PlayerMovementNEW _playerMovementNEW;
     private ShootingSystem _shootingSystem;
     private NetworkPlayer _networkPlayer;
+    private int _score;
     
+    public int Score
+    {
+        get => _score;
+        set => _score = value;
+    }
+    
+    public ulong playerID;
 
-    public void Initialize(InputManager inputManager, GameObject playerPrefab, NetworkPlayer networkPlayer = null){
+    public void Initialize(InputManager inputManager, GameObject playerPrefab, ulong iplayerID, NetworkPlayer networkPlayer = null)
+    {
+        playerID = iplayerID;
         _active = true;
         _inputManager = inputManager;
         _networkPlayer = networkPlayer;

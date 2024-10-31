@@ -154,10 +154,8 @@ public class ShootingSystem : MonoBehaviour
 
     IEnumerator startShootTimout()
     {
-        Debug.Log("1?");
         _shootTimeout = true;
         yield return new WaitForSeconds(60.0f/maxShootingFreq);
-        Debug.Log("here?");
         
         _shootTimeout = false;
         if (_hasBuffer)
@@ -170,7 +168,6 @@ public class ShootingSystem : MonoBehaviour
 
     public void ShootInput()
     {
-        Debug.Log(_shootTimeout);
         if (!_shootTimeout)
         {
             Shoot();
@@ -204,6 +201,7 @@ public class ShootingSystem : MonoBehaviour
         Quaternion bulletRotation = Quaternion.LookRotation(velocity);
         GameObject bullet = Instantiate(volumetricLine, shootPosition, bulletRotation);
         bullet.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+        
         SoundFXManager.instance.PlayRandomSoundFXClip(shootClips, transform, 0.5f);
 
 
@@ -221,6 +219,11 @@ public class ShootingSystem : MonoBehaviour
             collider.isTrigger = true;
         }
         bullet.AddComponent<Bullet>();
+        
+        Bullet bulletScript = bullet.GetComponent<Bullet>();
+
+        bulletScript.setSource(gameObject.GetComponent<Player>());
+
         
         rb.velocity = velocity;
 

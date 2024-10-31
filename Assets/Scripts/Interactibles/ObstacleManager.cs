@@ -20,12 +20,18 @@ public class ObstacleManager : MonoBehaviour
     
     public List<GameObject> asteroids = new List<GameObject>();
     public Action onAsteroidsChange;
+
+    private GameObject _gameManagerObject;
+    private GameManager _gameManager;
     
     // Start is called before the first frame update
     void Start()
     {
         _lineRenderer = GameObject.Find("LineRenderer");
         _lineRendererScript = _lineRenderer.GetComponent<LineRendererScript>();
+        
+        _gameManagerObject = GameObject.FindWithTag("GameManager");
+        _gameManager = _gameManagerObject.GetComponent<GameManager>();
 
         _spawnDim = _spawnPlane.GetComponent<Renderer>().bounds.size;
         _spawnPos = _spawnPlane.transform.position;
@@ -35,6 +41,12 @@ public class ObstacleManager : MonoBehaviour
     {
         SpawnInstance();
         StartCoroutine(Spawn());
+    }
+
+    public void addToProgress(Player player)
+    {
+        _gameManager.GameProgress += 1;
+        player.Score += 1;
     }
 
     IEnumerator Spawn(){
