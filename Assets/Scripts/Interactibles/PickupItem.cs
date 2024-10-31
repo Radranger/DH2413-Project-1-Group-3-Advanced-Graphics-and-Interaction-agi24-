@@ -8,9 +8,10 @@ public class PickupItem : MonoBehaviour
     public float floatAmplitude = 0.5f;
     public float floatFrequency = 1f;
     public float appearDuration = 0.1f;
+    public float existingTime = 5f;
 
     private Vector3 startPosition;
-    private Vector3 targetScale;            
+    private Vector3 targetScale;
     private float spawnTime;
 
     void Start()
@@ -19,13 +20,28 @@ public class PickupItem : MonoBehaviour
         targetScale = transform.localScale;
         transform.localScale = Vector3.zero;
         spawnTime = Time.time;
+
+        Destroy(gameObject, existingTime);
     }
 
     void Update()
     {
-        float elapsed = Time.time - spawnTime;       // Calculate elapsed time since spawn
-        float scaleProgress = Mathf.Clamp01(elapsed / appearDuration);  // Calculate scaling progress
-        transform.localScale = Vector3.Lerp(Vector3.zero, targetScale, scaleProgress);
+        float elapsed = Time.time - spawnTime;
+
+        if (elapsed < appearDuration)
+        {
+            float scaleProgress = Mathf.Clamp01(elapsed / appearDuration);
+            transform.localScale = Vector3.Lerp(Vector3.zero, targetScale, scaleProgress);
+        }
+        else if (elapsed > existingTime - appearDuration)
+        {
+            float scaleProgress = Mathf.Clamp01((existingTime - elapsed) / appearDuration);
+            transform.localScale = Vector3.Lerp(Vector3.zero, targetScale, scaleProgress);
+        }
+        else
+        {
+            transform.localScale = targetScale;
+        }
 
         transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime);
 
