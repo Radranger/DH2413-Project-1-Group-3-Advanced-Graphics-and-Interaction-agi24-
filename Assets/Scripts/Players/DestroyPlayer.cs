@@ -158,7 +158,7 @@ public class DestroyPlayer : MonoBehaviour
         }
 
         // Set the invincibility duration to 3 seconds
-        float invincibilityDuration = 3f;
+        float invincibilityDuration = 8f;
         float elapsedTime = 0f;
         float blinkInterval = 0.1f;
 

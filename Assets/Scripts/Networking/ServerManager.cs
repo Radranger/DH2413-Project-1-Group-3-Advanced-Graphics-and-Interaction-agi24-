@@ -67,6 +67,8 @@ public class ServerManager : Singleton<ServerManager>
     public float countdownTime = 10.0f;
     public TextMeshProUGUI countdownText; 
     public GameObject gameScoreboardUICanvas;
+    
+    private float finalCountdownTimer = 4.0f;
 
     
     // ---------------------------------- Debug ----------------------------------
@@ -340,8 +342,6 @@ public class ServerManager : Singleton<ServerManager>
     
     public void EndGame()
     {
-        //GameObject.Find("GameOverScreen").SetActive(false);
-
         activeNetworkPlayers.Clear();
         activePlayers.Clear();
 
@@ -381,6 +381,17 @@ public class ServerManager : Singleton<ServerManager>
         activeNetworkPlayers.Clear();
         
         _gameManager.ClearPlayers();
+
+        StartCoroutine(finalCountDown());
+    }
+
+    private IEnumerator finalCountDown()
+    {
+        finalCountdownTimer -= Time.deltaTime;
+        if (finalCountdownTimer >= -1) countdownText.text = Mathf.Ceil(finalCountdownTimer).ToString();
+        if (finalCountdownTimer <= 0) SceneManager.LoadScene("Scenes/RestartPagePC");
+        
+        yield return new WaitForSeconds(1);
     }
 
     private IEnumerator SetPlayerNames()
