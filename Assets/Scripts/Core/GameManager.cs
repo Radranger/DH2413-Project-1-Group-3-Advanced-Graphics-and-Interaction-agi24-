@@ -127,6 +127,15 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+                Time.timeScale = 1;
+                gameScoreboardUICanvas.SetActive(false);
+        }
+    }
+
     private void FinishGame()
     {
         TextMeshProUGUI[] playerTexts = { player1, player2, player3, player4 };
