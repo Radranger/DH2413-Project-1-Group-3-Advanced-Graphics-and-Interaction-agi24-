@@ -126,6 +126,8 @@ public class ServerManager : Singleton<ServerManager>
         if (Input.GetKeyDown(KeyCode.R))
         {
                 if(gameStarted) EndGame();
+                if(NetworkManager.Singleton.gameObject) Destroy(NetworkManager.Singleton.gameObject);
+                if(_gameManager.gameObject) Destroy(_gameManager.gameObject);
                 SceneManager.LoadScene("Scenes/RestartPagePC");
         }
     }
@@ -387,6 +389,9 @@ public class ServerManager : Singleton<ServerManager>
         _gameManager.ClearPlayers();
 
         StartCoroutine(finalCountDown());
+        
+        if(NetworkManager.Singleton.gameObject) Destroy(NetworkManager.Singleton.gameObject);
+        if(_gameManager.gameObject) Destroy(_gameManager.gameObject);
     }
 
     private IEnumerator finalCountDown()
@@ -609,8 +614,8 @@ public class ServerManager : Singleton<ServerManager>
         _gameManager.ClearPlayers();
 
         // 销毁 NetworkManager，防止重复创建
-        Destroy(NetworkManager.Singleton.gameObject);
-        Destroy(_gameManager.gameObject);
+        if(NetworkManager.Singleton.gameObject) Destroy(NetworkManager.Singleton.gameObject);
+        if(_gameManager.gameObject) Destroy(_gameManager.gameObject);
 
         // 加载RestartPagePC场景
         SceneManager.LoadScene("Scenes/RestartPagePC");
