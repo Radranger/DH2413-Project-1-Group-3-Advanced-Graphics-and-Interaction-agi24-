@@ -87,7 +87,7 @@ public class GameManager : MonoBehaviour
         onGameProgressChanged += GameProgressUpdate;
     }
 
-    private void GameProgressUpdate()
+    public void GameProgressUpdate()
     {
         Debug.Log($"Game Progress: {GameProgress}");
         
