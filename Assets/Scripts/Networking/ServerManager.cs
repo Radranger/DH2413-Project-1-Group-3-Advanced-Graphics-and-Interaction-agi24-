@@ -279,7 +279,7 @@ public class ServerManager : Singleton<ServerManager>
         GameObject networkPlayer = null;
         foreach (GameObject np in networkPlayers)
         {
-            if (np.GetComponent<NetworkPlayer>().OwnerClientId == clientID)
+            if (np.GetComponent<NetworkObject>().OwnerClientId == clientID)
             {
                 networkPlayer = np;
                 break;
