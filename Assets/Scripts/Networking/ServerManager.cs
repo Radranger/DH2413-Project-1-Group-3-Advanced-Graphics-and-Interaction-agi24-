@@ -123,11 +123,8 @@ public class ServerManager : Singleton<ServerManager>
         
         if (Input.GetKeyDown(KeyCode.R))
         {
-            if (gameStarted)
-            {
-                EndGame();
+                if(gameStarted) EndGame();
                 SceneManager.LoadScene("Scenes/RestartPagePC");
-            } 
         }
     }
     
