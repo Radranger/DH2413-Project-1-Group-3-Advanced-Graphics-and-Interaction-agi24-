@@ -19,7 +19,6 @@ public class ServerManager : Singleton<ServerManager>
 
     [SerializeField]
     private GameObject menuScreen;
-    private GameObject FinishedScreen;
 
     [SerializeField]
     private GameObject joinCode;
@@ -67,6 +66,7 @@ public class ServerManager : Singleton<ServerManager>
     private Coroutine countdownCoroutine;
     public float countdownTime = 10.0f;
     public TextMeshProUGUI countdownText; 
+
     
     // ---------------------------------- Debug ----------------------------------
 
@@ -125,13 +125,8 @@ public class ServerManager : Singleton<ServerManager>
             if (gameStarted)
             {
                 EndGame();
-                //RestartServer();
-            }
-            else
-            {
-                //RestartServer();
-            }
-            
+                SceneManager.LoadScene("Scenes/RestartPagePC");
+            } 
         }
     }
     
@@ -346,8 +341,7 @@ public class ServerManager : Singleton<ServerManager>
     
     public void EndGame()
     {
-        resetGameButton.gameObject.SetActive(false);
-        GameObject.Find("Finished Screen").SetActive(false);
+        //GameObject.Find("GameOverScreen").SetActive(false);
 
         activeNetworkPlayers.Clear();
         activePlayers.Clear();

@@ -58,6 +58,7 @@ public class GameManager : MonoBehaviour
     public GameObject gameUICanvas;
     public GameObject gameScoreboardUICanvas;
     
+    
     public float GameProgress
     {
         get => _gameProgress;
@@ -183,7 +184,7 @@ public class GameManager : MonoBehaviour
     public void AddPlayer(NetworkPlayer networkPlayer)
     {
         if (_playerDictionary.Count >= 4) return;
-        updatePlayerLimit();
+        
         
         InputManager _inputManager = new InputManager();
         _inputManager.Initialize(InputType.PHONE, networkPlayer);
@@ -195,6 +196,8 @@ public class GameManager : MonoBehaviour
         playerScript.Initialize(_inputManager, _playerPrefab, networkPlayer.OwnerClientId, networkPlayer);
 
         _playerDictionary.Add(networkPlayer.OwnerClientId, playerScript);
+
+        updatePlayerLimit();
     }
     
     public void AddLocalPlayer(){
