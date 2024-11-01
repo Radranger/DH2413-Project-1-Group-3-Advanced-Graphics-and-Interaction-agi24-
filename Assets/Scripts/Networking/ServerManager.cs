@@ -66,6 +66,7 @@ public class ServerManager : Singleton<ServerManager>
     private Coroutine countdownCoroutine;
     public float countdownTime = 10.0f;
     public TextMeshProUGUI countdownText; 
+    public GameObject gameScoreboardUICanvas;
 
     
     // ---------------------------------- Debug ----------------------------------
@@ -138,6 +139,7 @@ public class ServerManager : Singleton<ServerManager>
         _gameManagerObject = GameObject.FindWithTag("GameManager");
         _gameManager = _gameManagerObject.GetComponent<GameManager>();
         _BackgroundAsteroids = GameObject.Find("BackgroundAsteroids").gameObject;
+        gameScoreboardUICanvas.SetActive(false);
 
         countdown.ResetCountdown();
 

@@ -68,7 +68,7 @@ public class ObstacleManager : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(7);
-            if(_spawnInterval < 0.5) continue;
+            if(_spawnInterval < 2.5) continue;
             _spawnInterval -= 0.45f;
         }
     }
