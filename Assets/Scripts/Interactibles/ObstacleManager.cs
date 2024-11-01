@@ -7,7 +7,7 @@ using System;
 public class ObstacleManager : MonoBehaviour
 {
     [SerializeField] private float _spawnRate = 60.0f;
-    [SerializeField] private int _spawnInterval = 1;
+    [SerializeField] private float _spawnInterval = 8;
     [SerializeField] private GameObject _spawnPlane;
     private Vector3 _spawnDim;
     private Vector3 _spawnPos; 
@@ -41,6 +41,7 @@ public class ObstacleManager : MonoBehaviour
     {
         SpawnInstance();
         StartCoroutine(Spawn());
+        StartCoroutine(increaseSpeed());
     }
 
     public void addToProgress(Player player)
@@ -59,6 +60,16 @@ public class ObstacleManager : MonoBehaviour
                 SpawnInstance();
             }
 
+        }
+    }
+
+    IEnumerator increaseSpeed()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(7);
+            if(_spawnInterval < 0.5) continue;
+            _spawnInterval -= 0.45f;
         }
     }
     void SpawnInstance(){
