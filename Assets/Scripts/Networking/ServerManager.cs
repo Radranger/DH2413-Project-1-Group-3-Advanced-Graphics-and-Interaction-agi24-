@@ -67,8 +67,8 @@ public class ServerManager : Singleton<ServerManager>
     public float countdownTime = 10.0f;
     public TextMeshProUGUI countdownText; 
     public GameObject gameScoreboardUICanvas;
-    
     private float finalCountdownTimer = 4.0f;
+    public GameObject gameUICanvas;
 
     
     // ---------------------------------- Debug ----------------------------------
@@ -139,6 +139,10 @@ public class ServerManager : Singleton<ServerManager>
         _gameManager = _gameManagerObject.GetComponent<GameManager>();
         _BackgroundAsteroids = GameObject.Find("BackgroundAsteroids").gameObject;
         gameScoreboardUICanvas.SetActive(false);
+        //gameUICanvas.SetActive(false);
+
+        _gameManager.GameProgress = 0;
+        _gameManager.GameProgressUpdate();
 
         countdown.ResetCountdown();
 
@@ -606,6 +610,7 @@ public class ServerManager : Singleton<ServerManager>
 
         // 销毁 NetworkManager，防止重复创建
         Destroy(NetworkManager.Singleton.gameObject);
+        Destroy(_gameManager.gameObject);
 
         // 加载RestartPagePC场景
         SceneManager.LoadScene("Scenes/RestartPagePC");
