@@ -19,7 +19,6 @@ public class ServerManager : Singleton<ServerManager>
 
     [SerializeField]
     private GameObject menuScreen;
-    private GameObject FinishedScreen;
 
     [SerializeField]
     private GameObject joinCode;
@@ -67,6 +66,10 @@ public class ServerManager : Singleton<ServerManager>
     private Coroutine countdownCoroutine;
     public float countdownTime = 10.0f;
     public TextMeshProUGUI countdownText; 
+    public GameObject gameScoreboardUICanvas;
+    private float finalCountdownTimer = 4.0f;
+    public GameObject gameUICanvas;
+
     
     // ---------------------------------- Debug ----------------------------------
 
@@ -122,16 +125,10 @@ public class ServerManager : Singleton<ServerManager>
         
         if (Input.GetKeyDown(KeyCode.R))
         {
-            if (gameStarted)
-            {
-                EndGame();
-                //RestartServer();
-            }
-            else
-            {
-                //RestartServer();
-            }
-            
+                if(gameStarted) EndGame();
+                if(NetworkManager.Singleton.gameObject) Destroy(NetworkManager.Singleton.gameObject);
+                if(_gameManager.gameObject) Destroy(_gameManager.gameObject);
+                SceneManager.LoadScene("Scenes/RestartPagePC");
         }
     }
     
@@ -143,6 +140,11 @@ public class ServerManager : Singleton<ServerManager>
         _gameManagerObject = GameObject.FindWithTag("GameManager");
         _gameManager = _gameManagerObject.GetComponent<GameManager>();
         _BackgroundAsteroids = GameObject.Find("BackgroundAsteroids").gameObject;
+        gameScoreboardUICanvas.SetActive(false);
+        //gameUICanvas.SetActive(false);
+
+        _gameManager.GameProgress = 0;
+        _gameManager.GameProgressUpdate();
 
         countdown.ResetCountdown();
 
@@ -283,7 +285,7 @@ public class ServerManager : Singleton<ServerManager>
         GameObject networkPlayer = null;
         foreach (GameObject np in networkPlayers)
         {
-            if (np.GetComponent<NetworkPlayer>().OwnerClientId == clientID)
+            if (np.GetComponent<NetworkObject>().OwnerClientId == clientID)
             {
                 networkPlayer = np;
                 break;
@@ -346,9 +348,6 @@ public class ServerManager : Singleton<ServerManager>
     
     public void EndGame()
     {
-        resetGameButton.gameObject.SetActive(false);
-        GameObject.Find("Finished Screen").SetActive(false);
-
         activeNetworkPlayers.Clear();
         activePlayers.Clear();
 
@@ -388,6 +387,20 @@ public class ServerManager : Singleton<ServerManager>
         activeNetworkPlayers.Clear();
         
         _gameManager.ClearPlayers();
+
+        StartCoroutine(finalCountDown());
+        
+        if(NetworkManager.Singleton.gameObject) Destroy(NetworkManager.Singleton.gameObject);
+        if(_gameManager.gameObject) Destroy(_gameManager.gameObject);
+    }
+
+    private IEnumerator finalCountDown()
+    {
+        finalCountdownTimer -= Time.deltaTime;
+        if (finalCountdownTimer >= -1) countdownText.text = Mathf.Ceil(finalCountdownTimer).ToString();
+        if (finalCountdownTimer <= 0) SceneManager.LoadScene("Scenes/RestartPagePC");
+        
+        yield return new WaitForSeconds(1);
     }
 
     private IEnumerator SetPlayerNames()
@@ -601,7 +614,8 @@ public class ServerManager : Singleton<ServerManager>
         _gameManager.ClearPlayers();
 
         // 销毁 NetworkManager，防止重复创建
-        Destroy(NetworkManager.Singleton.gameObject);
+        if(NetworkManager.Singleton.gameObject) Destroy(NetworkManager.Singleton.gameObject);
+        if(_gameManager.gameObject) Destroy(_gameManager.gameObject);
 
         // 加载RestartPagePC场景
         SceneManager.LoadScene("Scenes/RestartPagePC");

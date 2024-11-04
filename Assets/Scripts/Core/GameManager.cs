@@ -58,6 +58,7 @@ public class GameManager : MonoBehaviour
     public GameObject gameUICanvas;
     public GameObject gameScoreboardUICanvas;
     
+    
     public float GameProgress
     {
         get => _gameProgress;
@@ -86,7 +87,7 @@ public class GameManager : MonoBehaviour
         onGameProgressChanged += GameProgressUpdate;
     }
 
-    private void GameProgressUpdate()
+    public void GameProgressUpdate()
     {
         Debug.Log($"Game Progress: {GameProgress}");
         
@@ -194,7 +195,6 @@ public class GameManager : MonoBehaviour
         playerScript.Initialize(_inputManager, _playerPrefab, networkPlayer.OwnerClientId, networkPlayer);
 
         _playerDictionary.Add(networkPlayer.OwnerClientId, playerScript);
-        
         updatePlayerLimit();
     }
     
